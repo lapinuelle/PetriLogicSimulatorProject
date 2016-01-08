@@ -5,6 +5,7 @@
 #include "simulator.h"
 #include "simulation_data.h"
 #include <stdlib.h>
+#include "VerilogHDL_Flattener.h"
 
 /******* Info about version naming history ******
 0.0.1 - первая, хоть как-то работающая версия симулятора, пока только gate level
@@ -20,6 +21,7 @@ int main(int argc, char *argv[]) {
   printf("PetriLogicSimulator v0.0.2\n\n");
   std::string filename;
   inetlistreader *p_reader = NULL;
+  VerilogHDL_Flattener vf;
   netlist* netl = new netlist;
   sim_data* simul_data = new sim_data;
   simulator* sim = new simulator;
@@ -43,7 +45,8 @@ int main(int argc, char *argv[]) {
     goto EXIT_POINT;
   }
 
-                                                                          // чтение нетлиста
+  vf.Read(filename, rootModule);// чтение нетлиста
+  filename.replace(filename.begin(), filename.end(), ".v", "_flat.v");
   p_reader = get_appropriate_reader(filename);
   if(!p_reader) 
     goto EXIT_POINT;
@@ -58,6 +61,6 @@ EXIT_POINT:                                                               // точ
   free_reader(p_reader);
   delete simul_data;
   delete netl;
-
+  
   return 0;
 }
