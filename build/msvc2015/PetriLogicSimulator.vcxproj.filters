@@ -51,6 +51,9 @@
     <ClCompile Include="..\..\sources\stack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\VerilogHDL_Flattener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\datawriter.h">
@@ -81,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sources\stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\VerilogHDL_Flattener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
