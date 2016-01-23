@@ -94,7 +94,6 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
         }
         i++;
       }
-      
       readModule = true;
     }
     
@@ -103,8 +102,7 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
     }
     
     
-    
-    if ((tokens[i].item == "#") && (tokens[i].pos == 1)) {
+    if ((tokens[i].item == "#")/* && (tokens[i].pos == 1)*/) {
       i++;
       currentTime = atoi(tokens[i].item.c_str());
       time += currentTime;

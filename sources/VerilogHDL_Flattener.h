@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+#include "netlistreader.h"
+
 enum ModuleLineType {
   mlt_undefined = 0,
   mlt_instance,
@@ -60,18 +62,19 @@ public:
   }
 };
 
-struct token {
-  std::string item;
-  size_t      line,
-    pos;
-};
-
 class VerilogHDL_Flattener {
   std::vector<token>        tokens;
   std::vector<Module *>     modules;
   std::vector<std::string>  lines;
+  std::string               hier_file_name,
+                            flat_file_name;
+  bool                      was_written;
+public:
+  VerilogHDL_Flattener();
+ ~VerilogHDL_Flattener();
 public:
   bool Read(std::string file_name, std::string root_module_name);
+  std::string GetFlatFileName();
 private:
   bool Tokenize(std::string file_name);
   bool ParseModules(std::string root_module_name);

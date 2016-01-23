@@ -1,24 +1,19 @@
 #include "VerilogHDL_Flattener.h"
 
-void clear_at_left(std::string &line) {
-  size_t pos = line.find_first_not_of(" \t\n");
-  if (!pos)
-    return;
-  if (pos == std::string::npos) {
-    line.erase();
-    return;
-  }
-  line.erase(line.begin(), line.begin() + pos);
+VerilogHDL_Flattener::VerilogHDL_Flattener() : was_written(false) {
 }
 
-void clear_at_right(std::string &line) {
-  size_t pos = line.find_last_not_of(" \t\n");
-  if (pos == std::string::npos) {
-    line.erase();
+VerilogHDL_Flattener::~VerilogHDL_Flattener() {
+  if (!was_written)
     return;
+  /*
+  printf("Deleting file... ");
+  if (remove(flat_file_name.c_str())) {
+    printf("sorry, can't remove file :(\n");
   }
-  if (pos != line.length())
-    line.erase(line.begin() + pos + 1, line.end());
+  else
+    printf("done!\n");
+  //*/
 }
 
 bool VerilogHDL_Flattener::Read(std::string file_name, std::string root_module_name) {
@@ -34,22 +29,31 @@ bool VerilogHDL_Flattener::Read(std::string file_name, std::string root_module_n
   if(!MakeTheBiggestJobEver(root_module_name))
     return false;
   
-  size_t pos = file_name.find_last_of(".");
+  hier_file_name = file_name;
+  flat_file_name = file_name;
+  size_t pos = flat_file_name.find_last_of(".");
   if(pos == std::string::npos) {
-    file_name += "_flat";
+    flat_file_name += "_flat";
   } else {
-    file_name.insert(pos, "_flat");
+    flat_file_name.insert(pos, "_flat");
   }
-  Dump(file_name, root_module_name);
+
+  Dump(flat_file_name, root_module_name);
   return true;
+}
+
+std::string VerilogHDL_Flattener::GetFlatFileName() {
+  return flat_file_name;
 }
 
 #pragma warning(push)
 #pragma warning(disable: 4996)
 bool VerilogHDL_Flattener::Tokenize(std::string file_name) {
   FILE *p_file = fopen(file_name.c_str(), "rt");
-  if (!p_file)
+  if (!p_file) {
+    printf("__err__ : Can't open file");
     return false;
+  }
 
   char buffer[4096];
   std::string line;
@@ -142,10 +146,12 @@ bool VerilogHDL_Flattener::Tokenize(std::string file_name) {
       line_no = tokens[i].line;
       while (tokens[i].line == line_no && i <= tokens.size())
         tokens.erase(tokens.begin() + i);
+      --i;
     }
     if (tokens[i].item == "/*") {
       while (tokens[i].item != "*/" && i <= tokens.size())
         tokens.erase(tokens.begin() + i);
+      --i;
     }
   }
 
@@ -236,19 +242,19 @@ bool VerilogHDL_Flattener::ParseModules(std::string root_module_name) {
         while (tokens[++i].item != ";") {
           ((ML_Assign *)p_line)->expression.push_back(tokens[i].item);
         }
+        ++i;
+        continue;
       }
 
-      /*
-      // TopGun:
-      // It has to be rewritten completely!
       if (tokens[i].item == "always") {
         p_line = new ML_Always;
         p_module->typed_lines.push_back(p_line);
         while (tokens[++i].item != ";") {
           ((ML_Assign *)p_line)->expression.push_back(tokens[i].item);
         }
+        ++i;
+        continue;
       }
-      //*/
 
       // This is a very simple and primitive way to detect RTL description
       if (tokens[i + 2].item == "(") {
@@ -281,9 +287,15 @@ bool VerilogHDL_Flattener::ParseModules(std::string root_module_name) {
   }
 
   for (size_t i = 0; i < modules.size(); ++i) {
-    if (modules[i]->module_name == root_module_name)
+    if (modules[i]->module_name == root_module_name) {
+      printf("__inf__ : Root module '%s' found\n", root_module_name.c_str());
       return true;
+    }
   }
+  printf("__err__ : Can't find specified root module '%s'\n", root_module_name.c_str());
+  printf("          Available modules are:\n");
+  for (size_t i = 0; i < modules.size(); ++i)
+    printf("            %s\n", modules[i]->module_name.c_str());
   return false;
 }
 
@@ -373,8 +385,16 @@ bool VerilogHDL_Flattener::MakeTheBiggestJobEver(std::string root_module_name) {
       modules[i_root]->typed_lines.erase(modules[i_root]->typed_lines.begin() + i);
       --i;
     }
+    else {
+      printf("INFO => Found non RTL module: %s\n", modules[i_inst]->module_name.c_str());
+      printf("Trying to open hierarchy for this module...");
+      MakeTheBiggestJobEver(modules[i_inst]->module_name);
+      --i;
+      printf("done!\n");
+    }
 
   }
+  modules[i_root]->isRTL = true;
   return true;
 }
 
@@ -398,7 +418,14 @@ bool VerilogHDL_Flattener::Dump(std::string file_name, std::string root_module_n
     fprintf(p_file, "  %s\n", modules[i_root]->lines[i].c_str());
 
   fprintf(p_file, "\n");
-  
+
+  /*
+  fprintf(p_file, "input D, C;\n");
+  fprintf(p_file, "output Q1, Q2;\n");
+
+  fprintf(p_file, "\n");
+  //*/
+
   ML_Instance *p_inst;
   for(size_t i = 0; i < modules[i_root]->typed_lines.size(); ++i) {
     p_inst = (ML_Instance *)modules[i_root]->typed_lines[i];
@@ -421,6 +448,7 @@ bool VerilogHDL_Flattener::Dump(std::string file_name, std::string root_module_n
   fprintf(p_file, "endmodule\n");
   
   fclose(p_file);
+  was_written = true;
   return true;
 }
 #pragma warning(pop)

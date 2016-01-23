@@ -4,6 +4,7 @@
 #include "netlistreader.h"
 #include "simulator.h"
 #include "simulation_data.h"
+#include "VerilogHDL_Flattener.h"
 #include <stdlib.h>
 
 /******* Info about version naming history ******
@@ -25,6 +26,7 @@ int main(int argc, char *argv[]) {
   simulator* sim = new simulator;
   int stackSize = 20;																							        // размер стека
   std::string rootModule = "root";																				// имя модуля верхнего уровня
+  VerilogHDL_Flattener vnf;
 
 																												                  // Чтение аргументов командной строки
   if (argc > 2) {
@@ -43,15 +45,20 @@ int main(int argc, char *argv[]) {
     goto EXIT_POINT;
   }
 
+  //*
+  if (!vnf.Read(filename, rootModule)) {
+    goto EXIT_POINT;
+  }
+  //*/
                                                                           // чтение нетлиста
-  p_reader = get_appropriate_reader(filename);
+  p_reader = get_appropriate_reader(vnf.GetFlatFileName());
   if(!p_reader) 
     goto EXIT_POINT;
   if(!p_reader->read(netl, simul_data))
     goto EXIT_POINT;
   
  
-  sim->simulation_stack(netl, simul_data, filename, stackSize);           // проводим симуляцию
+  sim->simulation_stack(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симуляцию
   delete sim;                                                             // удаляем объект
 
 EXIT_POINT:                                                               // точка выхода
