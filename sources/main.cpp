@@ -15,10 +15,11 @@
 	      -s <размер_стека>
 	      -r <название_модуля>
 	      -i <входной_файл>
+0.0.5 - чтение иерархии и преобразование в плоский нетлист
 *************************************************/
 
 int main(int argc, char *argv[]) {
-  printf("PetriLogicSimulator v0.0.2\n\n");
+  printf("PetriLogicSimulator v0.0.5\n\n");
   std::string filename;
   inetlistreader *p_reader = NULL;
   netlist* netl = new netlist;
