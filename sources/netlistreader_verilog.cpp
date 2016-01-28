@@ -107,7 +107,8 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
       currentTime = atoi(tokens[i].item.c_str());
       time += currentTime;
       i++;
-      ev = *(simul_data->addEvent(time, netl->returnNet(tokens[i].item), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
+//    ev = *(simul_data->addEvent(time, netl->returnNet(tokens[i].item), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
+	  ev = *(simul_data->addEvent(time, netl->addNet(tokens[i].item, NULL), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
       i += 3;
       /*
       if (atoi(tokens[i + 1].item.c_str()) != currentTime) {
