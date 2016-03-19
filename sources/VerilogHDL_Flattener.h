@@ -69,6 +69,7 @@ class VerilogHDL_Flattener {
   std::string               hier_file_name,
                             flat_file_name;
   bool                      was_written;
+  bool                      flatten;
 public:
   VerilogHDL_Flattener();
  ~VerilogHDL_Flattener();

@@ -23,14 +23,18 @@ bool VerilogHDL_Flattener::Read(std::string file_name, std::string root_module_n
   // Parse tokens to find verilog modules and fill up "modules" vector
   if (!ParseModules(root_module_name))
     return false;
-  // Detect RTL modules
+  hier_file_name = file_name;
+  flat_file_name = file_name;
+  if (flatten) 
+      return true;
+    // Detect RTL modules
   PostProcess();
 
   if(!MakeTheBiggestJobEver(root_module_name))
     return false;
   
-  hier_file_name = file_name;
-  flat_file_name = file_name;
+  //hier_file_name = file_name;
+  //flat_file_name = file_name;
   size_t pos = flat_file_name.find_last_of(".");
   if(pos == std::string::npos) {
     flat_file_name += "_flat";
@@ -43,6 +47,8 @@ bool VerilogHDL_Flattener::Read(std::string file_name, std::string root_module_n
 }
 
 std::string VerilogHDL_Flattener::GetFlatFileName() {
+  if (modules.size() == 1)
+    return hier_file_name;
   return flat_file_name;
 }
 
@@ -189,6 +195,7 @@ bool VerilogHDL_Flattener::ParseModules(std::string root_module_name) {
     else {
       while (tokens[++i].item != ";") {
         p_module->pins.push_back(tokens[i].item);
+
         ++i; // ,
       }
       ++i; // ;
@@ -285,7 +292,8 @@ bool VerilogHDL_Flattener::ParseModules(std::string root_module_name) {
       }
     }  // if >> endmodule
   }
-
+  if (modules.size() == 1)
+    flatten = true;
   for (size_t i = 0; i < modules.size(); ++i) {
     if (modules[i]->module_name == root_module_name) {
       printf("__inf__ : Root module '%s' found\n", root_module_name.c_str());
@@ -411,9 +419,17 @@ bool VerilogHDL_Flattener::Dump(std::string file_name, std::string root_module_n
       i_root = i;
       break;
     }
-  
-  fprintf(p_file, "module %s();\n", modules[i_root]->module_name.c_str());
-  
+  // пишем заголовок модуля
+  fprintf(p_file, "module %s(", modules[i_root]->module_name.c_str());
+  // пишем имена пинов
+  for(size_t i = 0; i < modules[i_root]->pins.size(); ++i) {
+    fprintf(p_file, "%s",  modules[i_root]->pins[i].c_str());
+    if (i < modules[i_root]->pins.size()-1)
+      fprintf(p_file, ", ");
+  }
+  fprintf(p_file, ");\n");
+  // закончили писать заголовок модуля
+
   for(size_t i = 0; i < modules[i_root]->lines.size(); ++i)
     fprintf(p_file, "  %s\n", modules[i_root]->lines[i].c_str());
 
