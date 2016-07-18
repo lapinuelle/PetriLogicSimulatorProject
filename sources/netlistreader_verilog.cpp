@@ -88,12 +88,14 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
     
     if ((tokens[i].item == "module") && (tokens[i].pos == 1)) {
       i += 3;
+      /*
       while (tokens[i].item != ")") {
         if (tokens[i].item != ",") {
           simul_data->dumpNames.push_back(tokens[i].item);
         }
         i++;
       }
+      */
       readModule = true;
     }
     

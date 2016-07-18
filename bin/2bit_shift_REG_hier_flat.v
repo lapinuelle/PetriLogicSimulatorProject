@@ -1,18 +1,5 @@
 module DFF_test();
-  initial 
-  begin 
-  #0 D = 0; 
-  #0 C = 0; 
-  #10 C = 1; 
-  #2 C = 0; 
-  #3 D = 1; 
-  #5 C = 1; 
-  #2 C = 0; 
-  #18 D = 0; 
-  #10 C = 1; # 5 D = 1 ; # 5 C = 0 ; # 25 C = 1 ; # 10 C = 0 ; # 0 D = 0 ; end
-
-  input D, C;
-  output Q1, Q2;
+  initial begin # 0 D = 0 ; # 0 C = 0 ; # 10 C = 1 ; # 2 C = 0 ; # 3 D = 1 ; # 5 C = 1 ; # 2 C = 0 ; # 18 D = 0 ; # 10 C = 1 ; # 5 D = 1 ; # 5 C = 0 ; # 25 C = 1 ; # 10 C = 0 ; # 0 D = 0 ; end
 
   not _d1_not1(_d1_net0, D);
   or _d1_or1(_d1_net1, D, C);

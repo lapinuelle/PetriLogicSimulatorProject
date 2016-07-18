@@ -22,8 +22,10 @@ void simulator::simulation_stack(netlist* netl, sim_data* simData, std::string f
   std::string gateName;                                                                               // имя вентиля
   datawriter wr(filename.c_str());                                                                    // контейнер выходных данных
   stack *stackSim = new stack(stackSize);                                                             // стек моделирования
-  for (size_t i = 0; i < simData->dumpNames.size(); i++)
-    wr.AddDumpVar(netl->returnNet(simData->dumpNames[i]));                                            // указываем контейнеру, значения каких узлов отслеживать
+//  for (size_t i = 0; i < simData->dumpNames.size(); i++)
+//    wr.AddDumpVar(netl->returnNet(simData->dumpNames[i]));                                            // указываем контейнеру, значения каких узлов отслеживать
+  for (size_t i = 0; i < netl->nets.size(); i++)
+    wr.AddDumpVar(netl->nets[i]);                                            // указываем контейнеру, значения каких узлов отслеживать
 
   wr.PrintHeader();                                                                                   // пишем в выходной файл шапку
   

@@ -47,7 +47,7 @@ bool VerilogHDL_Flattener::Read(std::string file_name, std::string root_module_n
 }
 
 std::string VerilogHDL_Flattener::GetFlatFileName() {
-  if (modules.size() == 1)
+  if (flatten)
     return hier_file_name;
   return flat_file_name;
 }
@@ -292,8 +292,11 @@ bool VerilogHDL_Flattener::ParseModules(std::string root_module_name) {
       }
     }  // if >> endmodule
   }
-  if (modules.size() == 1)
+  if (modules.size() == 1) {
     flatten = true;
+  } else {
+    flatten = false;
+  }
   for (size_t i = 0; i < modules.size(); ++i) {
     if (modules[i]->module_name == root_module_name) {
       printf("__inf__ : Root module '%s' found\n", root_module_name.c_str());
