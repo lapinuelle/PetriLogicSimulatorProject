@@ -59,7 +59,8 @@ int main(int argc, char *argv[]) {
     goto EXIT_POINT;
   
  
-  sim->simulation_stack(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симул€цию
+  //sim->simulation_stack(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симул€цию
+    sim->simulation(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симул€цию
   delete sim;                                                             // удал€ем объект
 
 EXIT_POINT:                                                               // точка выхода
