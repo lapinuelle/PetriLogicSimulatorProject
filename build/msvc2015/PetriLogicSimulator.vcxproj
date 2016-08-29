@@ -38,12 +38,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+    <_ProjectFileVersion>14.0.24720.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>..\..\bin\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\..\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\bin\</OutDir>
@@ -106,9 +107,11 @@
     <ClInclude Include="..\..\sources\event.h" />
     <ClInclude Include="..\..\sources\gates.h" />
     <ClInclude Include="..\..\sources\logiclevel.h" />
+    <ClInclude Include="..\..\sources\module.h" />
     <ClInclude Include="..\..\sources\netlist.h" />
     <ClInclude Include="..\..\sources\netlistreader.h" />
     <ClInclude Include="..\..\sources\nets.h" />
+    <ClInclude Include="..\..\sources\numcores.h" />
     <ClInclude Include="..\..\sources\simulation_data.h" />
     <ClInclude Include="..\..\sources\simulator.h" />
     <ClInclude Include="..\..\sources\stack.h" />

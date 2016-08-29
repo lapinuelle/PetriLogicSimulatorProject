@@ -14,6 +14,6 @@ public:
 	void simulation(netlist* netl, sim_data* simul_data, std::string filename, int stackSize);
   void simulation_stack(netlist* netl, sim_data* simul_data, std::string filename, int stackSize);
 	bool valueChanged;
-  void routine(sim_data* simData, netlist* netl, stack* stackSim);
+  
 };
 #endif

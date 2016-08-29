@@ -195,7 +195,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\sources\netlist_reader.cpp"
+				RelativePath="..\..\sources\netlistreader.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\sources\netlistreader_verilog.cpp"
 				>
 			</File>
 			<File
@@ -208,6 +212,14 @@
 			</File>
 			<File
 				RelativePath="..\..\sources\simulator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\sources\stack.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\sources\VerilogHDL_Flattener.cpp"
 				>
 			</File>
 		</Filter>
@@ -233,11 +245,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\sources\module.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\sources\netlist.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\sources\netlist_reader.h"
+				RelativePath="..\..\sources\netlistreader.h"
 				>
 			</File>
 			<File
@@ -250,6 +266,14 @@
 			</File>
 			<File
 				RelativePath="..\..\sources\simulator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\sources\stack.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\sources\VerilogHDL_Flattener.h"
 				>
 			</File>
 		</Filter>

@@ -19,7 +19,7 @@
 *************************************************/
 
 int main(int argc, char *argv[]) {
-  printf("PetriLogicSimulator v0.0.5\n\n");
+  printf("PetriLogicSimulator v0.0.6a\nMulti-thread test implementation\n\n");
   std::string filename;
   inetlistreader *p_reader = NULL;
   netlist* netl = new netlist;

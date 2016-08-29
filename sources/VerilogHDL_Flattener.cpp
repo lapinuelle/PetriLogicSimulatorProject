@@ -397,8 +397,8 @@ bool VerilogHDL_Flattener::MakeTheBiggestJobEver(std::string root_module_name) {
       --i;
     }
     else {
-      printf("INFO => Found non RTL module: %s\n", modules[i_inst]->module_name.c_str());
-      printf("Trying to open hierarchy for this module...");
+      printf("__inf__ : Found non RTL module: %s\n", modules[i_inst]->module_name.c_str());
+      printf("__inf__ : Trying to open hierarchy for this module...");
       MakeTheBiggestJobEver(modules[i_inst]->module_name);
       --i;
       printf("done!\n");
