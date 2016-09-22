@@ -6,9 +6,14 @@ void gate::t_minus() {
       ins_temp[i] = ins[i]->value;
   }
 
-void gate::t_plus() {
+bool gate::t_plus() {
+  bool changed = false;
     for(size_t i =0 ; i < outs.size(); ++i)
-      outs[i]->value = outs_temp[i];
+      if (outs[i]->value != outs_temp[i]) {
+        outs[i]->value = outs_temp[i];
+        changed = true;
+      }
+    return changed;
   }
 
 // Inverter

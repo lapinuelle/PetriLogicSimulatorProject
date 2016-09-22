@@ -207,6 +207,7 @@ bool VerilogHDL_Flattener::ParseModules(std::string root_module_name) {
         ++i;
       }
       
+      
       if (tokens[i].item == "input" || tokens[i].item == "output" || tokens[i].item == "wire" || tokens[i].item == "reg") {
         line = tokens[i].item + " ";
         while (tokens[++i].item != ";") {

@@ -29,6 +29,7 @@ typedef struct someArgs_tag {
   netlist* netl;
   stack* stackSim;
   std::vector<gate*>* returned;
+  //std::vector <LogicLevel> outs_temp;
 } someArgs_t;
 
 simulator::simulator() {
@@ -38,28 +39,21 @@ simulator::simulator() {
 
 void* routine(void *args) {
   someArgs_t *arg = (someArgs_t*)args;
-  printf("__sys__ : Thread number %d launched\n", arg->busy);
+  printf("__sys__ : Thread number %d launched\n", arg->busy-arg->stackSim->busy);
   bool valueChanged = false;
-  arg->simData->outs_temp.resize(arg->stackSim->gatesChain[arg->busy]->outs.size());									        // этот блок отвечает за создание временного хранилища 
-  for (size_t it = 0; it < arg->simData->outs_temp.size(); it++) {																						// текущего состо€ни€ на выходе вентил€
-    arg->simData->outs_temp[it] = arg->stackSim->gatesChain[arg->busy]->outs[it]->value;
-  }
   if (arg->stackSim->gatesChain[arg->busy]->repeat < 500) {                                             // стандартные операции алгоритма сетей ѕетри
     arg->stackSim->gatesChain[arg->busy]->t_minus();
     arg->stackSim->gatesChain[arg->busy]->operate();
-    arg->stackSim->gatesChain[arg->busy]->t_plus();
-    arg->stackSim->gatesChain[arg->busy]->repeat++;                                                     // инкремент
-  }
-  for (size_t it = 0; it < arg->simData->outs_temp.size(); it++) {																						// если хоть один выход помен€лс€, то назначаем флаг
-    if (arg->stackSim->gatesChain[arg->busy]->outs[it]->value != arg->simData->outs_temp[it])
+    if (arg->stackSim->gatesChain[arg->busy]->t_plus())
       valueChanged = true;
+    arg->stackSim->gatesChain[arg->busy]->repeat++;                                                     // инкремент
   }
   if (valueChanged) {                                                                                   // если флаг назначен, то добавл€ем вентили, вис€щие на выходе узла в стек
     for (size_t y = 0; y < arg->stackSim->gatesChain[arg->busy]->outs.size(); y++) {
       std::vector <gate*> returned = arg->netl->returnGate(arg->stackSim->gatesChain[arg->busy]->outs[y]);
       if ((!returned.empty()) && (arg->stackSim->gatesChain[arg->busy]->repeat < 500))
         for (size_t index = 0; index < returned.size(); index++)
-          arg->stackSim->push_back(returned[index]);
+          (*arg->returned)[index] = returned[index];
     }
   }
   
@@ -142,19 +136,8 @@ void simulator::simulation_stack(netlist* netl, sim_data* simData, std::string f
                 stackSim->push_back(returned[index]);
             }
           }
-
           stackSim->eject();
-          /*if (stackSim->busy == stackSim->free && stackSim->busy > 0 && !valueChanged) {
-            stackSim->busy --;
-            
-          }*/
-
-
         }
-        
-
-
-
       }
     }
     
@@ -179,9 +162,14 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
 
   std::vector<std::vector<gate*>*> returned;                                                            // создаЄм вектор возвращЄнных вентилей
   returned.resize(cores);                                                                             // по количеству €дер
+  for (int y = 0; y < returned.size(); y++) {
+    returned[y] = new std::vector<gate*>;
+  }
 
   int status;
   int status_addr;
+
+  int num_threads = 0;
 
   valueChanged = false;                                                                               // флаг изменени€ состо€ни€ на выходе вентил€
   std::string gateName;                                                                               // им€ вентил€
@@ -195,6 +183,8 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
   wr.PrintHeader();                                                                                   // пишем в выходной файл шапку
   
   for (time = initialTime; time < stopTime; time++) {																							    // временна€ ось
+    printf("==============================\n__inf__ : Time %d started\n------------------------------\n", time);
+    // printf(" \n\n !!!!!!!!!!!!!!!!!!!!! TIME %d !!!!!!!!!!!!!!!!!!!!!! \n\n", time);
 
     for (size_t i = 0; i < simData->eventChain.size(); i++) {                                         // пробежка по всем событи€м
       if (simData->eventChain[i].time == time) {                                                      // если достигли времени данного событи€
@@ -225,38 +215,59 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
           }
         }
         
+        int temp_free = 0;
         while (stackSim->busy != stackSim->free) {
-          for (int core = 0; core < cores; cores++) {
+          num_threads = 0;
+          for (int core = 0; core < cores; core++) {
+            returned[core] = new std::vector<gate*>;
             args[core].busy = stackSim->busy + core;
             args[core].simData = simData;
             args[core].netl = netl;
             args[core].stackSim = stackSim;
             args[core].returned = returned[core];
-            if (stackSim->busy + core < stackSim->free) {
+            args[core].returned->resize(100,NULL);
+            if (stackSim->busy > stackSim->free)
+              temp_free = stackSim->free + 20;
+            else
+              temp_free = stackSim->free;
+            if (stackSim->busy + core < temp_free) {
+              //printf("Stack size before [f, b]: [%d, %d]\n", stackSim->free, stackSim->busy);
+              
               status = pthread_create(&threads[core], NULL, routine, (void*)&args[core]);
+              num_threads++;
               if (status != 0) {
                 printf("main error: can't create thread, status = %d\n", status);
                 exit(ERROR_CREATE_THREAD);
               }
             }
           }
-
-          for (int core = 0; core < cores; core++) {
-            if (stackSim->busy + core < stackSim->free) {
-/*
-              for (size_t kk = 0; kk < args[core].returned->size(); kk++) {
-                stackSim->push_back(args[core].returned[kk]);
-              }
-              */
+          //printf("__info__: Something\n");
+          for (int core = 0; core < num_threads; core++) {
+            if (stackSim->busy > stackSim->free)
+              temp_free = stackSim->free + 20;
+            else
+              temp_free = stackSim->free;
+            if (stackSim->busy + core < temp_free) {
               status = pthread_join(threads[core], (void**)&status_addr);
               if (status != SUCCESS) {
                 printf("main error: can't join thread, status = %d\n", status);
                 exit(ERROR_JOIN_THREAD);
               }
-              printf("joined with address %d\n", status_addr);
+              for (int yy = 0; yy < returned[core]->size(); yy++) {
+                if ((*returned[core])[yy] == NULL)
+                  break;
+                if ((*returned[core])[yy] != NULL) 
+                  stackSim->push_back((*returned[core])[yy]);
+              }
+              delete returned[core];
+              printf("__sys__ : Thread number %d joined with address %d\n", core, status_addr);
+              //printf("Stack size after [f, b]: [%d, %d]\n", stackSim->free, stackSim->busy);
+              stackSim->eject();
+              //printf("Stack size after eject [f, b]: [%d, %d]\n", stackSim->free, stackSim->busy);
             }
-            stackSim->eject();
           }
+
+          printf("------------------------------\n", time);
 
           //routine((void*) &args[core]);          
         }

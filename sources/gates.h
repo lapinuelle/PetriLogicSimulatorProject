@@ -16,7 +16,7 @@ public:
   // methods
   void t_minus();
   virtual void operate()=0;
-  void t_plus();
+  bool t_plus();
   virtual bool postprocess() = 0;
 public:
   virtual ~gate() {};

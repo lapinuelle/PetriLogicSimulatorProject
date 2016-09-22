@@ -16,6 +16,8 @@
 	      -r <название_модул€>
 	      -i <входной_файл>
 0.0.5 - чтение иерархии и преобразование в плоский нетлист
+0.0.6 - распараллеливание на €драх CPU с использованием POSIX Threads
+        ¬ключаетс€ параметром -multicore
 *************************************************/
 
 int main(int argc, char *argv[]) {
@@ -28,6 +30,7 @@ int main(int argc, char *argv[]) {
   int stackSize = 20;																							        // размер стека
   std::string rootModule = "root";																				// им€ модул€ верхнего уровн€
   VerilogHDL_Flattener vnf;
+  bool multiCore = false;
 
 																												                  // „тение аргументов командной строки
   if (argc > 2) {
@@ -39,6 +42,8 @@ int main(int argc, char *argv[]) {
         stackSize = atoi(argv[i + 1]);
       if ((std::string(argv[i]) == "-r") && (i < (size_t)argc - 1))
         rootModule = argv[i + 1];
+      if ((std::string(argv[i]) == "-multicore"))
+        multiCore = true;
     }
   }
   else {
@@ -59,8 +64,15 @@ int main(int argc, char *argv[]) {
     goto EXIT_POINT;
   
  
-  //sim->simulation_stack(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симул€цию
+  
+  if (multiCore) {
+    printf("__inf__ : Simulation srarted using multi CPU cores.\n");
     sim->simulation(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симул€цию
+  } else {
+    printf("__inf__ : Simulation started using single CPU core.\n");
+    sim->simulation_stack(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симул€цию
+  }
+
   delete sim;                                                             // удал€ем объект
 
 EXIT_POINT:                                                               // точка выхода

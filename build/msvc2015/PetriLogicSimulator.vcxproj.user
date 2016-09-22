@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>-i 2bit_shift_REG_hier.v -r DFF_test</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-i 2bit_shift_REG_hier.v -r DFF_test -s 20 -multicore &gt; log_2bit_shift.txt</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>..\..\bin</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
