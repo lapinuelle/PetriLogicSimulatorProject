@@ -1,0 +1,27 @@
+$date
+  23:49:48 07/07/2016
+$end
+$version
+  Alexander Lapin Petri Nets Logic Simulator.
+$end
+$comment
+  Any comment text.
+$end
+$timescale 1ns $end
+$scope module logic $end
+$var wire 1 ! D $end
+$var wire 1 " C $end
+$var wire 1 # Q $end
+$var wire 1 $ nQ $end
+$var wire 1 % Q1 $end
+$var wire 1 & Q2 $end
+$upscope $end
+$enddefinitions $end
+$dumpvars
+x!
+x"
+x#
+x$
+x%
+x&
+$end

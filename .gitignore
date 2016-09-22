@@ -240,5 +240,4 @@ _Pvt_Extensions
 *.exe
 *.pdb
 *.ncb
-*.v
-*.vcd
+
