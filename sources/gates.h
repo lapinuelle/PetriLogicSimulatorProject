@@ -29,6 +29,13 @@ public:
   bool postprocess();
 };
 
+class gate_buf: public gate{
+public:
+  gate_buf(std::string nameFile);
+  void operate();
+  bool postprocess();
+};
+
 class gate_and: public gate{
 public:
   gate_and(std::string nameFile);
@@ -53,6 +60,20 @@ public:
 class gate_nand: public gate{
 public:
   gate_nand(std::string nameFile);
+  void operate();
+  bool postprocess();
+};
+
+class gate_xor: public gate{
+public:
+  gate_xor(std::string nameFile);
+  void operate();
+  bool postprocess();
+};
+
+class gate_xnor: public gate{
+public:
+  gate_xnor(std::string nameFile);
   void operate();
   bool postprocess();
 };
