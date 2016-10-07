@@ -218,6 +218,10 @@
 				RelativePath="..\..\sources\stack.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\sources\VerilogHDL_Flattener.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -238,6 +242,10 @@
 			</File>
 			<File
 				RelativePath="..\..\sources\logiclevel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\sources\module.h"
 				>
 			</File>
 			<File
@@ -262,6 +270,10 @@
 			</File>
 			<File
 				RelativePath="..\..\sources\stack.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\sources\VerilogHDL_Flattener.h"
 				>
 			</File>
 		</Filter>

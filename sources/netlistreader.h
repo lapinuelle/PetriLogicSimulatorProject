@@ -7,13 +7,14 @@
 #include "netlist.h"
 #include "simulation_data.h"
 
-
 struct token {
   std::string item;
   size_t      line,
               pos;
 };
 
+void clear_at_left(std::string &line);
+void clear_at_right(std::string &line);
 
 // Interface for netlistreader
 class inetlistreader {
@@ -28,7 +29,6 @@ public:
 protected:
   bool tokenize();
 };
-
 
 // netlistreader implementation for Verilog file format
 class netlistreader_verilog : public inetlistreader {
@@ -45,7 +45,6 @@ private:
 };
 
 // netlistreader implementation for VHDL file format
-
 
 inetlistreader *get_appropriate_reader(std::string fileName);
 void free_reader(inetlistreader *p_reader);

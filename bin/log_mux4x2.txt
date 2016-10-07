@@ -1,0 +1,671 @@
+PetriLogicSimulator v0.0.6a
+Multi-thread test implementation
+
+__inf__ : Root module 'mux4x2' found
+__inf__ : Simulation srarted using multi CPU cores.
+__inf__ : Available cores: 4
+==============================
+__inf__ : Time 0 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 1 started
+------------------------------
+==============================
+__inf__ : Time 2 started
+------------------------------
+==============================
+__inf__ : Time 3 started
+------------------------------
+==============================
+__inf__ : Time 4 started
+------------------------------
+==============================
+__inf__ : Time 5 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 6 started
+------------------------------
+==============================
+__inf__ : Time 7 started
+------------------------------
+==============================
+__inf__ : Time 8 started
+------------------------------
+==============================
+__inf__ : Time 9 started
+------------------------------
+==============================
+__inf__ : Time 10 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 11 started
+------------------------------
+==============================
+__inf__ : Time 12 started
+------------------------------
+==============================
+__inf__ : Time 13 started
+------------------------------
+==============================
+__inf__ : Time 14 started
+------------------------------
+==============================
+__inf__ : Time 15 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 16 started
+------------------------------
+==============================
+__inf__ : Time 17 started
+------------------------------
+==============================
+__inf__ : Time 18 started
+------------------------------
+==============================
+__inf__ : Time 19 started
+------------------------------
+==============================
+__inf__ : Time 20 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 21 started
+------------------------------
+==============================
+__inf__ : Time 22 started
+------------------------------
+==============================
+__inf__ : Time 23 started
+------------------------------
+==============================
+__inf__ : Time 24 started
+------------------------------
+==============================
+__inf__ : Time 25 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 26 started
+------------------------------
+==============================
+__inf__ : Time 27 started
+------------------------------
+==============================
+__inf__ : Time 28 started
+------------------------------
+==============================
+__inf__ : Time 29 started
+------------------------------
+==============================
+__inf__ : Time 30 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 1 launched
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 31 started
+------------------------------
+==============================
+__inf__ : Time 32 started
+------------------------------
+==============================
+__inf__ : Time 33 started
+------------------------------
+==============================
+__inf__ : Time 34 started
+------------------------------
+==============================
+__inf__ : Time 35 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 36 started
+------------------------------
+==============================
+__inf__ : Time 37 started
+------------------------------
+==============================
+__inf__ : Time 38 started
+------------------------------
+==============================
+__inf__ : Time 39 started
+------------------------------
+==============================
+__inf__ : Time 40 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 41 started
+------------------------------
+==============================
+__inf__ : Time 42 started
+------------------------------
+==============================
+__inf__ : Time 43 started
+------------------------------
+==============================
+__inf__ : Time 44 started
+------------------------------
+==============================
+__inf__ : Time 45 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 46 started
+------------------------------
+==============================
+__inf__ : Time 47 started
+------------------------------
+==============================
+__inf__ : Time 48 started
+------------------------------
+==============================
+__inf__ : Time 49 started
+------------------------------
+==============================
+__inf__ : Time 50 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 51 started
+------------------------------
+==============================
+__inf__ : Time 52 started
+------------------------------
+==============================
+__inf__ : Time 53 started
+------------------------------
+==============================
+__inf__ : Time 54 started
+------------------------------
+==============================
+__inf__ : Time 55 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 56 started
+------------------------------
+==============================
+__inf__ : Time 57 started
+------------------------------
+==============================
+__inf__ : Time 58 started
+------------------------------
+==============================
+__inf__ : Time 59 started
+------------------------------
+==============================
+__inf__ : Time 60 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 61 started
+------------------------------
+==============================
+__inf__ : Time 62 started
+------------------------------
+==============================
+__inf__ : Time 63 started
+------------------------------
+==============================
+__inf__ : Time 64 started
+------------------------------
+==============================
+__inf__ : Time 65 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 66 started
+------------------------------
+==============================
+__inf__ : Time 67 started
+------------------------------
+==============================
+__inf__ : Time 68 started
+------------------------------
+==============================
+__inf__ : Time 69 started
+------------------------------
+==============================
+__inf__ : Time 70 started
+------------------------------
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 71 started
+------------------------------
+==============================
+__inf__ : Time 72 started
+------------------------------
+==============================
+__inf__ : Time 73 started
+------------------------------
+==============================
+__inf__ : Time 74 started
+------------------------------
+==============================
+__inf__ : Time 75 started
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 76 started
+------------------------------
+==============================
+__inf__ : Time 77 started
+------------------------------
+==============================
+__inf__ : Time 78 started
+------------------------------
+==============================
+__inf__ : Time 79 started
+------------------------------
+==============================
+__inf__ : Time 80 started
+------------------------------
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+__sys__ : Thread number 2 joined with address 0
+__sys__ : Thread number 3 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 2 launched
+__sys__ : Thread number 3 launched
+__sys__ : Thread number 0 joined with address 0
+__sys__ : Thread number 1 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 1 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+__sys__ : Thread number 0 launched
+__sys__ : Thread number 0 joined with address 0
+------------------------------
+==============================
+__inf__ : Time 81 started
+------------------------------
+==============================
+__inf__ : Time 82 started
+------------------------------
+==============================
+__inf__ : Time 83 started
+------------------------------
+==============================
+__inf__ : Time 84 started
+------------------------------
+==============================
+__inf__ : Time 85 started
+------------------------------
+==============================
+__inf__ : Time 86 started
+------------------------------
+==============================
+__inf__ : Time 87 started
+------------------------------
+==============================
+__inf__ : Time 88 started
+------------------------------
+==============================
+__inf__ : Time 89 started
+------------------------------

@@ -33,6 +33,12 @@
     <ClCompile Include="..\..\sources\netlist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\netlistreader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\netlistreader_verilog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\sources\nets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,13 +48,10 @@
     <ClCompile Include="..\..\sources\simulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\netlistreader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\sources\netlistreader_verilog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\sources\stack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\VerilogHDL_Flattener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,7 +68,13 @@
     <ClInclude Include="..\..\sources\logiclevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\sources\module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\sources\netlist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\netlistreader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sources\nets.h">
@@ -77,10 +86,13 @@
     <ClInclude Include="..\..\sources\simulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\netlistreader.h">
+    <ClInclude Include="..\..\sources\stack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\stack.h">
+    <ClInclude Include="..\..\sources\VerilogHDL_Flattener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\numcores.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,8 +11,9 @@
 class simulator {
 public:
   simulator();
-	void simulation(netlist* netl, sim_data* simul_data, std::string filename);
+	void simulation(netlist* netl, sim_data* simul_data, std::string filename, int stackSize);
   void simulation_stack(netlist* netl, sim_data* simul_data, std::string filename, int stackSize);
 	bool valueChanged;
+  
 };
 #endif

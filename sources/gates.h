@@ -16,7 +16,7 @@ public:
   // methods
   void t_minus();
   virtual void operate()=0;
-  void t_plus();
+  bool t_plus();
   virtual bool postprocess() = 0;
 public:
   virtual ~gate() {};
@@ -25,6 +25,13 @@ public:
 class gate_not: public gate{
 public:
   gate_not(std::string nameFile);
+  void operate();
+  bool postprocess();
+};
+
+class gate_buf: public gate{
+public:
+  gate_buf(std::string nameFile);
   void operate();
   bool postprocess();
 };
@@ -53,6 +60,20 @@ public:
 class gate_nand: public gate{
 public:
   gate_nand(std::string nameFile);
+  void operate();
+  bool postprocess();
+};
+
+class gate_xor: public gate{
+public:
+  gate_xor(std::string nameFile);
+  void operate();
+  bool postprocess();
+};
+
+class gate_xnor: public gate{
+public:
+  gate_xnor(std::string nameFile);
   void operate();
   bool postprocess();
 };

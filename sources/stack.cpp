@@ -27,6 +27,7 @@ void stack::push_back(gate* gate) {
   }
   else {
     printf("__err__ : Stack overload.\n\n");
+    exit(0);
   }
 }
 

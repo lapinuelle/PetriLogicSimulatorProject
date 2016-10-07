@@ -10,5 +10,6 @@ enum LogicLevel {
 LogicLevel operator ! (LogicLevel val);
 LogicLevel operator * (LogicLevel val1, LogicLevel val2);
 LogicLevel operator + (LogicLevel val1, LogicLevel val2);
+LogicLevel operator ^ (LogicLevel val1, LogicLevel val2);
 
 #endif
