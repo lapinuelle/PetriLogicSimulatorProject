@@ -67,7 +67,8 @@ void simulator::simulation_stack(netlist* netl, sim_data* simData, std::string f
 
   valueChanged = false;                                                                               // флаг изменения состояния на выходе вентиля
   std::string gateName;                                                                               // имя вентиля
-  datawriter wr(filename.c_str());                                                                    // контейнер выходных данных
+  //datawriter wr(filename.c_str());                                                                    // контейнер выходных данных
+  datawriter wr(simData->getVCDname().c_str());                                                                    // контейнер выходных данных
   stack *stackSim = new stack(stackSize);                                                             // стек моделирования
   for (size_t i = 0; i < netl->nets.size(); i++)
     wr.AddDumpVar(netl->nets[i]);                                            // указываем контейнеру, значения каких узлов отслеживать
@@ -169,7 +170,8 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
 
   valueChanged = false;                                                                               // флаг изменения состояния на выходе вентиля
   std::string gateName;                                                                               // имя вентиля
-  datawriter wr(filename.c_str());                                                                    // контейнер выходных данных
+  //datawriter wr(filename.c_str());                                                                    // контейнер выходных данных
+  datawriter wr(simData->getVCDname().c_str());                                                                    // контейнер выходных данных
   stack *stackSim = new stack(stackSize);                                                             // стек моделирования
   for (size_t i = 0; i < netl->nets.size(); i++)
     wr.AddDumpVar(netl->nets[i]);                                            // указываем контейнеру, значения каких узлов отслеживать

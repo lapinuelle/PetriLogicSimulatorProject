@@ -2,7 +2,8 @@
 
 #include <vector>
 #include <string>
-
+#include <regex>
+#include <iterator>
 #include "netlistreader.h"
 
 enum ModuleLineType {

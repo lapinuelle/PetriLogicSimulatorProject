@@ -47,10 +47,11 @@ bool netlistreader_verilog::tokenize() {
     
     while(!line.empty()) {
       clear_at_left(line);
+	  
       ++token_no;
       tk.line = line_no;
       tk.pos = token_no;
-      pos = line.find_first_of(" \t\n()+-*/=.,[]{}#@!~;");
+      pos = line.find_first_of(" \t\n\"()+-*/=.,[]{}#@!~;");
       if(pos == std::string::npos) {
         tk.item = line;
         tokens.push_back(tk);

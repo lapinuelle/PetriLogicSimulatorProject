@@ -5,6 +5,7 @@
 #include "simulator.h"
 #include "simulation_data.h"
 #include "VerilogHDL_Flattener.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 /******* Info about version naming history ******
@@ -62,6 +63,15 @@ int main(int argc, char *argv[]) {
     goto EXIT_POINT;
   if(!p_reader->read(netl, simul_data))
     goto EXIT_POINT;
+
+  // Удаляем временный файл, если он был создан
+  if(vnf.GetFlatFileName() != filename) {
+	if(!remove(vnf.GetFlatFileName().c_str())) {
+		printf("__sys__ : Temporary flat file [%s] was removed.\n",vnf.GetFlatFileName().c_str());
+	} else {
+		printf("__err__ : Can't remove flat file [%s].\n", vnf.GetFlatFileName().c_str());
+	}
+  }
   
  
   

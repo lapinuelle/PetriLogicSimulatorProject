@@ -2,6 +2,15 @@
 
 sim_data::sim_data() {};
 
+void sim_data::setVCDname(std::string name) {
+	vcdName = name;
+}
+
+std::string sim_data::getVCDname() {
+	return vcdName;
+}
+
+
 Event* sim_data::addEvent(int time, net* net, LogicLevel state) {
   
   Event* eventPointer = NULL;

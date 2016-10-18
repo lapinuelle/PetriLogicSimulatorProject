@@ -7,10 +7,12 @@
 #include "logiclevel.h"
 
 datawriter::datawriter(const std::string fileName) : fileNameVCD(fileName) {
-  size_t pos = fileNameVCD.find_last_of(".");
+/*  size_t pos = fileNameVCD.find_last_of("_flat");
   if(pos != std::string::npos)
-    fileNameVCD.erase(pos, fileNameVCD.length() - pos);
+    fileNameVCD.erase(pos-4, fileNameVCD.length() - (pos-4));
   fileNameVCD += ".vcd";
+  */
+	fileNameVCD = fileName;
 }
 
 void datawriter::AddDumpVar(net *net) {

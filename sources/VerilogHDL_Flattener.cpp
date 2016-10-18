@@ -69,8 +69,11 @@ bool VerilogHDL_Flattener::Tokenize(std::string file_name) {
 
   while (!feof(p_file)) {
     fgets(buffer, 4095, p_file);
-    line = buffer;
-
+	line = buffer;
+	std::regex e ("(\/\/.*$)");
+	std::string result;
+	std::regex_replace (std::back_inserter(result), line.begin(), line.end(), e, std::string(""));
+	line = result;
     ++line_no;
     token_no = 0;
 
@@ -85,6 +88,7 @@ bool VerilogHDL_Flattener::Tokenize(std::string file_name) {
       ++token_no;
       tk.line = line_no;
       tk.pos = token_no;
+	  
       pos = line.find_first_of(" \t\n()+-*/=.,[]{}#@!~;");
       if (pos == std::string::npos) {
         tk.item = line;

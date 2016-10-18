@@ -31,6 +31,15 @@ gate * netlistreader_verilog::CreateGate(const std::string &gate_name, const std
   if (gate_type == "nor") {
     return new gate_nor(gate_name);
   };
+  if (gate_type == "xor") {
+    return new gate_xor(gate_name);
+  };
+  if (gate_type == "xnor") {
+    return new gate_xnor(gate_name);
+  };
+  if (gate_type == "buf") {
+    return new gate_buf(gate_name);
+  };
   return NULL;
 }
 
@@ -58,13 +67,27 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
       readStates = false;
       readNames = false;
     }
+
+	// Обработчик $dumpfile, пока без $dumpvars
+
+	if(tokens[i].item == "$dumpfile") {
+		std::string vcdname;
+		i=i+2;
+		while(tokens[i].item != ")") {
+			if(tokens[i].item != "\"") {
+				vcdname = vcdname + tokens[i].item;
+			}
+			++i;
+		}
+		simul_data->setVCDname(vcdname);
+	}
     
     //New module for Verilog (basic)
     if (readModule) {
       if ((tokens[i].item == "input") || ((tokens[i].item == "output") && (tokens[i].pos == 1))) {
         
       }
-      if ((tokens[i].item == "nor") || (tokens[i].item == "nand") || (tokens[i].item == "or") || (tokens[i].item == "and") || (tokens[i].item == "not")) {
+      if ((tokens[i].item == "nor") || (tokens[i].item == "nand") || (tokens[i].item == "or") || (tokens[i].item == "and") || (tokens[i].item == "not") || (tokens[i].item == "xor") || (tokens[i].item == "xnor") || (tokens[i].item == "buf")) {
         p_gate = CreateGate(tokens[i + 1].item, tokens[i].item);
         
         if (!p_gate)
@@ -112,26 +135,6 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
 //    ev = *(simul_data->addEvent(time, netl->returnNet(tokens[i].item), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
 	  ev = *(simul_data->addEvent(time, netl->addNet(tokens[i].item, NULL), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
       i += 3;
-      /*
-      if (atoi(tokens[i + 1].item.c_str()) != currentTime) {
-        simul_data->eventChain.push_back(ev);
-        ev.netsChain.clear();
-        ev.statesChain.clear();
-        ev.time = 0;
-        ev.time = atoi(tokens[i + 1].item.c_str());
-      }
-      currentTime = ev.time;
-      ev.netsChain.push_back(netl->returnNet(tokens[i + 2].item));
-      if (tokens[i + 4].item == "0")
-        ev.statesChain.push_back(level_0);
-      if (tokens[i + 4].item == "1")
-        ev.statesChain.push_back(level_1);
-      if (tokens[i + 4].item == "U")
-        ev.statesChain.push_back(level_u);
-        
-      i = i + 5;
-      */
-      
     }
     
   }
