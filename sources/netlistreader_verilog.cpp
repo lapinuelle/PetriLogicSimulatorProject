@@ -128,13 +128,22 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
     
     
     if ((tokens[i].item == "#")/* && (tokens[i].pos == 1)*/) {
-      i++;
-      currentTime = atoi(tokens[i].item.c_str());
+      
+	  
+      currentTime = atoi(tokens[i+1].item.c_str());
+	  i++;
       time += currentTime;
       i++;
 //    ev = *(simul_data->addEvent(time, netl->returnNet(tokens[i].item), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
-	  ev = *(simul_data->addEvent(time, netl->addNet(tokens[i].item, NULL), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
-      i += 3;
+	  while((tokens[i].item != "#") || (tokens[i].item != "$finish")) {
+		  if((tokens[i].item == "#") || (tokens[i].item == "$finish")) {
+			  i--;
+			  break;
+		  }
+		  ev = *(simul_data->addEvent(time, netl->addNet(tokens[i].item, NULL), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
+		  i += 4;
+	  }
+	  
     }
     
   }

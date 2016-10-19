@@ -35,7 +35,7 @@ module tb_FADD();
 
   initial 
   begin
-    $dumpfile("FADDER.vcd");
+    $dumpfile("FADDER1.vcd");
 	  $dumpvars;
     #0    Cin=0;
     #0    A=0;
@@ -51,6 +51,7 @@ module tb_FADD();
     #10   A=0;
     #0    B=1;
     #10   A=1;
+    $finish
   end
   
 endmodule
