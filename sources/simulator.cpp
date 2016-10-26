@@ -220,7 +220,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
             args[core].returned = returned[core];
             args[core].returned->resize(100,NULL);
             if (stackSim->busy > stackSim->free)
-              temp_free = stackSim->free + 20;
+              temp_free = stackSim->free + stackSize;
             else
               temp_free = stackSim->free;
             if (stackSim->busy + core < temp_free) {
@@ -234,7 +234,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
           }
           for (int core = 0; core < num_threads; core++) {
             if (stackSim->busy > stackSim->free)
-              temp_free = stackSim->free + 20;
+              temp_free = stackSim->free + stackSize;
             else
               temp_free = stackSim->free;
               status = pthread_join(threads[core], (void**)&status_addr);
