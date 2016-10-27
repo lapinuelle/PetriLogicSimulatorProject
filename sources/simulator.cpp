@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <list>
 #define HAVE_STRUCT_TIMESPEC
-#include <pthread.h>
+#include <thread>
 #include "stack.h"
 #include "numcores.h"
 
@@ -152,7 +152,111 @@ void simulator::simulation_stack(netlist* netl, sim_data* simData, std::string f
 
 
 void simulator::simulation(netlist* netl, sim_data* simData, std::string filename, int stackSize) {
-  
+  int initialTime = 0;                                                                                // время начала моделирования
+  int stopTime = simData->eventChain[simData->eventChain.size() - 1].time + 10;                       // время окончания моделирования
+  int time = 0;                                                                                       // непосредственно момент моделирования
+
+  int cores = getNumCores();                                                                          // получем количество ядер ЦП в системе
+  printf("__inf__ : Available cores: %d\n", cores);                                                   // выводим на экран
+  std::vector<someArgs_t> args;                                                                       // создаём вектор аргументов
+  args.resize(cores);                                                                                 // по количеству ядер
+
+  std::vector<std::thread> threads;
+  threads.resize(cores);
+
+  std::vector<std::vector<gate*>*> returned;                                                            // создаём вектор возвращённых вентилей
+  returned.resize(cores);                                                                             // по количеству ядер
+  for (int y = 0; y < returned.size(); y++) {
+    returned[y] = new std::vector<gate*>;
+  }
+                                                                                         // размер стека
+  int temp_free = 0;
+
+  std::string gateName;                                                                               // имя вентиля
+  datawriter wr(simData->getVCDname().c_str());                                                                    // контейнер выходных данных
+  stack *stackSim = new stack(stackSize);                                                             // стек моделирования
+  for (size_t i = 0; i < netl->nets.size(); i++)
+    wr.AddDumpVar(netl->nets[i]);                                            // указываем контейнеру, значения каких узлов отслеживать
+
+  wr.PrintHeader();                                                                                   // пишем в выходной файл шапку
+
+  for (time = initialTime; time < stopTime; time++) {																							    // временная ось
+
+    for (size_t i = 0; i < simData->eventChain.size(); i++) {                                         // пробежка по всем событиям
+      if (simData->eventChain[i].time == time) {                                                      // если достигли времени данного события
+        for (size_t k = 0; k < netl->gates.size(); k++)																								// обнуляем счётчик повторений для всех вентилей
+          netl->gates[k]->repeat = 0;
+        for (size_t k = 0; k < netl->nets.size(); k++) {                                              // присваиваем значения портам
+          for (size_t j = 0; j < simData->eventChain[i].netsChain.size(); j++) {
+            if (netl->nets[k]->name == simData->eventChain[i].netsChain[j]->name)
+              netl->nets[k]->value = simData->eventChain[i].statesChain[j];
+
+          }
+        }
+        stackSim->reset();
+
+        // инициируем начальную цепочку вентилей на основе изменения состояний на входах
+
+        for (size_t l = 0; l < simData->eventChain[i].netsChain.size(); l++) {
+          for (size_t m = 0; m < simData->eventChain[i].netsChain[l]->gates.size(); m++) {
+            std::vector<gate*>::iterator it = std::find(stackSim->gatesChain.begin(), stackSim->gatesChain.end(), simData->eventChain[i].netsChain[l]->gates[m]);
+            int iit = std::distance(stackSim->gatesChain.begin(), it);
+            if (it != stackSim->gatesChain.end()) {
+              if (iit > stackSim->free && iit < stackSim->busy)
+                stackSim->push_back(simData->eventChain[i].netsChain[l]->gates[m]);
+            }
+            else {
+              stackSim->push_back(simData->eventChain[i].netsChain[l]->gates[m]);
+            }
+          }
+        }
+
+        //
+        // Вот тут-то и начинается самый сок
+        //
+
+        while (stackSim->busy != stackSim->free) {                                                                // операции сетей Петри
+          if (stackSim->busy > stackSim->free)                                                                    // назначаем временный указатель free, на случай, если free < busy
+            temp_free = stackSim->free + stackSize;
+          else
+            temp_free = stackSim->free;
+
+          for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t- в сети Петри
+            if (stackSim->gatesChain[stackSim->busy]->repeat < 500)
+              stackSim->gatesChain[index % stackSize]->t_minus();
+          }
+
+          for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
+            if (stackSim->gatesChain[stackSim->busy]->repeat < 500)
+              stackSim->gatesChain[index % stackSize]->operate();
+          }
+
+          for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t+ в сети Петри
+            if (stackSim->gatesChain[stackSim->busy]->repeat < 500) {
+              bool valueChanged = false;
+              if (stackSim->gatesChain[index % stackSize]->t_plus())
+                valueChanged = true;
+              stackSim->gatesChain[index % stackSize]->repeat++;                                                  // инкремент
+              if (valueChanged) {                                                                                 // если флаг назначен, то добавляем вентили, висящие на выходе узла в стек
+                for (size_t y = 0; y < stackSim->gatesChain[index % stackSize]->outs.size(); y++) {
+                  std::vector <gate*> returned = netl->returnGate(stackSim->gatesChain[index % stackSize]->outs[y]);
+                  if ((!returned.empty()) && (stackSim->gatesChain[index % stackSize]->repeat < 500))
+                    for (size_t index = 0; index < returned.size(); index++)
+                      stackSim->push_back(returned[index]);
+                }
+              }
+              stackSim->eject();
+            }
+          }
+        }
+      }
+    }
+
+    wr.DumpVars(time);
+  }
+
+
+
 }
 
 
