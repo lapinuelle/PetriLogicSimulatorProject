@@ -152,6 +152,12 @@ void simulator::simulation_stack(netlist* netl, sim_data* simData, std::string f
 
 
 void simulator::simulation(netlist* netl, sim_data* simData, std::string filename, int stackSize) {
+  
+}
+
+
+/*
+void simulator::simulation(netlist* netl, sim_data* simData, std::string filename, int stackSize) {
   // две переменные ниже задал с заделом на будущее, ибо в симуляторе можно будет выбирать, какой временной участок промоделировать (типа как в Active HDL)
   int initialTime = 0;                                                                                // время начала моделирования
   int stopTime = simData->eventChain[simData->eventChain.size() - 1].time + 10;                       // время окончания моделирования
@@ -270,3 +276,4 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
     wr.DumpVars(time);
   }
 }
+*/
