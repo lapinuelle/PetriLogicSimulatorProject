@@ -31,6 +31,22 @@ typedef struct someArgs_tag {
   std::vector<gate*>* returned;
 } someArgs_t;
 
+enum OperationType {
+  t_minus = 0,
+  t_zero,
+  t_plus,
+};
+
+enum ThreadStatus {
+  ts_wait_for_data = 0,   // поток должен ждать следующую порцию данных
+  ts_work_on_data,        // поток может приступать к обработке порции данных
+  ts_can_exit,            // поток может завершиться
+};
+
+std::vector<ThreadStatus>  statuses;    // 2 потока - 2 статуса (для каждого)
+std::vector<gate*> simulating;
+std::vector<OperationType> OpType;
+
 simulator::simulator() {
 }
 
@@ -56,6 +72,36 @@ void* routine(void *args) {
   }
   
   return SUCCESS;
+}
+
+void routine(int id) {
+  std::cout << "[ " << id << " ] : Entering thread" << std::endl;
+THREAD_BEGIN:
+  std::cout << "[ " << id << " ] : Waiting..." << std::endl;
+  // Ждём, пока из функции main нам не установят статус либо продолжения работы, либо выхода
+  bool can_continue = false;
+  while (!can_continue)
+    can_continue = (statuses[id] != ts_wait_for_data);
+
+  // Если мы вышли из while, значит либо работем, либо выходим
+  // Просят выйти - выходим
+  if (statuses[id] == ts_can_exit)
+    goto THREAD_END;
+  
+  // Просят работать - работаем
+  // Тип выполняемой работы будет зависеть от момента времени в сети Петри
+  std::cout << "[ " << id << " ] : Working on data" << std::endl;
+  if(OpType[id] == t_minus)
+    simulating[id]->t_minus();  
+  if(OpType[id] == t_zero)
+    simulating[id]->operate();  
+
+  // Закончили обработку данных - сами себе ставим статус ожидания новых данных и переходим в цикл ожидания while
+  statuses[id] = ts_wait_for_data;
+  goto THREAD_BEGIN;
+
+THREAD_END:
+  std::cout << "[ " << id << " ] : Exiting thread!" << std::endl;
 }
 
 void simulator::simulation_stack(netlist* netl, sim_data* simData, std::string filename, int stackSize) {
@@ -160,10 +206,12 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
   printf("__inf__ : Available cores: %d\n", cores);                                                   // выводим на экран
   std::vector<someArgs_t> args;                                                                       // создаём вектор аргументов
   args.resize(cores);                                                                                 // по количеству ядер
-
-  std::vector<std::thread> threads;
-  threads.resize(cores);
-
+  simulating.resize(cores);
+  statuses.resize(cores);
+  OpType.resize(cores);
+  //std::vector<std::thread> threads;
+  //threads.resize(cores);
+  
   std::vector<std::vector<gate*>*> returned;                                                            // создаём вектор возвращённых вентилей
   returned.resize(cores);                                                                             // по количеству ядер
   for (int y = 0; y < returned.size(); y++) {
@@ -220,10 +268,22 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
             temp_free = stackSim->free + stackSize;
           else
             temp_free = stackSim->free;
-
-          for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t- в сети Петри
-            if (stackSim->gatesChain[stackSim->busy]->repeat < 500)
-              stackSim->gatesChain[index % stackSize]->t_minus();
+          int index = stackSim->busy;
+          while(index < temp_free) {                                          // момент времени t- в сети Петри
+            if (stackSim->gatesChain[stackSim->busy]->repeat < 500) {
+              for(int y = 0; y < cores; y++) {
+                if (index == temp_free)
+                  break;
+                if (statuses[y] == ts_wait_for_data) {
+                  simulating[y] = stackSim->gatesChain[index % stackSize];
+                  OpType[y] = t_minus;
+                  statuses[y] = ts_work_on_data;
+                  index++;
+                  //stackSim->gatesChain[index % stackSize]->t_minus();  
+                }
+              }
+              
+            }
           }
 
           for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри

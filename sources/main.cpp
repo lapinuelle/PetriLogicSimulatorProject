@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
  
   
   if (multiCore) {
-    printf("__inf__ : Simulation srarted using multi CPU cores.\n");
+    printf("__inf__ : Simulation started using multi CPU cores.\n");
     sim->simulation(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симул€цию
   } else {
     printf("__inf__ : Simulation started using single CPU core.\n");
