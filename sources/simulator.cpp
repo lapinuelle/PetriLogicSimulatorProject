@@ -52,7 +52,7 @@ simulator::simulator() {
 
 
 
-void* routine(void *args) {
+void* routine_old(void *args) {
   someArgs_t *arg = (someArgs_t*)args;
   bool valueChanged = false;
   if (arg->stackSim->gatesChain[arg->busy]->repeat < 500) {                                             // стандартные операции алгоритма сетей Петри
@@ -97,6 +97,7 @@ THREAD_BEGIN:
     simulating[id]->operate();  
 
   // Закончили обработку данных - сами себе ставим статус ожидания новых данных и переходим в цикл ожидания while
+  simulating[id] = NULL;
   statuses[id] = ts_wait_for_data;
   goto THREAD_BEGIN;
 
@@ -208,9 +209,16 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
   args.resize(cores);                                                                                 // по количеству ядер
   simulating.resize(cores);
   statuses.resize(cores);
+  for (int i = 0; i < cores; i++)
+    statuses[i] = ts_wait_for_data;
   OpType.resize(cores);
-  //std::vector<std::thread> threads;
-  //threads.resize(cores);
+  std::vector<std::thread> threads;
+  threads.reserve(cores);
+
+  for (int i=0; i < cores; i++) {
+    std::thread th(routine, i);
+    threads.push_back(move(th));
+  }
   
   std::vector<std::vector<gate*>*> returned;                                                            // создаём вектор возвращённых вентилей
   returned.resize(cores);                                                                             // по количеству ядер
@@ -268,28 +276,45 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
             temp_free = stackSim->free + stackSize;
           else
             temp_free = stackSim->free;
+
           int index = stackSim->busy;
           while(index < temp_free) {                                          // момент времени t- в сети Петри
-            if (stackSim->gatesChain[stackSim->busy]->repeat < 500) {
+            if (stackSim->gatesChain[index % stackSize]->repeat < 500) {
               for(int y = 0; y < cores; y++) {
-                if (index == temp_free)
-                  break;
+                
                 if (statuses[y] == ts_wait_for_data) {
                   simulating[y] = stackSim->gatesChain[index % stackSize];
                   OpType[y] = t_minus;
                   statuses[y] = ts_work_on_data;
                   index++;
-                  //stackSim->gatesChain[index % stackSize]->t_minus();  
+                }
+                if (index == temp_free) {
+                  break;
                 }
               }
-              
+            }
+
+          }
+
+          bool can_continue = false;
+          while (!can_continue) {
+            for (int ix = 0; ix < cores; ix++) {
+              can_continue = true;
+              if (statuses[ix] == ts_work_on_data) {
+                can_continue = false;
+                break;
+              }
             }
           }
+
 
           for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
             if (stackSim->gatesChain[stackSim->busy]->repeat < 500)
               stackSim->gatesChain[index % stackSize]->operate();
           }
+
+
+
 
           for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t+ в сети Петри
             if (stackSim->gatesChain[stackSim->busy]->repeat < 500) {
@@ -315,6 +340,9 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
     wr.DumpVars(time);
   }
 
+  for (int i = 0; i < cores; i++) {
+    threads[i].join();
+  }
 
 
 }
