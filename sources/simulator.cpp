@@ -46,6 +46,7 @@ enum ThreadStatus {
 std::vector<ThreadStatus>  statuses;    // 2 потока - 2 статуса (для каждого)
 std::vector<gate*> simulating;
 std::vector<OperationType> OpType;
+netlist* netli;
 
 simulator::simulator() {
 }
@@ -74,7 +75,7 @@ void* routine_old(void *args) {
   return SUCCESS;
 }
 
-void routine(int id) {
+void routine(int id, stack *stackSim) {
   std::cout << "[ " << id << " ] : Entering thread" << std::endl;
 THREAD_BEGIN:
   std::cout << "[ " << id << " ] : Waiting..." << std::endl;
@@ -95,6 +96,21 @@ THREAD_BEGIN:
     simulating[id]->t_minus();  
   if(OpType[id] == t_zero)
     simulating[id]->operate();  
+  if(OpType[id] == t_plus) {
+    bool valueChanged = false;
+    if (simulating[id]->t_plus())
+      valueChanged = true;
+    simulating[id]->repeat++;                                                  // инкремент
+    if (valueChanged) {                                                                                 // если флаг назначен, то добавляем вентили, висящие на выходе узла в стек
+      for (size_t y = 0; y < simulating[id]->outs.size(); y++) {
+        std::vector <gate*> returned = netli->returnGate(simulating[id]->outs[y]);
+        if ((!returned.empty()) && (simulating[id]->repeat < 500))
+          for (size_t index = 0; index < returned.size(); index++)
+             stackSim->push_back(returned[index]);
+      }
+    }
+    stackSim->eject();
+  }
 
   // Закончили обработку данных - сами себе ставим статус ожидания новых данных и переходим в цикл ожидания while
   simulating[id] = NULL;
@@ -214,9 +230,10 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
   OpType.resize(cores);
   std::vector<std::thread> threads;
   threads.reserve(cores);
-
+  netli = netl;
+  stack *stackSim = new stack(stackSize);                                                             // стек моделирования
   for (int i=0; i < cores; i++) {
-    std::thread th(routine, i);
+    std::thread th(routine, i, stackSim);
     threads.push_back(move(th));
   }
   
@@ -230,7 +247,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
 
   std::string gateName;                                                                               // имя вентиля
   datawriter wr(simData->getVCDname().c_str());                                                                    // контейнер выходных данных
-  stack *stackSim = new stack(stackSize);                                                             // стек моделирования
+  //stack *stackSim = new stack(stackSize);                                                             // стек моделирования
   for (size_t i = 0; i < netl->nets.size(); i++)
     wr.AddDumpVar(netl->nets[i]);                                            // указываем контейнеру, значения каких узлов отслеживать
 
@@ -278,13 +295,29 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
             temp_free = stackSim->free;
 
           int index = stackSim->busy;
-          while(index < temp_free) {                                          // момент времени t- в сети Петри
-            if (stackSim->gatesChain[index % stackSize]->repeat < 500) {
+          //printf("%d | %d | %d | %d\n", stackSim->busy, temp_free, temp_free*2, (temp_free+(temp_free-stackSim->busy)*2));
+
+          while(index < (temp_free+(temp_free-stackSim->busy)*2)) {                                          // момент времени t- в сети Петри
+            OperationType oper;
+            if (index < temp_free)
+              oper = t_minus;
+            if ((index >= temp_free) && (index < (temp_free + (temp_free - stackSim->busy))))
+              oper = t_zero;
+            if (index >= (temp_free + (temp_free - stackSim->busy)))
+              oper = t_plus;
+            int temp_index;
+            if ((temp_free - stackSim->busy)!=0) {
+              temp_index = ((index - stackSim->busy) % (temp_free - stackSim->busy)) + stackSim->busy;
+            } else {
+              temp_index = index;
+            }
+            //printf(">>> %d | %d\n", index, temp_index);
+            if (stackSim->gatesChain[temp_index]->repeat < 500) {
               for(int y = 0; y < cores; y++) {
                 
                 if (statuses[y] == ts_wait_for_data) {
-                  simulating[y] = stackSim->gatesChain[index % stackSize];
-                  OpType[y] = t_minus;
+                  simulating[y] = stackSim->gatesChain[temp_index];
+                  OpType[y] = oper;
                   statuses[y] = ts_work_on_data;
                   index++;
                 }
@@ -293,30 +326,11 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
                 }
               }
             }
+            index++;
 
           }
 
-          bool can_continue = false;
-          while (!can_continue) {
-            for (int ix = 0; ix < cores; ix++) {
-              can_continue = true;
-              if (statuses[ix] == ts_work_on_data) {
-                can_continue = false;
-                break;
-              }
-            }
-          }
-
-
-          for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
-            if (stackSim->gatesChain[stackSim->busy]->repeat < 500)
-              stackSim->gatesChain[index % stackSize]->operate();
-          }
-
-
-
-
-          for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t+ в сети Петри
+          /*for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t+ в сети Петри
             if (stackSim->gatesChain[stackSim->busy]->repeat < 500) {
               bool valueChanged = false;
               if (stackSim->gatesChain[index % stackSize]->t_plus())
@@ -332,7 +346,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
               }
               stackSim->eject();
             }
-          }
+          }*/
         }
       }
     }
