@@ -35,6 +35,7 @@ enum OperationType {
   t_minus = 0,
   t_zero,
   t_plus,
+  t_none,
 };
 
 enum ThreadStatus {
@@ -46,6 +47,8 @@ enum ThreadStatus {
 std::vector<ThreadStatus>  statuses;    // 2 потока - 2 статуса (для каждого)
 std::vector<gate*> simulating;
 std::vector<OperationType> OpType;
+std::vector<OperationType> OpDone;
+std::vector<int> ranges;
 netlist* netli;
 
 simulator::simulator() {
@@ -226,10 +229,13 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
   simulating.resize(cores);
   statuses.resize(cores);
   for (int i = 0; i < cores; i++)
-    statuses[i] = ts_wait_for_data;
+    statuses[i] = ts_can_exit;
   OpType.resize(cores);
   std::vector<std::thread> threads;
   threads.reserve(cores);
+
+  ranges.resize(cores);
+
   netli = netl;
   stack *stackSim = new stack(stackSize);                                                             // стек моделирования
   for (int i=0; i < cores; i++) {
@@ -289,48 +295,41 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
         //
 
         while (stackSim->busy != stackSim->free) {                                                                // операции сетей Петри
+
           if (stackSim->busy > stackSim->free)                                                                    // назначаем временный указатель free, на случай, если free < busy
             temp_free = stackSim->free + stackSize;
           else
             temp_free = stackSim->free;
 
-          int index = stackSim->busy;
-          //printf("%d | %d | %d | %d\n", stackSim->busy, temp_free, temp_free*2, (temp_free+(temp_free-stackSim->busy)*2));
+          int stackFilled = temp_free - stackSim->busy;
 
-          while(index < (temp_free+(temp_free-stackSim->busy)*2)) {                                          // момент времени t- в сети Петри
-            OperationType oper;
-            if (index < temp_free)
-              oper = t_minus;
-            if ((index >= temp_free) && (index < (temp_free + (temp_free - stackSim->busy))))
-              oper = t_zero;
-            if (index >= (temp_free + (temp_free - stackSim->busy)))
-              oper = t_plus;
-            int temp_index;
-            if ((temp_free - stackSim->busy)!=0) {
-              temp_index = ((index - stackSim->busy) % (temp_free - stackSim->busy)) + stackSim->busy;
-            } else {
-              temp_index = index;
-            }
-            //printf(">>> %d | %d\n", index, temp_index);
-            if (stackSim->gatesChain[temp_index]->repeat < 500) {
-              for(int y = 0; y < cores; y++) {
-                
-                if (statuses[y] == ts_wait_for_data) {
-                  simulating[y] = stackSim->gatesChain[temp_index];
-                  OpType[y] = oper;
-                  statuses[y] = ts_work_on_data;
-                  index++;
-                }
-                if (index == temp_free) {
-                  break;
-                }
-              }
-            }
-            index++;
+          // раскидаем весь стек по потокам. Сами указатели не двигаем, передаём лишь интервалы
 
+          if (stackFilled < cores) {
+            for (int si = 0; si < stackFilled; si++) {
+              ranges[si] += 1;
+            }
+          } else {
+            int basicSize = (stackFilled-(stackFilled % cores)) / cores;
+            for (int si = 0; si < cores; si++) 
+              ranges[si] = basicSize;
+            int additSize = stackFilled % cores;
+            for (int si = 0; si < additSize; si++)
+              ranges[si] += 1;
           }
 
-          /*for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t+ в сети Петри
+
+          for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t- в сети Петри
+            if (stackSim->gatesChain[stackSim->busy]->repeat < 500) 
+              stackSim->gatesChain[index % stackSize]->t_minus();
+          }
+
+          for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
+            if (stackSim->gatesChain[stackSim->busy]->repeat < 500) 
+              stackSim->gatesChain[index % stackSize]->operate();
+          }
+
+          for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t+ в сети Петри
             if (stackSim->gatesChain[stackSim->busy]->repeat < 500) {
               bool valueChanged = false;
               if (stackSim->gatesChain[index % stackSize]->t_plus())
@@ -346,7 +345,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
               }
               stackSim->eject();
             }
-          }*/
+          }
         }
       }
     }
