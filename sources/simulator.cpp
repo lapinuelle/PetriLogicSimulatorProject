@@ -102,6 +102,7 @@ THREAD_BEGIN:
       mut.lock();
         deal++;
       mut.unlock();
+<<<<<<< HEAD
     }
   }
   if (OpType == t_zero) {
@@ -135,13 +136,53 @@ THREAD_BEGIN:
       mut.unlock();
     }
   }
+=======
+    }
+  }
+  if (OpType == t_zero) {
+    for (int i = starts[id]; i < ranges[id]; i++) {
+      printf("Thread [%d] -> operate : %s\n", id, stackSim->gatesChain[stackSim->busy + i]->name.c_str());
+      stackSim->gatesChain[stackSim->busy + i]->operate();
+      mut.lock();
+        deal++;
+      mut.unlock();
+    }
+  }
+  if (OpType == t_plus) {
+    for (int i = starts[id]; i < ranges[id]; i++) {
+      printf("Thread [%d] -> t_plus  : %s\n", id, stackSim->gatesChain[stackSim->busy + i]->name.c_str());
+      if (stackSim->gatesChain[stackSim->busy + i]->repeat < 500) {
+        bool valueChanged = false;
+        if (stackSim->gatesChain[stackSim->busy + i]->t_plus())
+          valueChanged = true;
+        stackSim->gatesChain[stackSim->busy + i]->repeat++;                                                  // инкремент
+        if (valueChanged) {                                                                                 // если флаг назначен, то добавл€ем вентили, вис€щие на выходе узла в стек
+          for (size_t y = 0; y < stackSim->gatesChain[stackSim->busy + i]->outs.size(); y++) {
+            std::vector <gate*> returned = netli->returnGate(stackSim->gatesChain[stackSim->busy + i]->outs[y]);
+            if ((!returned.empty()) && (stackSim->gatesChain[stackSim->busy + i]->repeat < 500))
+              for (size_t index = 0; index < returned.size(); index++)
+                stackSim->push_back(returned[index]);
+          }
+        }
+      }
+      mut.lock();
+      deal++;
+      mut.unlock();
+    }
+  }
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
   // «акончили обработку данных - сами себе ставим статус ожидани€ новых данных и переходим в цикл ожидани€ while
   statuses[id] = ts_wait_for_data;
   
   goto THREAD_BEGIN;
 
+<<<<<<< HEAD
 THREAD_END:;
   //std::cout << "[ " << id << " ] : Exiting thread!" << std::endl;
+=======
+THREAD_END:
+  std::cout << "[ " << id << " ] : Exiting thread!" << std::endl;
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
 }
 
 void simulator::simulation(netlist* netl, sim_data* simData, std::string filename, int stackSize) {
@@ -150,7 +191,11 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
   int time = 0;                                                                                       // непосредственно момент моделировани€
 
   int cores = getNumCores();                                                                          // получем количество €дер ÷ѕ в системе
+<<<<<<< HEAD
   //int cores = 4;
+=======
+  //int cores = 2;
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
   printf("__inf__ : Available cores: %d\n", cores);                                                   // выводим на экран
   std::vector<someArgs_t> args;                                                                       // создаЄм вектор аргументов
   args.resize(cores);                                                                                 // по количеству €дер
@@ -229,6 +274,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
           bool allEqual = false;
           for (int core = 0; core < cores; core++) {
             allEqual = ts_wait_for_data == statuses[core];
+<<<<<<< HEAD
             //BUG : ѕотенциальный кос€к! ј что, если [0] == false, а [1] == true?
             //SOLUTION:
             if(!allEqual)
@@ -236,6 +282,9 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
           }
           if (!allEqual)
             continue;
+=======
+          }
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
           if (stackSim->busy > stackSim->free)                                                                    // назначаем временный указатель free, на случай, если free < busy
             temp_free = stackSim->free + stackSize;
           else
@@ -243,7 +292,11 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
 
           int stackFilled = temp_free - stackSim->busy;
 
+<<<<<<< HEAD
          // if (allEqual) {
+=======
+          if (allEqual) {
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
 
             for (int core = 0; core < cores; core++) {
               starts[core] = 0;
@@ -252,6 +305,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
 
             // раскидаем весь стек по потокам. —ами указатели не двигаем, передаЄм лишь интервалы
             //starts[0] = 0;
+<<<<<<< HEAD
 
             if (stackFilled < cores) {
               for (int si = 1; si < stackFilled; si++) {
@@ -283,13 +337,41 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
                 ranges[si] += 1;
                 //if (si > 0)
                  //   ranges[si] += ranges[si-1];
+=======
+
+            if (stackFilled < cores) {
+              for (int si = 0; si < stackFilled; si++) {
+                ranges[si] += 1;
+              }
+              for (int si = 1; si < stackFilled; si++) {
+                starts[si] = ranges[si - 1];
+              }
+            } else {
+              int basicSize = (stackFilled-(stackFilled % cores)) / cores;
+              for (int si = 0; si < cores; si++) {
+                ranges[si] = basicSize;
+                if (si > 0)
+                  ranges[si] += ranges[si-1];
+              }
+
+              int additSize = stackFilled % cores;
+              for (int si = 0; si < additSize; si++) {
+                ranges[si] += 1;
+                if (si > 0)
+                    ranges[si] += ranges[si-1];
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
               }
               for (int si = 1; si < cores; si++) {
                 starts[si] = ranges[si - 1];
               }
+<<<<<<< HEAD
               */
             }
           //}
+=======
+            }
+          }
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
           
 
           if (allEqual && (deal == tempSize * 4)) {
@@ -298,28 +380,41 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
             OpType = t_minus;
             for (int core = 0; core < cores; core++)
               statuses[core] = ts_work_on_data;
+<<<<<<< HEAD
             // ???
             continue;
+=======
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
           }
 
           if (allEqual && (deal == tempSize)) {
             OpType = t_zero;
             for (int core = 0; core < cores; core++)
               statuses[core] = ts_work_on_data;
+<<<<<<< HEAD
             // ???
             continue;
+=======
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
           }
           if (allEqual && (deal == tempSize * 2)) {
             OpType = t_plus;
             for (int core = 0; core < cores; core++)
               statuses[core] = ts_work_on_data;
+<<<<<<< HEAD
             // ???
             continue;
+=======
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
           }
 
           if (allEqual && (deal == tempSize * 3)) {
             for (int ind = 0; ind < tempSize; ind++) {
+<<<<<<< HEAD
              printf("Thread [%d] -> eject   : %s\n", ind, stackSim->gatesChain[stackSim->busy]->name.c_str());
+=======
+              printf("Thread [m] -> eject   : %s\n", stackSim->gatesChain[stackSim->busy]->name.c_str());
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
               stackSim->eject();
 
               deal++;
@@ -328,9 +423,13 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
               starts[core] = 0;
               ranges[core] = 0;
             }
+<<<<<<< HEAD
             // ???
             continue;
           }
+=======
+          } 
+>>>>>>> 58df0cc0bddea74ca1a696bda5510dcf76a46b98
           
           
           /*
