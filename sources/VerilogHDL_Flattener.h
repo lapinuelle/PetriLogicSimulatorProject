@@ -26,7 +26,8 @@ public:
 class ML_Instance : public ModuleLine {
 public:
   std::string               name,
-                            type;
+                            type,
+                            delay;
   std::vector<std::string>  nodes;
 public:
   ML_Instance() : ModuleLine(mlt_instance), name(""), type("") {};

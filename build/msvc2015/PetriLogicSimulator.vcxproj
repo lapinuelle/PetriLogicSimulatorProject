@@ -70,7 +70,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -107,7 +107,6 @@
     <ClInclude Include="..\..\sources\event.h" />
     <ClInclude Include="..\..\sources\gates.h" />
     <ClInclude Include="..\..\sources\logiclevel.h" />
-    <ClInclude Include="..\..\sources\module.h" />
     <ClInclude Include="..\..\sources\netlist.h" />
     <ClInclude Include="..\..\sources\netlistreader.h" />
     <ClInclude Include="..\..\sources\nets.h" />

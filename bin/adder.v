@@ -1,3 +1,5 @@
+// -i adder.v -r tb_FADD -s 20 -multicore
+
 //                   _____
 //  A   o------+----| XOR |--        
 //             |    |     | |          _____
@@ -18,8 +20,8 @@ module FADDER(A, B, Cin, SUM, Cout);
   input   A, B, Cin;
   output  SUM, Cout;
   
-  xor i1(n1, A, B);
-  xor i2(SUM, n1, Cin);
+  xor #1 i1(n1, A, B);
+  xor #1 i2(SUM, n1, Cin);
   
   and i3(n2, n1, Cin);
   and i4(n3, A, B);
@@ -29,9 +31,17 @@ endmodule
 module tb_FADD();
 
   reg A, B, Cin;
-  wire SUM, Cout;
+  wire SUM1, Cout1;
+  wire SUM2, Cout2;
+  wire SUM3, Cout3;
+  wire SUM4, Cout4;
+  wire SUM5, Cout5;
 	
-  FADDER i(A, B, Cin, SUM, Cout);
+  FADDER i1(A, B, Cin, SUM1, Cout1);
+  FADDER i2(A, B, Cin, SUM2, Cout2);
+  FADDER i3(A, B, Cin, SUM3, Cout3);
+  FADDER i4(A, B, Cin, SUM4, Cout4);
+  FADDER i5(A, B, Cin, SUM5, Cout5);
 
   initial 
   begin
@@ -51,7 +61,7 @@ module tb_FADD();
     #10   A=0;
     #0    B=1;
     #10   A=1;
-    $finish
+    $finish;
   end
   
 endmodule

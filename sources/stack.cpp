@@ -31,6 +31,28 @@ void stack::push_back(gate* gate) {
   }
 }
 
+void stack::push_back(std::vector<gate *> &gates) {
+/*
+  if ((free != busy)) {
+    if (busy == -1) {
+      busy = 0;
+    }
+    gatesChain[free] = gate;
+    if (free < (int)gatesChain.size()) {
+      free++;
+    }
+    if (free == (int)gatesChain.size()) {
+      free = 0;
+    }
+
+  }
+  else {
+    printf("__err__ : Stack overload.\n\n");
+    exit(0);
+  }
+  */
+}
+
 void stack::eject() {
   if (busy < (int)gatesChain.size()) {
     busy++;

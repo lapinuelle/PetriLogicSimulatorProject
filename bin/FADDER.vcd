@@ -1,0 +1,73 @@
+$date
+	Tue Nov 29 11:29:34 2016
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module tb_FADD $end
+$var wire 1 ! SUM $end
+$var wire 1 " Cout $end
+$var reg 1 # A $end
+$var reg 1 $ B $end
+$var reg 1 % Cin $end
+$scope module i $end
+$var wire 1 # A $end
+$var wire 1 $ B $end
+$var wire 1 % Cin $end
+$var wire 1 " Cout $end
+$var wire 1 ! SUM $end
+$var wire 1 & n1 $end
+$var wire 1 ' n2 $end
+$var wire 1 ( n3 $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+0(
+0'
+0&
+0%
+0$
+0#
+0"
+0!
+$end
+#10
+1!
+1&
+1#
+#20
+1$
+0#
+#30
+0!
+1"
+0&
+1(
+1#
+#40
+0"
+0(
+1!
+0$
+0#
+1%
+#50
+1"
+0!
+1'
+1&
+1#
+#60
+1$
+0#
+#70
+1!
+0'
+0&
+1(
+1#

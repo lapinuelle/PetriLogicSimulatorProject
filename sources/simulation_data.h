@@ -8,6 +8,7 @@
 #include <string>
 #include "event.h"
 #include "stack.h"
+#include <map>
 
 class sim_data {
 public:
@@ -19,6 +20,16 @@ public:
   // new data
   std::vector <Event> eventChain;
   Event* addEvent(int time, net* net, LogicLevel state);
+
+  // map data
+  int endTime;
+  std::map<int, Event*> newEventChain;
+  Event* addMapEvent(int time, net* net, LogicLevel state);
+  Event* addMapEvent(int time, net* net, LogicLevel state, bool delayedState);
+
+
+  // end of map data
+
 
   sim_data();
   void setVCDname(std::string name);
