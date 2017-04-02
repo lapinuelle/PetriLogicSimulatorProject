@@ -15,21 +15,13 @@ public:
   int *repeat;
   int delay;
   // methods
-  virtual void t_minus();
+  void t_minus();
   void setDelay(int delay);
   virtual void operate()=0;
-  virtual bool t_plus();
+  bool t_plus();
   virtual bool postprocess() = 0;
 public:
   virtual ~gate() {};
-};
-
-class gate_beh: public gate {
-public:
-  gate_beh(std::string nameFile);
-  void t_minus();
-  void operate();
-  bool t_plus();
 };
 
 class gate_not: public gate{

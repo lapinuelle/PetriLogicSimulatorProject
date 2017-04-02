@@ -100,7 +100,6 @@
     <ClCompile Include="..\..\sources\simulation_data.cpp" />
     <ClCompile Include="..\..\sources\simulator.cpp" />
     <ClCompile Include="..\..\sources\stack.cpp" />
-    <ClCompile Include="..\..\sources\VerilogHDL_Flattener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\datawriter.h" />
@@ -114,7 +113,6 @@
     <ClInclude Include="..\..\sources\simulation_data.h" />
     <ClInclude Include="..\..\sources\simulator.h" />
     <ClInclude Include="..\..\sources\stack.h" />
-    <ClInclude Include="..\..\sources\VerilogHDL_Flattener.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

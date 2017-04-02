@@ -105,7 +105,7 @@ THREAD_END:
   ;
 }
 
-void simulator::simulation(netlist* netl, sim_data* simData, std::string filename, int stackSize) {
+void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
   int cores = getNumCores();
   //int cores = 4;
   printf("          Number of threads will be used: %d\n", cores);
@@ -274,7 +274,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, std::string filenam
   delete stackSim;
 }
 
-void simulator::simulation_stack(netlist* netl, sim_data* simData, std::string filename, int stackSize) {
+void simulator::simulation_stack(netlist* netl, sim_data* simData, int stackSize) {
   // две переменные ниже задал с заделом на будущее, ибо в симуляторе можно будет выбирать, какой временной участок промоделировать (типа как в Active HDL)
   printf("          Single thread will be used.\n");
                                                                                                       // размер стека
@@ -302,14 +302,14 @@ void simulator::simulation_stack(netlist* netl, sim_data* simData, std::string f
 
       // присваиваем новые входные воздействия из тестбенча портам
       
-      for (int i = 0; i < simData->newEventChain[time]->netsChain.size(); ++i) {
+      for (size_t i = 0; i < simData->newEventChain[time]->netsChain.size(); ++i) {
         if (simData->newEventChain[time]->delayed[i]) {
           bool stateChanged = false;
           Event* eventCh = simData->newEventChain.find(time)->second;
           std::string assignNet = eventCh->netsChain[i]->name;
           std::vector<net*> evInputs = eventCh->inputStates.find(assignNet)->second;
           std::vector<LogicLevel> evInputsValues = eventCh->inputStatesValues.find(assignNet)->second;
-          for (int inp = 0; inp < evInputs.size(); inp++) {
+          for (size_t inp = 0; inp < evInputs.size(); inp++) {
             if (evInputs[inp]->value != evInputsValues[inp]) {
               stateChanged = true;
               break;
@@ -363,11 +363,11 @@ void simulator::simulation_stack(netlist* netl, sim_data* simData, std::string f
                 }
               }
             } else {
-              for (int outst = 0; outst < stackSim->gatesChain[index % stackSize]->outs.size(); outst++) {
+              for (size_t outst = 0; outst < stackSim->gatesChain[index % stackSize]->outs.size(); outst++) {
                 if (stackSim->gatesChain[index % stackSize]->outs[outst]->value != stackSim->gatesChain[index % stackSize]->outs_temp[outst]) {
                   Event *ev = (simData->addMapEvent(time + stackSim->gatesChain[index % stackSize]->delay, stackSim->gatesChain[index % stackSize]->outs[outst], stackSim->gatesChain[index % stackSize]->outs_temp[outst], true));
                   //ev->delayed.push_back(true);
-                  for (int ins = 0; ins < stackSim->gatesChain[index % stackSize]->ins.size(); ins++) {
+                  for (size_t ins = 0; ins < stackSim->gatesChain[index % stackSize]->ins.size(); ins++) {
                     (ev->inputStates[stackSim->gatesChain[index % stackSize]->outs[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->ins[ins]);
                     (ev->inputStatesValues[stackSim->gatesChain[index % stackSize]->outs[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->ins[ins]->value);
                   }

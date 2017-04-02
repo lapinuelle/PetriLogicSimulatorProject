@@ -4,9 +4,9 @@
 #include "netlistreader.h"
 #include "simulator.h"
 #include "simulation_data.h"
-#include "VerilogHDL_Flattener.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define DEBUG_MEASURE_TIME
 
@@ -21,6 +21,7 @@
 0.0.5 - чтение иерархии и преобразование в плоский нетлист
 0.0.6 - распараллеливание на ядрах CPU с использованием POSIX Threads
         Включается параметром -multicore
+0.0.7 - Нормальная читалка иерархии, читается уровень вложенности > 1
 *************************************************/
 
 int main(int argc, char *argv[]) {
@@ -36,7 +37,6 @@ int main(int argc, char *argv[]) {
   simulator* sim = new simulator;
   int stackSize = 20;																							        // размер стека
   std::string rootModule = "root";																				// имя модуля верхнего уровня
-  VerilogHDL_Flattener vnf;
   bool multiCore = false;
 
 																												                  // Чтение аргументов командной строки
@@ -61,29 +61,12 @@ int main(int argc, char *argv[]) {
   clock_t B = clock();
 #endif
 
-  //*
-  if (!vnf.Read(filename, rootModule)) {
-    goto EXIT_POINT;
-  }
-  //*/
-                                                                          // чтение нетлиста
-  p_reader = get_appropriate_reader(vnf.GetFlatFileName());
+  p_reader = get_appropriate_reader(filename);
   if(!p_reader) 
     goto EXIT_POINT;
-  if(!p_reader->read(netl, simul_data))
+  if(!p_reader->read(netl, simul_data, rootModule))
     goto EXIT_POINT;
 
-  // Удаляем временный файл, если он был создан
-  /*
-  if(vnf.GetFlatFileName() != filename) {
-	if(!remove(vnf.GetFlatFileName().c_str())) {
-		printf("__sys__ : Temporary flat file [%s] was removed.\n",vnf.GetFlatFileName().c_str());
-	} else {
-		printf("__err__ : Can't remove flat file [%s].\n", vnf.GetFlatFileName().c_str());
-	}
-  }
-  */
-  
 #if defined DEBUG_MEASURE_TIME
   clock_t C = clock();
 #endif
@@ -91,10 +74,10 @@ int main(int argc, char *argv[]) {
   
   if (multiCore) {
     printf("__inf__ : Simulation started using multi CPU cores.\n");
-    sim->simulation(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симуляцию
+    sim->simulation(netl, simul_data, stackSize);           // проводим симуляцию
   } else {
     printf("__inf__ : Simulation started using single CPU core.\n");
-    sim->simulation_stack(netl, simul_data, vnf.GetFlatFileName(), stackSize);           // проводим симуляцию
+    sim->simulation_stack(netl, simul_data, stackSize);           // проводим симуляцию
   }
   
   delete sim;                                                             // удаляем объект

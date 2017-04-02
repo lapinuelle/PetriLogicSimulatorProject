@@ -51,7 +51,7 @@ bool netlistreader_verilog::tokenize() {
       ++token_no;
       tk.line = line_no;
       tk.pos = token_no;
-      pos = line.find_first_of(" \t\n\"()+-*/=.,[]{}#@!~;");
+      pos = line.find_first_of(" \t\n\"()+-*/=.,[]{}#@!~;`");
       if(pos == std::string::npos) {
         tk.item = line;
         tokens.push_back(tk);
@@ -69,6 +69,7 @@ bool netlistreader_verilog::tokenize() {
     }
   }
   fclose(p_file);
+  tokens.pop_back();
   
   // Find composite operands
   for(size_t i = 0; i < tokens.size() - 1; ++i) {
@@ -120,10 +121,14 @@ bool netlistreader_verilog::tokenize() {
       line_no = tokens[i].line;
       while(tokens[i].line == line_no && i <= tokens.size())
         tokens.erase(tokens.begin() + i);
+      --i;
+      continue;
     }
     if(tokens[i].item == "/*") {
       while(tokens[i].item != "*/" && i <= tokens.size())
         tokens.erase(tokens.begin() + i);
+      --i;
+      continue;
     }
   }
   
