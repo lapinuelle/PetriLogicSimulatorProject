@@ -1,3 +1,5 @@
+// -i adder_02.v -r tb_FADD -s 20 -multicore
+
 module FADDER(A, B, Cin, SUM, Cout);
   input   A, B, Cin;
   output  SUM, Cout;

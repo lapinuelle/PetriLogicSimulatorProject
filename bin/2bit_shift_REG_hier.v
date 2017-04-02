@@ -1,3 +1,4 @@
+// -i 2bit_shift_REG_hier.v -r DFF_test -s 20 -multicore
 module dff(D, C, Q, nQ);
   input D, C;
   output Q, nQ;
@@ -31,6 +32,8 @@ module DFF_test ();
 
   initial 
   begin
+    $dumpfile("2bit_shift_REG_hier.vcd");
+    $dumpvars;
     #0    D=0;
     #0    C=0;
     #10   C=1;
@@ -45,6 +48,7 @@ module DFF_test ();
     #25   C=1;
     #10   C=0;
     #0   D=0;
+    $finish;
   end
   
 endmodule

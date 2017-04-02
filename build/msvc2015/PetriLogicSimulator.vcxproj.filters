@@ -68,9 +68,6 @@
     <ClInclude Include="..\..\sources\logiclevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\sources\netlist.h">
       <Filter>Header Files</Filter>
     </ClInclude>

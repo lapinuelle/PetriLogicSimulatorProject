@@ -13,6 +13,8 @@ public:
   std::string name;
   LogicLevel value;
   char type;
+  char stability;
+  int delay;
   std::vector<gate *>  gates;
   net(const std::string &net_name);
 };

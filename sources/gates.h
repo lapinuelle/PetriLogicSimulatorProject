@@ -12,14 +12,24 @@ public:
   std::vector <net*> outs;
   std::vector<LogicLevel> outs_temp;
   std::string name;
-  int repeat;
+  int *repeat;
+  int delay;
   // methods
-  void t_minus();
+  virtual void t_minus();
+  void setDelay(int delay);
   virtual void operate()=0;
-  bool t_plus();
+  virtual bool t_plus();
   virtual bool postprocess() = 0;
 public:
   virtual ~gate() {};
+};
+
+class gate_beh: public gate {
+public:
+  gate_beh(std::string nameFile);
+  void t_minus();
+  void operate();
+  bool t_plus();
 };
 
 class gate_not: public gate{

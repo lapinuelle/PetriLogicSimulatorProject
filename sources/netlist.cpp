@@ -8,7 +8,7 @@
 #include <list>
 
 
-netlist::netlist() {
+netlist::netlist() : repeats(NULL) {
 }
 
 netlist::~netlist() {
@@ -19,6 +19,11 @@ netlist::~netlist() {
   for (size_t i = 0; i < this->gates.size(); ++i)
     delete this->gates[i];
 	this->gates.erase(this->gates.begin(), this->gates.end());
+
+  if (repeats) {
+    delete [] repeats;
+    repeats = NULL;
+  }
 }
 
 net* netlist::addNet(const std::string &net_name, gate *gate) {
@@ -59,8 +64,9 @@ net* netlist::returnNet(std::string netName) {
 }
 
 
-std::vector<gate*> netlist::returnGate(net* net) {									// возвращает gate, у которого данный net на входе
-	std::vector <gate*> returned;
+std::vector<gate*> &netlist::returnGate(net* net) {									// возвращает gate, у которого данный net на входе
+	/*
+  std::vector <gate*> returned;
 	for (size_t i = 0; i < gates.size(); i++) {
     for (size_t j = 0; j < gates[i]->ins.size(); j++) {
       if (net->name == this->gates[i]->ins[j]->name) {
@@ -69,6 +75,8 @@ std::vector<gate*> netlist::returnGate(net* net) {									// возвращает gate, у
     }
   }
   return returned;
+  //*/
+  return net->gates;
 }
 
 

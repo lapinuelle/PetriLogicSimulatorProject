@@ -1,3 +1,5 @@
+// -i trig_DLatch.v -r dlatch -s 20 -multicore
+
 module dlatch(D, E, Q, nQ);
   input S, R;
   output Q, nQ;
@@ -9,6 +11,8 @@ module dlatch(D, E, Q, nQ);
   nor nor2(Q, net2, nQ);
   
   initial begin
+  $dumpfile("trig_DLatch.vcd");
+  $dumpvars;
   #0    D=0;
   #0    E=0;
   #10   E=1;
@@ -21,7 +25,7 @@ module dlatch(D, E, Q, nQ);
   #5   D=1;
   #5   E=0;
   #30   D=0;
-  
+  $finish;
   end
   
 endmodule

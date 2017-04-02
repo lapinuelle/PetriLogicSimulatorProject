@@ -15,10 +15,11 @@ class netlist {
 public:
   std::vector <net*> nets;
   std::vector <gate*> gates;
+  int *repeats;
   //std::vector <>
   net *addNet(const std::string &net_name, gate *gate);
   net* returnNet(std::string netName);
-  std::vector<gate*> returnGate(net* net);
+  std::vector<gate*> &returnGate(net* net);
   void addGate(gate* gate);
 	void connectNG();
   int neededSteps;

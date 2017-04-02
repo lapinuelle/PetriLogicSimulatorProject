@@ -1,3 +1,5 @@
+// -i shifter_2_bits.v -r shifter -s 20 -multicore
+
 module shifter(D, C, Q0, Q1);
   input D, C;
   output Q0, Q1;
@@ -27,6 +29,8 @@ module shifter(D, C, Q0, Q1);
   //---------- end level 1 ---
 
   initial begin
+  $dumpfile("shifter_2_bits.vcd");
+  $dumpvars;
   #0    D=0;
   #0    C=0;
   #10   C=1;
@@ -45,5 +49,6 @@ module shifter(D, C, Q0, Q1);
   #2   C=0;
   #8   C=1;
   #2   C=0;
+  $finish;
   end
 endmodule

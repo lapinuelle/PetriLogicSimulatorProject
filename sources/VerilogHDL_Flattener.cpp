@@ -295,6 +295,38 @@ bool VerilogHDL_Flattener::ParseModules(std::string root_module_name) {
         ++i;
         continue;
       }
+
+      // This is a very simple and primitive way to detect RTL description
+      if (tokens[i + 1].item == "#") {
+        p_line = new ML_Instance;
+        p_module->typed_lines.push_back(p_line);
+        
+        ((ML_Instance *)p_line)->type = tokens[i++].item;
+        i++;
+        ((ML_Instance *)p_line)->delay = tokens[i++].item;
+        ((ML_Instance *)p_line)->name = tokens[i++].item;
+        //++i; // (
+        while (tokens[++i].item != ";") {
+          ((ML_Instance *)p_line)->nodes.push_back(tokens[i++].item);
+        }
+        ++i;
+        continue;
+      }
+
+      /*
+      // This RTL comes without names, just logic operators not, or, ...
+      if (tokens[i + 1].item == "(") {
+        p_line = new ML_Instance;
+        p_module->typed_lines.push_back(p_line);
+
+        ((ML_Instance *)p_line)->type = tokens[i++].item;
+        //++i; // (
+        while (tokens[++i].item != ";") {
+          ((ML_Instance *)p_line)->nodes.push_back(tokens[i++].item);
+        }
+        ++i;
+        continue;
+      } */
     }  // if >> endmodule
   }
   if (modules.size() == 1) {
@@ -343,6 +375,7 @@ bool VerilogHDL_Flattener::MakeTheBiggestJobEver(std::string root_module_name) {
           i_inst = std::string::npos;
 
   std::string instance_type;
+  std::string delay;
 
   for (size_t i = 0; i < modules.size(); ++i) {
     if (modules[i]->module_name == root_module_name) {
@@ -357,6 +390,7 @@ bool VerilogHDL_Flattener::MakeTheBiggestJobEver(std::string root_module_name) {
       return false;
     
     // If it's RTL module - no need to convert hiererchy, just skip the line
+    delay = ((ML_Instance *)modules[i_root]->typed_lines[i])->delay;
     instance_type = ((ML_Instance *)modules[i_root]->typed_lines[i])->type;
     if(instance_type == "not" || instance_type == "or" || instance_type == "and" || instance_type == "nor" || instance_type == "nand" || instance_type == "xor")
       continue;
@@ -378,6 +412,7 @@ bool VerilogHDL_Flattener::MakeTheBiggestJobEver(std::string root_module_name) {
         modules[i_root]->typed_lines.push_back(p_inst);
         
         p_inst->type = ((ML_Instance *)modules[i_inst]->typed_lines[j])->type;
+        p_inst->delay = ((ML_Instance *)modules[i_inst]->typed_lines[j])->delay;
         p_inst->name = ((ML_Instance *)modules[i_root]->typed_lines[i])->name + std::string("_") + ((ML_Instance *)modules[i_inst]->typed_lines[j])->name;
         
         for(size_t k = 0; k < ((ML_Instance *)modules[i_inst]->typed_lines[j])->nodes.size(); ++k) {
@@ -454,9 +489,15 @@ bool VerilogHDL_Flattener::Dump(std::string file_name, std::string root_module_n
   for(size_t i = 0; i < modules[i_root]->typed_lines.size(); ++i) {
     p_inst = (ML_Instance *)modules[i_root]->typed_lines[i];
     if(p_inst->name.empty())
-      fprintf(p_file, "  %s(", p_inst->type.c_str());
+      if(p_inst->delay.empty())
+        fprintf(p_file, "  %s(", p_inst->type.c_str());
+      else
+        fprintf(p_file, "  %s #%s(", p_inst->type.c_str(), p_inst->delay.c_str());
     else
-      fprintf(p_file, "  %s %s(", p_inst->type.c_str(), p_inst->name.c_str());
+      if (p_inst->delay.empty())
+        fprintf(p_file, "  %s %s(", p_inst->type.c_str(), p_inst->name.c_str());
+      else
+        fprintf(p_file, "  %s #%s %s(", p_inst->type.c_str(), p_inst->delay.c_str(), p_inst->name.c_str());
     
     for(size_t j = 0; j < p_inst->nodes.size(); ++j) {
       if(!j)

@@ -5,4 +5,6 @@
 #include "gates.h"
 #include "event.h"
 
-Event::Event(){};
+Event::Event(){
+  
+};

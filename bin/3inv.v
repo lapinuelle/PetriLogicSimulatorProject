@@ -1,3 +1,4 @@
+// -i 3inv.v -r 3invertors -s 20 -multicore
 module 3invertors (in, out);
 
 	input in;
@@ -9,10 +10,13 @@ module 3invertors (in, out);
 	not not3(out, inv2);
 	
 	initial begin
+    $dumpfile("3inv.vcd");
+    $dumpvars;
 		#0 in = 0;
 		#5 in = 1;
 		#7 in = 0;
 		#20 in = 1;
+    $finish;
 	end 
 
 endmodule
