@@ -25,6 +25,14 @@ public:
   virtual ~gate() {};
 };
 
+class gate_beh: public gate {
+public:
+  gate_beh(std::string nameFile);
+  void t_minus();
+  void operate();
+  bool t_plus();
+};
+
 class gate_not: public gate{
 public:
   gate_not(std::string nameFile);

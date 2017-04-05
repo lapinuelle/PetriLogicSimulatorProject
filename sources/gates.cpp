@@ -4,6 +4,7 @@
 void gate::setDelay(int extDelay) {
   delay = extDelay;
 }
+
 //methods for Petri
 void gate::t_minus() {
     for(size_t i =0 ; i < ins.size(); ++i)
@@ -21,15 +22,50 @@ bool gate::t_plus() {
     return changed;
   }
 
+
+// BEH Gate
+
+gate_beh::gate_beh(std::string nameFile) {
+    name = nameFile;
+  }
+
+void gate_beh::t_minus() {
+    for (size_t i = 0; i < ins.size(); ++i) {
+      if (((ins[i]->value == level_0) || (ins[i]->value == level_u)) && (ins_temp[i] == level_1))
+        ins[i]->stability = '/';
+      if (((ins[i]->value == level_1) || (ins[i]->value == level_u)) && (ins_temp[i] == level_0))
+        ins[i]->stability = '\\';
+    ins_temp[i] = ins[i]->value;
+    }
+  }
+
+bool gate_beh::t_plus() {
+  ++(*repeat);
+  bool changed = false;
+    for(size_t i = 0; i < ins.size(); ++i)
+      ins[i]->stability = '_';
+    for(size_t i = 0; i < outs.size(); ++i)
+      if (outs[i]->value != outs_temp[i]) {
+        outs[i]->value = outs_temp[i];
+        changed = true;
+      }
+    return changed;
+  }
+
+void gate_beh::operate() {
+  NULL;
+}
+
+
 // Inverter
 
 gate_not::gate_not(std::string nameFile) {
     name = nameFile;
     ins.reserve(1);
     outs.reserve(1);
-    //ins_temp.resize(ins.capacity());
-    //outs_temp.resize(outs.capacity());
   }
+
+
 
 void gate_not::operate() {
   outs_temp[0] = ! ins_temp[0];
@@ -51,8 +87,6 @@ gate_buf::gate_buf(std::string nameFile) {
     name = nameFile;
     ins.reserve(1);
     outs.reserve(1);
-    //ins_temp.resize(ins.capacity());
-    //outs_temp.resize(outs.capacity());
   }
 
 void gate_buf::operate() {
@@ -72,11 +106,8 @@ bool gate_buf::postprocess() {
 // AND-gate
 
 gate_and::gate_and(std::string nameFile) {
-    //ins.reserve(2);
     outs.reserve(1);
     name=nameFile;
-    //ins_temp.resize(ins.capacity());
-    //outs_temp.resize(outs.capacity());
   }
 
 void gate_and::operate() {
@@ -99,11 +130,8 @@ bool gate_and::postprocess() {
 // OR-gate
 
 gate_or::gate_or(std::string nameFile) {
-    //ins.reserve(2);
     outs.reserve(1);
     name=nameFile;
-    //ins_temp.resize(ins.capacity());
-    //outs_temp.resize(outs.capacity());
   }
 
 void gate_or::operate() {
@@ -126,11 +154,8 @@ bool gate_or::postprocess() {
 // NAND-gate
 
 gate_nand::gate_nand(std::string nameFile) {
-    //ins.reserve(2);
     outs.reserve(1);
     name=nameFile;
-    //ins_temp.resize(ins.capacity());
-    //outs_temp.resize(outs.capacity());
   }
 
 void gate_nand::operate() {
@@ -153,11 +178,8 @@ bool gate_nand::postprocess() {
 // NOR-gate
 
 gate_nor::gate_nor(std::string nameFile) {
-    //ins.reserve(2);
     outs.reserve(1);
     name=nameFile;
-    //ins_temp.resize(ins.capacity());
-    //outs_temp.resize(outs.capacity());
   }
 
 void gate_nor::operate() {
@@ -180,11 +202,8 @@ bool gate_nor::postprocess() {
 // XOR-gate
 
 gate_xor::gate_xor(std::string nameFile) {
-    //ins.reserve(2);
     outs.reserve(1);
     name=nameFile;
-    //ins_temp.resize(ins.capacity());
-    //outs_temp.resize(outs.capacity());
   }
 
 void gate_xor::operate() {
@@ -207,11 +226,8 @@ bool gate_xor::postprocess() {
 // XNOR-gate
 
 gate_xnor::gate_xnor(std::string nameFile) {
-    //ins.reserve(2);
     outs.reserve(1);
     name=nameFile;
-    //ins_temp.resize(ins.capacity());
-    //outs_temp.resize(outs.capacity());
   }
 
 void gate_xnor::operate() {
