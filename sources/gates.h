@@ -5,20 +5,21 @@
 #include <vector>
 #include "nets.h"
 
+
 class gate {
 public:
-  std::vector <net*> ins;
-  std::vector<LogicLevel> ins_temp;
-  std::vector <net*> outs;
-  std::vector<LogicLevel> outs_temp;
-  std::string name;
-  int *repeat;
-  int delay;
+  std::vector <net*> ins;               ///< Входы вентиля
+  std::vector<LogicLevel> ins_temp;     ///< Временные (внутренние) входы для переноса меток
+  std::vector <net*> outs;              ///< Выходы вентиля
+  std::vector<LogicLevel> outs_temp;    ///< Временные (внутренние) выходы для переноса меток
+  std::string name;                     ///< Имя вентиля
+  int *repeat;                          ///< Количество повторений моделирования вентиля в конкретный момент времени
+  int delay;                            ///< Задержка вентиля
   // methods
-  void t_minus();
-  void setDelay(int delay);
-  virtual void operate()=0;
-  bool t_plus();
+  void t_minus();                       ///< Момент сети Петри t_minus
+  void setDelay(int delay);             ///< Функция, задающая задержку вентиля
+  virtual void operate()=0;             ///< Момент сети Петри t_0
+  bool t_plus();                        
   virtual bool postprocess() = 0;
 public:
   virtual ~gate() {};

@@ -10,14 +10,14 @@
 
 class stack {
 public:
-  std::vector <gate*> gatesChain;                 // стек
-  int free;                                       // первый свободный
-  int busy;                                       // первый занятый
-  int size;                                       // размер стека
-  void push_back(gate* gate);                     // добавление вентиля в стек на позицию free 1
-  void push_back(std::vector <gate*> &);          // добавление вентиля в стек на позицию free 2
-  void eject();                                   // "извлечение" вентиля из стека. Значенте busy++
-  void reset();                                   // сброс стека
+  std::vector <gate*> gatesChain;                 ///< Стек
+  int free;                                       ///< Первый свободный
+  int busy;                                       ///< Первый занятый
+  int size;                                       ///< Размер стека
+  void push_back(gate* gate);                     ///< Добавление вентиля в стек на позицию free 1
+  void push_back(std::vector <gate*> &);          ///< Добавление вентиля в стек на позицию free 2
+  void eject();                                   ///< "Извлечение" вентиля из стека. Значенте busy++
+  void reset();                                   ///< Сброс стека
   stack(int size);
   ~stack();
 };
