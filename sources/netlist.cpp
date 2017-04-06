@@ -83,3 +83,7 @@ std::vector<gate*> &netlist::returnGate(net* net) {									// возвращает gate, 
 void netlist::addGate(gate* gate) {
   this->gates.push_back(gate);
 }
+
+void netlist::addGateMap(gate* gate) {
+  this->gatesMap[gate->name] = gate;
+}

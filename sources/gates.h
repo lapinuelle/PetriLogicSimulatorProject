@@ -5,7 +5,6 @@
 #include <vector>
 #include "nets.h"
 
-
 class gate {
 public:
   std::vector <net*> ins;               ///< ¬ходы вентил€

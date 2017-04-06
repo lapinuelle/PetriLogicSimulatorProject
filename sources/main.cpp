@@ -11,21 +11,22 @@
 #define DEBUG_MEASURE_TIME
 
 /******* Info about version naming history ******
-0.0.1 - первая, хоть как-то работающая версия симулятора, пока только gate level
-0.0.2 - перешли на нетлиcты в формате Verilog HDL
-0.0.3 - введён стек моделирования, значительно улучшено быстродействие
-0.0.4 - размер стека и модуль верхнего уровня задаются параметрами командной строки
+0.0.1 - Первая, хоть как-то работающая версия симулятора, пока только gate level
+0.0.2 - Перешли на нетлиcты в формате Verilog HDL
+0.0.3 - Введён стек моделирования, значительно улучшено быстродействие
+0.0.4 - Размер стека и модуль верхнего уровня задаются параметрами командной строки
 	      -s <размер_стека>
 	      -r <название_модуля>
 	      -i <входной_файл>
-0.0.5 - чтение иерархии и преобразование в плоский нетлист
-0.0.6 - распараллеливание на ядрах CPU с использованием POSIX Threads
+0.0.5 - Чтение иерархии и преобразование в плоский нетлист
+0.0.6 - Распараллеливание на ядрах CPU с использованием C++11 Threads
         Включается параметром -multicore
+        Отключено до лучших времён
 0.0.7 - Нормальная читалка иерархии, читается уровень вложенности > 1
 *************************************************/
 
 int main(int argc, char *argv[]) {
-  printf("PetriLogicSimulator v0.0.6a\nMulti-thread test implementation\n\n");
+  printf("PetriLogicSimulator v0.0.8\nBehavioral description reading and parsing implementation\n\n");
 #if defined DEBUG_MEASURE_TIME
   clock_t A = clock();
 #endif
@@ -72,13 +73,13 @@ int main(int argc, char *argv[]) {
 #endif
 
   
-  if (multiCore) {
+  /*if (multiCore) {
     printf("__inf__ : Simulation started using multi CPU cores.\n");
     sim->simulation(netl, simul_data, stackSize);           // проводим симуляцию
-  } else {
+  } else {*/
     printf("__inf__ : Simulation started using single CPU core.\n");
     sim->simulation_stack(netl, simul_data, stackSize);           // проводим симуляцию
-  }
+  //}
   
   delete sim;                                                             // удаляем объект
 #if defined DEBUG_MEASURE_TIME
