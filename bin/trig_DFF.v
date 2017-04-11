@@ -31,6 +31,7 @@ module dff(D, C, Q, nQ);
   nand  nand1(net3, net1, net4);
   nand  nand2(net4, net2, net3);
 
+  //assign net5 = C && net3;
   and   and1(net5, C, net3);
   and   and2(net6, C, net4);
   

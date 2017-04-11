@@ -18,14 +18,17 @@ public:
   std::vector <net*> nets;
   // Новая структура, так получать их будет проще, особенно для assign
   std::map<std::string, net*> netsMap;
-  //
+  // Старая структура для хранения указателей на вентили
   std::vector <gate*> gates;
-  //
+  // Новая структура, так получать их будет проще, особенно для поведенческого
   std::map<std::string, gate*> gatesMap;
   int *repeats;
   //std::vector <>
   net *addNet(const std::string &net_name, gate *gate);
   net* returnNet(std::string netName);
+
+  net *addNetMap(const std::string &net_name, gate *gate);
+  net* returnNetMap(std::string netName);
   std::vector<gate*> &returnGate(net* net);
   /*
     addGate - считали вентиль, добавили в вектор

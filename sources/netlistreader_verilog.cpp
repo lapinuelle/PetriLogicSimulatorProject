@@ -325,7 +325,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
 
   std::vector<std::string>  items;
 
-  for (size_t i = vminfos[i_inst].token_start; i < vminfos[i_inst].token_end; ++i) {
+  for (size_t i = vminfos[i_inst].token_start; i < vminfos[i_inst].token_end; i++) {
     if ("module" == tokens[i].item) {
       while(tokens[i].item != ";")
         ++i;
@@ -393,7 +393,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
           items[j] = real_name + std::string(".") + items[j];
       }
       root.assigns.push_back(items);
-      ++i;
+      //++i;
       continue;
     }
 
@@ -633,10 +633,12 @@ bool netlistreader_verilog::parse_flat_gates(netlist *netl, sim_data *simul_data
       j_pins = 3;
     }
 
-    p_gate->outs.push_back(netl->addNet(root.gates[i][j_pins], NULL));
+    //p_gate->outs.push_back(netl->addNet(root.gates[i][j_pins], NULL));
+    p_gate->outs.push_back(netl->addNetMap(root.gates[i][j_pins], NULL));
     j_pins += 2;
     for (; j_pins < root.gates[i].size() - 1; j_pins += 2)
-      p_gate->ins.push_back(netl->addNet(root.gates[i][j_pins], p_gate));
+      p_gate->ins.push_back(netl->addNetMap(root.gates[i][j_pins], p_gate));
+      //p_gate->ins.push_back(netl->addNet(root.gates[i][j_pins], p_gate));
 
     p_gate->repeat = 0;
     netl->addGate(p_gate);
@@ -672,7 +674,8 @@ bool netlistreader_verilog::parse_flat_initials(netlist *netl, sim_data *simul_d
         if(simul_data->endTime < time)
           simul_data->endTime = time;
         ++j;
-        ev_map = *(simul_data->addMapEvent(time, netl->addNet(root.initials[i][j], NULL), LogicLevel(atoi(root.initials[i][j + 2].c_str())), false));
+        //ev_map = *(simul_data->addMapEvent(time, netl->addNet(root.initials[i][j], NULL), LogicLevel(atoi(root.initials[i][j + 2].c_str())), false));
+        ev_map = *(simul_data->addMapEvent(time, netl->addNetMap(root.initials[i][j], NULL), LogicLevel(atoi(root.initials[i][j + 2].c_str())), false));
         j += 3;
         continue;
       } // read delay #
@@ -684,8 +687,23 @@ bool netlistreader_verilog::parse_flat_initials(netlist *netl, sim_data *simul_d
 
 bool netlistreader_verilog::parse_flat_assigns(netlist *netl, sim_data *simul_data) {
   if (root.assigns.size()) {
-    printf("__err__ : Sorry, instructions 'assign' are not supported yet.\n");
-    return false;
+    for(size_t i = 0; i < root.assigns.size(); ++i) {
+      // boolean logic functions
+      //
+      // not
+      //
+      if (root.assigns[i][3] == "~") {
+        gate *p_gate = NULL;
+        p_gate = CreateGate("not"+root.assigns[i][1], "not");
+        if (!p_gate)
+          return false;
+        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1], NULL));
+        p_gate->ins.push_back(netl->addNetMap(root.assigns[i][4], p_gate));
+        netl->addGate(p_gate);
+      }
+    }
+    //printf("__err__ : Sorry, instructions 'assign' are not supported yet.\n");
+    //return false;
   }
   return true;
 }

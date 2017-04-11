@@ -63,6 +63,41 @@ net* netlist::returnNet(std::string netName) {
   return NULL;
 }
 
+////////////////////////////////////////
+////////////////////////////////////////
+net* netlist::addNetMap(const std::string &net_name, gate *gate) {
+	net *netPointer = NULL;
+	size_t i = 0, j = 0;
+
+	if(netsMap[net_name]) {
+		if(gate != NULL) {
+			for(j = 0; j < netsMap[net_name]->gates.size(); ++j)
+				if(netsMap[net_name]->gates[j] == gate)
+					break;
+			if(j >= netsMap[net_name]->gates.size())
+				netsMap[net_name]->gates.push_back(gate);
+		}
+		return netsMap[net_name];
+	} else {
+
+
+		netPointer = new net(net_name);
+		if (gate != NULL)
+		netPointer->gates.push_back(gate);
+		netsMap[net_name] = netPointer;
+		return netPointer;
+	}
+}
+
+net* netlist::returnNetMap(std::string netName) {
+	if (netsMap[netName]) 
+	 return netsMap[netName];
+  return NULL;
+}
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+
 
 std::vector<gate*> &netlist::returnGate(net* net) {									// возвращает gate, у которого данный net на входе
 	/*
