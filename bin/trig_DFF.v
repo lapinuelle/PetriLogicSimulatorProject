@@ -20,19 +20,20 @@ module dff(D, C, Q, nQ);
   input D, C;
   output Q, nQ;
   
-  assign D = ~net0;
+  assign net0 = ~D;
   //not   not1(net0, D);
   //inv i1(D, net0);
   
-  or    or1(net1, D, C);
-  or    or2(net2, C, net0);
-  //assign net2 = C | net0;
+  assign net1 = D | C;
+  //or    or1(net1, D, C);
+  //or    or2(net2, C, net0);
+  assign net2 = C | net0;
   
   nand  nand1(net3, net1, net4);
   nand  nand2(net4, net2, net3);
 
-  //assign net5 = C && net3;
-  and   and1(net5, C, net3);
+  assign net5 = C & net3;
+  //and   and1(net5, C, net3);
   and   and2(net6, C, net4);
   
   nor  #1 nor1(Q, nQ, net5);

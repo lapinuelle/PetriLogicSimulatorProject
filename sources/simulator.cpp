@@ -136,6 +136,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
   for (size_t i = 0; i < netl->nets.size(); ++i)
     wr.AddDumpVar(netl->nets[i]);                                                                    
 
+
   wr.PrintHeader();
 
   for (size_t time = 0; time < simData->eventChain.size(); ++time) {
@@ -284,8 +285,16 @@ void simulator::simulation_stack(netlist* netl, sim_data* simData, int stackSize
   //int time = 0;
   datawriter wr(simData->getVCDname().c_str());                                                                    // контейнер выходных данных
   stack *stackSim = new stack(stackSize);                                                             // стек моделирования
+
+  std::map<std::string, net*>::iterator it;
+  for (it = netl->netsMap.begin(); it != netl->netsMap.end(); it++) {
+    wr.AddDumpVar(it->second);
+  }
+
+  /*
   for (size_t i = 0; i < netl->nets.size(); i++)
     wr.AddDumpVar(netl->nets[i]);                                            // указываем контейнеру, значения каких узлов отслеживать
+    */
 
   wr.PrintHeader();                                                                                   // пишем в выходной файл шапку
 

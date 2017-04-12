@@ -12,9 +12,9 @@ netlist::netlist() : repeats(NULL) {
 }
 
 netlist::~netlist() {
-  for (size_t i = 0; i < this->nets.size(); ++i)
-    delete this->nets[i];
-  this->nets.erase(this->nets.begin(), this->nets.end());
+  /*for (size_t i = 0; i < this->netsMap.size(); ++i)
+    delete this->netsMap[i];
+  this->netsMap.erase(this->netsMap.begin(), this->netsMap.end());*/
 
   for (size_t i = 0; i < this->gates.size(); ++i)
     delete this->gates[i];

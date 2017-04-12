@@ -378,7 +378,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       items.push_back(tokens[i].item);
       size_t j = 1;
       for (; j < items.size(); ++j) {
-        if (items[j] == "#" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "&" || items[j] == "|" || items[j] == "(" || items[j] == ")" || items[j] == "?" || items[j] == ":")
+        if (items[j] == "#" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "&" || items[j] == "|" || items[j] == "(" || items[j] == ")" || items[j] == "?" || items[j] == ":" || items[j] == "||" || items[j] == "&&")
           continue;
         if (isdigit(items[j][0]))
           continue;
@@ -692,15 +692,94 @@ bool netlistreader_verilog::parse_flat_assigns(netlist *netl, sim_data *simul_da
       //
       // not
       //
-      if (root.assigns[i][3] == "~") {
+      int delay = 0;
+      int del = 0;
+      if (root.assigns[i][1] == "#") {
+        del = 2;
+        if((root.assigns[i][2].find_first_not_of( "0123456789" ) != std::string::npos)) {
+          printf("__err__ : Unknown type of token: delay should be specified as integer.\n");
+          return false;
+        } else {
+          delay = atoi(root.assigns[i][2].c_str());  
+        }
+      }
+      if (root.assigns[i][3 + del] == "~") {
         gate *p_gate = NULL;
-        p_gate = CreateGate("not"+root.assigns[i][1], "not");
+        p_gate = CreateGate("not_"+root.assigns[i][1 + del], "not");
         if (!p_gate)
           return false;
-        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1], NULL));
-        p_gate->ins.push_back(netl->addNetMap(root.assigns[i][4], p_gate));
+        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1 + del], NULL));
+        p_gate->ins.push_back(netl->addNetMap(root.assigns[i][4 + del], p_gate));
+        p_gate->setDelay(delay);
         netl->addGate(p_gate);
       }
+      //
+      // or
+      //
+      if (root.assigns[i][4 + del] == "|") {
+        gate *p_gate = NULL;
+        p_gate = CreateGate("or_"+root.assigns[i][1 + del], "or");
+        if (!p_gate)
+          return false;
+        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1 + del], NULL));
+        int step = 0;
+        while(";" != root.assigns[i][3 + del + step]) {
+          if(root.assigns[i][3 + del + step] == "|") {
+            step++;
+            continue;
+          }
+          p_gate->ins.push_back(netl->addNetMap(root.assigns[i][3 + del + step], p_gate));
+          step++;
+        }
+        
+        p_gate->setDelay(delay);
+        netl->addGate(p_gate);
+      }
+      //
+      // and
+      //
+      if (root.assigns[i][4 + del] == "&") {
+        gate *p_gate = NULL;
+        p_gate = CreateGate("and_"+root.assigns[i][1 + del], "and");
+        if (!p_gate)
+          return false;
+        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1 + del], NULL));
+        int step = 0;
+        while(";" != root.assigns[i][3 + del + step]) {
+          if(root.assigns[i][3 + del + step] == "&") {
+            step++;
+            continue;
+          }
+          p_gate->ins.push_back(netl->addNetMap(root.assigns[i][3 + del + step], p_gate));
+          step++;
+        }
+        
+        p_gate->setDelay(delay);
+        netl->addGate(p_gate);
+      }
+      //
+      // xor
+      //
+      if (root.assigns[i][4 + del] == "^") {
+        gate *p_gate = NULL;
+        p_gate = CreateGate("xor_"+root.assigns[i][1 + del], "xor");
+        if (!p_gate)
+          return false;
+        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1 + del], NULL));
+        int step = 0;
+        while(";" != root.assigns[i][3 + del + step]) {
+          if(root.assigns[i][3 + del + step] == "^") {
+            step++;
+            continue;
+          }
+          p_gate->ins.push_back(netl->addNetMap(root.assigns[i][3 + del + step], p_gate));
+          step++;
+        }
+        
+        p_gate->setDelay(delay);
+        netl->addGate(p_gate);
+      }
+      
     }
     //printf("__err__ : Sorry, instructions 'assign' are not supported yet.\n");
     //return false;
@@ -726,7 +805,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
     cycleTime = atoi(root.alwayses[i][2].c_str());
 
     for (int time = 0; time < simul_data->endTime; time += cycleTime) {
-      ev_map = *(simul_data->addMapEvent(time, netl->addNet(root.alwayses[i][3], NULL), level, false));
+      ev_map = *(simul_data->addMapEvent(time, netl->addNetMap(root.alwayses[i][3], NULL), level, false));
       switch (level) {
       case level_0: 
         level = level_1;
