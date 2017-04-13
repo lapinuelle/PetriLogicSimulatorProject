@@ -688,12 +688,10 @@ bool netlistreader_verilog::parse_flat_initials(netlist *netl, sim_data *simul_d
 bool netlistreader_verilog::parse_flat_assigns(netlist *netl, sim_data *simul_data) {
   if (root.assigns.size()) {
     for(size_t i = 0; i < root.assigns.size(); ++i) {
-      // boolean logic functions
-      //
-      // not
-      //
+      // logic functions
       int delay = 0;
       int del = 0;
+      // Setting delay
       if (root.assigns[i][1] == "#") {
         del = 2;
         if((root.assigns[i][2].find_first_not_of( "0123456789" ) != std::string::npos)) {
@@ -703,7 +701,10 @@ bool netlistreader_verilog::parse_flat_assigns(netlist *netl, sim_data *simul_da
           delay = atoi(root.assigns[i][2].c_str());  
         }
       }
-      if (root.assigns[i][3 + del] == "~") {
+      //
+      // not
+      //
+      if (root.assigns[i][3 + del] == "~" ) {
         gate *p_gate = NULL;
         p_gate = CreateGate("not_"+root.assigns[i][1 + del], "not");
         if (!p_gate)
@@ -714,75 +715,34 @@ bool netlistreader_verilog::parse_flat_assigns(netlist *netl, sim_data *simul_da
         netl->addGate(p_gate);
       }
       //
-      // or
+      // or, and, xor
       //
-      if (root.assigns[i][4 + del] == "|") {
+      if (root.assigns[i][4 + del] == "|" || root.assigns[i][4 + del] == "&" || root.assigns[i][4 + del] == "^") {
         gate *p_gate = NULL;
-        p_gate = CreateGate("or_"+root.assigns[i][1 + del], "or");
+        std::string type;
+        if (root.assigns[i][4 + del] == "|")
+          type = "or";
+        if (root.assigns[i][4 + del] == "&")
+          type = "and";
+        if (root.assigns[i][4 + del] == "^")
+          type = "xor";
+        p_gate = CreateGate(type + root.assigns[i][1 + del], type);
         if (!p_gate)
           return false;
         p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1 + del], NULL));
         int step = 0;
         while(";" != root.assigns[i][3 + del + step]) {
-          if(root.assigns[i][3 + del + step] == "|") {
+          if(root.assigns[i][3 + del + step] == "|" || root.assigns[i][3 + del + step] == "&" || root.assigns[i][3 + del + step] == "^") {
             step++;
             continue;
           }
           p_gate->ins.push_back(netl->addNetMap(root.assigns[i][3 + del + step], p_gate));
           step++;
         }
-        
         p_gate->setDelay(delay);
         netl->addGate(p_gate);
       }
-      //
-      // and
-      //
-      if (root.assigns[i][4 + del] == "&") {
-        gate *p_gate = NULL;
-        p_gate = CreateGate("and_"+root.assigns[i][1 + del], "and");
-        if (!p_gate)
-          return false;
-        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1 + del], NULL));
-        int step = 0;
-        while(";" != root.assigns[i][3 + del + step]) {
-          if(root.assigns[i][3 + del + step] == "&") {
-            step++;
-            continue;
-          }
-          p_gate->ins.push_back(netl->addNetMap(root.assigns[i][3 + del + step], p_gate));
-          step++;
-        }
-        
-        p_gate->setDelay(delay);
-        netl->addGate(p_gate);
-      }
-      //
-      // xor
-      //
-      if (root.assigns[i][4 + del] == "^") {
-        gate *p_gate = NULL;
-        p_gate = CreateGate("xor_"+root.assigns[i][1 + del], "xor");
-        if (!p_gate)
-          return false;
-        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1 + del], NULL));
-        int step = 0;
-        while(";" != root.assigns[i][3 + del + step]) {
-          if(root.assigns[i][3 + del + step] == "^") {
-            step++;
-            continue;
-          }
-          p_gate->ins.push_back(netl->addNetMap(root.assigns[i][3 + del + step], p_gate));
-          step++;
-        }
-        
-        p_gate->setDelay(delay);
-        netl->addGate(p_gate);
-      }
-      
     }
-    //printf("__err__ : Sorry, instructions 'assign' are not supported yet.\n");
-    //return false;
   }
   return true;
 }
