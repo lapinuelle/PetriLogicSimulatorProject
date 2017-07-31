@@ -13,7 +13,7 @@ public:
   std::string name;
   LogicLevel value;
   char type;
-  char stability;
+  std::string stability;
   int delay;
   std::vector<gate *>  gates;
   net(const std::string &net_name);

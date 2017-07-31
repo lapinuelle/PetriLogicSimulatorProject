@@ -6,6 +6,7 @@
 #include <iostream>
 #include <map>
 #include "logiclevel.h"
+#include "netlist.h"
 
 class gate;
 class net;
@@ -13,7 +14,7 @@ class net;
 class interpreter {
 public:
   void cmp(net*, LogicLevel);
-  void cmp(net*, char);
+  void cmp(net*, std::string);
   void mov(LogicLevel, net*);
   void add(LogicLevel, LogicLevel);
   
@@ -25,7 +26,7 @@ public:
   void xor(LogicLevel, LogicLevel);
 
   void reset();
-  void operate(std::vector<std::string>, std::map<std::string, int>);
+  void operate(std::vector<std::string>, std::map<std::string, int>, netlist*);
 
   std::map <std::string, int> flags;
   std::map <std::string, int> intRegisters;

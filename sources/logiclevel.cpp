@@ -8,6 +8,14 @@ LogicLevel operator ! (LogicLevel val) {
   return level_u;
 }
 
+LogicLevel atol(std::string str) {
+  if (str == "0")
+    return level_0;
+  if (str == "1")
+    return level_1;
+  return level_u;
+}
+
 LogicLevel operator * (LogicLevel val1, LogicLevel val2) {
   if ((val1==level_1)&&(val2==level_1))
     return level_1;
