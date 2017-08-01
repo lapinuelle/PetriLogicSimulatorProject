@@ -45,7 +45,7 @@ THREAD_BEGIN:
   // ∆дЄм, пока из функции main нам не установ€т статус либо продолжени€ работы, либо выхода 
   bool can_continue = false;
   while (!can_continue) {
-    __asm nop;
+    __asm ("nop");
     can_continue = (statuses[id] != ts_wait_for_data);
   }
 
@@ -167,7 +167,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
       bool allEqual = true;
       for (int core = 0; core < cores; ++core) {
         allEqual = ts_wait_for_data == statuses[core];
-        __asm nop;
+        __asm ("nop");
         if(!allEqual)
           break;
       }

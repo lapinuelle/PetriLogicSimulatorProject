@@ -39,15 +39,15 @@ void interpreter::sub(int value1, int value2) {
   intRegisters["SUB"] = value1 - value2;
 }
 
-void interpreter::and(LogicLevel value1, LogicLevel value2) {
+void interpreter::pnand(LogicLevel value1, LogicLevel value2) {
   logRegisters["AND"] = value1 + value2;
 }
 
-void interpreter:: or (LogicLevel value1, LogicLevel value2) {
+void interpreter::pnor (LogicLevel value1, LogicLevel value2) {
   logRegisters["OR"] = value1 * value2;
 }
 
-void interpreter:: xor (LogicLevel value1, LogicLevel value2) {
+void interpreter::pnxor (LogicLevel value1, LogicLevel value2) {
   logRegisters["XOR"] = value1 ^ value2;
 }
 

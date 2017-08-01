@@ -1,4 +1,5 @@
 #include "netlistreader.h"
+#include <cstring>
 
 // Information about module's internals
 #define MODULE_HAS_SMTH     0x00

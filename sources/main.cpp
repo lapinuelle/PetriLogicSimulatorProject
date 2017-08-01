@@ -28,7 +28,10 @@
 int main(int argc, char *argv[]) {
   printf("PetriLogicSimulator v0.0.8\nBehavioral description reading and parsing implementation\n\n");
 #if defined DEBUG_MEASURE_TIME
-  clock_t A = clock();
+  clock_t A, B, C, D;
+#endif
+#if defined DEBUG_MEASURE_TIME
+  A = clock();
 #endif
   
   std::string filename;
@@ -59,7 +62,7 @@ int main(int argc, char *argv[]) {
     goto EXIT_POINT;
   }
 #if defined DEBUG_MEASURE_TIME
-  clock_t B = clock();
+  B = clock();
 #endif
 
   p_reader = get_appropriate_reader(filename);
@@ -69,7 +72,7 @@ int main(int argc, char *argv[]) {
     goto EXIT_POINT;
 
 #if defined DEBUG_MEASURE_TIME
-  clock_t C = clock();
+  C = clock();
 #endif
 
   
@@ -83,7 +86,7 @@ int main(int argc, char *argv[]) {
   
   delete sim;                                                             // удаляем объект
 #if defined DEBUG_MEASURE_TIME
-  clock_t D = clock();
+  D = clock();
   printf("\nSimulation statistics:\n");
   printf("\tcommand line args parsing time: %ldms\n", B - A);
   printf("\tnetlist reading time: %ldms\n", C - B);

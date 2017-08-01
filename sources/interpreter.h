@@ -21,9 +21,9 @@ public:
   void add(int, int);
   void sub(int, int);
 
-  void and(LogicLevel, LogicLevel);
-  void or(LogicLevel, LogicLevel);
-  void xor(LogicLevel, LogicLevel);
+  void pnand(LogicLevel, LogicLevel);
+  void pnor(LogicLevel, LogicLevel);
+  void pnxor(LogicLevel, LogicLevel);
 
   void reset();
   void operate(std::vector<std::string>, std::map<std::string, int>, netlist*);
