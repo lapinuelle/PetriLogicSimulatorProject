@@ -112,13 +112,13 @@ void interpreter::operate(std::vector<std::string> commands, std::map<std::strin
       sub(atol(commands[i + 1]), atol(commands[i + 2]));
     }
     if ((commands[i] == "and") || (commands[i] == "AND")) {
-      and(atol(commands[i + 1]), atol(commands[i + 2]));
+      pnand(atol(commands[i + 1]), atol(commands[i + 2]));
     }
     if ((commands[i] == "or") || (commands[i] == "OR")) {
-      or(atol(commands[i + 1]), atol(commands[i + 2]));
+      pnor(atol(commands[i + 1]), atol(commands[i + 2]));
     }
     if ((commands[i] == "xor") || (commands[i] == "XOR")) {
-      xor(atol(commands[i + 1]), atol(commands[i + 2]));
+      pnxor(atol(commands[i + 1]), atol(commands[i + 2]));
     }
 
     i++;
