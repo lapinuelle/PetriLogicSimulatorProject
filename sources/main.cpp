@@ -11,18 +11,18 @@
 #define DEBUG_MEASURE_TIME
 
 /******* Info about version naming history ******
-0.0.1 - Первая, хоть как-то работающая версия симулятора, пока только gate level
-0.0.2 - Перешли на нетлиcты в формате Verilog HDL
-0.0.3 - Введён стек моделирования, значительно улучшено быстродействие
-0.0.4 - Размер стека и модуль верхнего уровня задаются параметрами командной строки
-	      -s <размер_стека>
-	      -r <название_модуля>
-	      -i <входной_файл>
-0.0.5 - Чтение иерархии и преобразование в плоский нетлист
-0.0.6 - Распараллеливание на ядрах CPU с использованием C++11 Threads
-        Включается параметром -multicore
-        Отключено до лучших времён
-0.0.7 - Нормальная читалка иерархии, читается уровень вложенности > 1
+0.0.1 - РџРµСЂРІР°СЏ, С…РѕС‚СЊ РєР°Рє-С‚Рѕ СЂР°Р±РѕС‚Р°СЋС‰Р°СЏ РІРµСЂСЃРёСЏ СЃРёРјСѓР»СЏС‚РѕСЂР°, РїРѕРєР° С‚РѕР»СЊРєРѕ gate level
+0.0.2 - РџРµСЂРµС€Р»Рё РЅР° РЅРµС‚Р»РёcС‚С‹ РІ С„РѕСЂРјР°С‚Рµ Verilog HDL
+0.0.3 - Р’РІРµРґС‘РЅ СЃС‚РµРє РјРѕРґРµР»РёСЂРѕРІР°РЅРёСЏ, Р·РЅР°С‡РёС‚РµР»СЊРЅРѕ СѓР»СѓС‡С€РµРЅРѕ Р±С‹СЃС‚СЂРѕРґРµР№СЃС‚РІРёРµ
+0.0.4 - Р Р°Р·РјРµСЂ СЃС‚РµРєР° Рё РјРѕРґСѓР»СЊ РІРµСЂС…РЅРµРіРѕ СѓСЂРѕРІРЅСЏ Р·Р°РґР°СЋС‚СЃСЏ РїР°СЂР°РјРµС‚СЂР°РјРё РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё
+	      -s <СЂР°Р·РјРµСЂ_СЃС‚РµРєР°>
+	      -r <РЅР°Р·РІР°РЅРёРµ_РјРѕРґСѓР»СЏ>
+	      -i <РІС…РѕРґРЅРѕР№_С„Р°Р№Р»>
+0.0.5 - Р§С‚РµРЅРёРµ РёРµСЂР°СЂС…РёРё Рё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РІ РїР»РѕСЃРєРёР№ РЅРµС‚Р»РёСЃС‚
+0.0.6 - Р Р°СЃРїР°СЂР°Р»Р»РµР»РёРІР°РЅРёРµ РЅР° СЏРґСЂР°С… CPU СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј C++11 Threads
+        Р’РєР»СЋС‡Р°РµС‚СЃСЏ РїР°СЂР°РјРµС‚СЂРѕРј -multicore
+        РћС‚РєР»СЋС‡РµРЅРѕ РґРѕ Р»СѓС‡С€РёС… РІСЂРµРјС‘РЅ
+0.0.7 - РќРѕСЂРјР°Р»СЊРЅР°СЏ С‡РёС‚Р°Р»РєР° РёРµСЂР°СЂС…РёРё, С‡РёС‚Р°РµС‚СЃСЏ СѓСЂРѕРІРµРЅСЊ РІР»РѕР¶РµРЅРЅРѕСЃС‚Рё > 1
 *************************************************/
 
 int main(int argc, char *argv[]) {
@@ -39,11 +39,11 @@ int main(int argc, char *argv[]) {
   netlist* netl = new netlist;
   sim_data* simul_data = new sim_data;
   simulator* sim = new simulator;
-  int stackSize = 20;																							        // размер стека
-  std::string rootModule = "root";																				// имя модуля верхнего уровня
-  bool multiCore = false;
+  int stackSize = 20;																							        // СЂР°Р·РјРµСЂ СЃС‚РµРєР°
+  std::string rootModule = "root";																				// РёРјСЏ РјРѕРґСѓР»СЏ РІРµСЂС…РЅРµРіРѕ СѓСЂРѕРІРЅСЏ
+  //bool multiCore = false;
 
-																												                  // Чтение аргументов командной строки
+																												                  // Р§С‚РµРЅРёРµ Р°СЂРіСѓРјРµРЅС‚РѕРІ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё
   if (argc > 2) {
     for (size_t i = 0; i < (size_t)argc; i++) {
       if (std::string(argv[i]) == "-i")
@@ -53,8 +53,8 @@ int main(int argc, char *argv[]) {
         stackSize = atoi(argv[i + 1]);
       if ((std::string(argv[i]) == "-r") && (i < (size_t)argc - 1))
         rootModule = argv[i + 1];
-      if ((std::string(argv[i]) == "-multicore"))
-        multiCore = true;
+      //if ((std::string(argv[i]) == "-multicore"))
+      //  multiCore = true;
     }
   }
   else {
@@ -78,13 +78,13 @@ int main(int argc, char *argv[]) {
   
   /*if (multiCore) {
     printf("__inf__ : Simulation started using multi CPU cores.\n");
-    sim->simulation(netl, simul_data, stackSize);           // проводим симуляцию
+    sim->simulation_thread(netl, simul_data, stackSize);           // РїСЂРѕРІРѕРґРёРј СЃРёРјСѓР»СЏС†РёСЋ
   } else {*/
     printf("__inf__ : Simulation started using single CPU core.\n");
-    sim->simulation_stack(netl, simul_data, stackSize);           // проводим симуляцию
+    sim->simulation(netl, simul_data, stackSize);           // РїСЂРѕРІРѕРґРёРј СЃРёРјСѓР»СЏС†РёСЋ
   //}
   
-  delete sim;                                                             // удаляем объект
+  delete sim;                                                             // СѓРґР°Р»СЏРµРј РѕР±СЉРµРєС‚
 #if defined DEBUG_MEASURE_TIME
   D = clock();
   printf("\nSimulation statistics:\n");
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
   printf("Total time spent on simulation: %ldms\n\n", D - A);
 #endif
 
-EXIT_POINT:                                                               // точка выхода
+EXIT_POINT:                                                               // С‚РѕС‡РєР° РІС‹С…РѕРґР°
   free_reader(p_reader);
   delete simul_data;
   delete netl;
