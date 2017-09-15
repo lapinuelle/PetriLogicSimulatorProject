@@ -13,16 +13,27 @@ module inv(x, y);
   input x;
   output y;
   
-  deeper_inv a1(x, y);
+  //deeper_inv a1(x, y);
+  beh_inv a1(x,y);
+endmodule
+
+module beh_inv(x, y);
+  input x;
+  output y;
+  
+  always @x
+  begin
+    y = ~x;
+  end
 endmodule
 
 module dff(D, C, Q, nQ);
   input D, C;
   output Q, nQ;
   
-  assign net0 = ~D;
+  //assign net0 = ~D;
   //not   not1(net0, D);
-  //inv i1(D, net0);
+  inv i1(D, net0);
   
   assign net1 = D | C;
   //or    or1(net1, D, C);
