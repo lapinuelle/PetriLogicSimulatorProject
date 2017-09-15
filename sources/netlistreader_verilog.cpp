@@ -70,136 +70,6 @@ gate * netlistreader_verilog::CreateGate(const std::string &gate_name, const std
   return NULL;
 }
 
-/*
-bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
-  gate* p_gate = NULL;
-  
-  //size_t i = 0;
-  netl->neededSteps = 0;
-  bool gateInputs = false;
-  bool readStates = false;
-  bool readNames = false;
-  bool readModule = false;
-  Event ev;
-  Event ev_map;
-  ev_map.time = 0;
-  ev.time=0;
-  int currentTime = 0;
-  int time = 0;
-
-  
-  if(!tokenize())
-    return false;
-  
-  for (size_t i = 0; i < tokens.size(); i++) {
-    if (tokens[i].pos == 1) {
-      gateInputs = false;
-      readStates = false;
-      readNames = false;
-    }
-
-	// Обработчик $dumpfile, пока без $dumpvars
-
-	if(tokens[i].item == "$dumpfile") {
-		std::string vcdname;
-		i=i+2;
-		while(tokens[i].item != ")") {
-			if(tokens[i].item != "\"") {
-				vcdname = vcdname + tokens[i].item;
-			}
-			++i;
-		}
-		simul_data->setVCDname(vcdname);
-	}
-    
-    //New module for Verilog (basic)
-    if (readModule) {
-      if ((tokens[i].item == "input") || ((tokens[i].item == "output") && (tokens[i].pos == 1))) {
-        
-      }
-      if ((tokens[i].item == "nor") || (tokens[i].item == "nand") || (tokens[i].item == "or") || (tokens[i].item == "and") || (tokens[i].item == "not") || (tokens[i].item == "xor") || (tokens[i].item == "xnor") || (tokens[i].item == "buf")) {
-        int gotDelay = 0;
-        int gotName = 1;
-        int gateDelay = 0;
-        if (tokens[i+1].item == "#") {
-          gateDelay = atoi(tokens[i+2].item.c_str());
-          gotDelay = 2;
-        }
-        if (tokens[i+gotDelay+1].item != "(") {
-          gotName = 1;
-        }
-        p_gate = CreateGate(tokens[i + gotDelay + gotName].item, tokens[i].item);
-        p_gate->delay = 0;
-        if (gateDelay != 0) {
-          p_gate->delay = gateDelay;
-        }
-        
-        if (!p_gate)
-          continue;
-        p_gate->repeat = 0;
-        netl->addGate(p_gate);
-        
-        
-        p_gate->outs.push_back(netl->addNet(tokens[i + gotDelay + gotName + 2].item, NULL));
-        gateInputs = true;
-        i += gotDelay + gotName + 3;
-      }
-      if (gateInputs) {
-        while (tokens[i].item != ")") {
-          if (tokens[i].item != ",") {
-            p_gate->ins.push_back(netl->addNet(tokens[i].item, p_gate));
-          }
-          i++;
-        }
-        gateInputs = false;
-      }
-    }
-    
-    if ((tokens[i].item == "module") && (tokens[i].pos == 1)) {
-      i += 3;
-      readModule = true;
-    }
-    
-    if ((tokens[i].item == "endmodule")) {
-      readModule = false;
-    }
-    
-    
-    if ((tokens[i].item == "#")) { // && (tokens[i].pos == 1)) {
-      currentTime = atoi(tokens[i+1].item.c_str());
-      i++;
-      time += currentTime;
-      i++;
-      //ev = *(simul_data->addEvent(time, netl->returnNet(tokens[i].item), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
-  	  while((tokens[i].item != "#") || (tokens[i].item != "$finish")) {
-	  	  if((tokens[i].item == "#") || (tokens[i].item == "$finish")) {
-          simul_data->endTime = time;
-          i--;
-			    break;
-		    }
-		    //ev = *(simul_data->addEvent(time, netl->addNet(tokens[i].item, NULL), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
-        ev_map = *(simul_data->addMapEvent(time, netl->addNet(tokens[i].item, NULL), LogicLevel(atoi(tokens[i + 2].item.c_str())), false));
-        //ev_map.delayed.push_back(false);
-		    i += 4;
-	    }
-	  
-    }
-    
-  }
-  
-  netl->repeats = new int [netl->gates.size()];
-
-  for (size_t i = 0; i < netl->gates.size(); ++i) {
-    netl->gates[i]->repeat = &netl->repeats[i];
-    if (!netl->gates[i]->postprocess())
-      return false;
-  }
-
-  memset(netl->repeats, 0, sizeof(int)*netl->gates.size());
-
-  return true;
-}
-*/
 
 bool netlistreader_verilog::read_macro(size_t &i) {
   size_t line_orig = tokens[i].line;
@@ -338,6 +208,39 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       continue;
     }
     if ("initial" == tokens[i].item) {
+      items.clear();
+      while ("end" != tokens[i].item) {
+        items.push_back(tokens[i].item);
+        ++i;
+      }
+      items.push_back(tokens[i].item);
+      if (";" == tokens[i + 1].item) {
+        ++i;
+        items.push_back(tokens[i].item);
+      }
+      size_t j = 1;
+      if(items[j] == "begin")
+        ++j;
+      for (; j < items.size(); ++j) {
+        if(items[j] == "#" || items[j] == ";" || items[j] == "=")
+          continue;
+        if(isdigit(items[j][0]))
+          continue;
+        size_t k = 0;
+        for(; k < vminfos[i_inst].pins.size(); ++k)
+          if (items[j] == vminfos[i_inst].pins[k]) {
+          //if (items[j] == real_pins[k]) {
+            items[j] = real_pins[k];
+            break;
+          }
+        if(k == vminfos[i_inst].pins.size())
+          items[j] = real_name + std::string(".") + items[j];
+      }
+      root.initials.push_back(items);
+      ++i;
+      continue;
+    }
+    if ("always" == tokens[i].item) {
       items.clear();
       while ("end" != tokens[i].item) {
         items.push_back(tokens[i].item);
@@ -803,3 +706,136 @@ bool netlistreader_verilog::parse_flat_netlist(netlist *netl, sim_data *simul_da
 
   return true;
 }
+
+
+/*
+bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
+  gate* p_gate = NULL;
+
+  //size_t i = 0;
+  netl->neededSteps = 0;
+  bool gateInputs = false;
+  bool readStates = false;
+  bool readNames = false;
+  bool readModule = false;
+  Event ev;
+  Event ev_map;
+  ev_map.time = 0;
+  ev.time=0;
+  int currentTime = 0;
+  int time = 0;
+
+
+  if(!tokenize())
+    return false;
+
+  for (size_t i = 0; i < tokens.size(); i++) {
+    if (tokens[i].pos == 1) {
+      gateInputs = false;
+      readStates = false;
+      readNames = false;
+    }
+
+    // Обработчик $dumpfile, пока без $dumpvars
+
+    if(tokens[i].item == "$dumpfile") {
+        std::string vcdname;
+        i=i+2;
+        while(tokens[i].item != ")") {
+            if(tokens[i].item != "\"") {
+                vcdname = vcdname + tokens[i].item;
+            }
+            ++i;
+        }
+        simul_data->setVCDname(vcdname);
+    }
+
+    //New module for Verilog (basic)
+    if (readModule) {
+      if ((tokens[i].item == "input") || ((tokens[i].item == "output") && (tokens[i].pos == 1))) {
+
+      }
+      if ((tokens[i].item == "nor") || (tokens[i].item == "nand") || (tokens[i].item == "or") || (tokens[i].item == "and") || (tokens[i].item == "not") || (tokens[i].item == "xor") || (tokens[i].item == "xnor") || (tokens[i].item == "buf")) {
+        int gotDelay = 0;
+        int gotName = 1;
+        int gateDelay = 0;
+        if (tokens[i+1].item == "#") {
+          gateDelay = atoi(tokens[i+2].item.c_str());
+          gotDelay = 2;
+        }
+        if (tokens[i+gotDelay+1].item != "(") {
+          gotName = 1;
+        }
+        p_gate = CreateGate(tokens[i + gotDelay + gotName].item, tokens[i].item);
+        p_gate->delay = 0;
+        if (gateDelay != 0) {
+          p_gate->delay = gateDelay;
+        }
+
+        if (!p_gate)
+          continue;
+        p_gate->repeat = 0;
+        netl->addGate(p_gate);
+
+
+        p_gate->outs.push_back(netl->addNet(tokens[i + gotDelay + gotName + 2].item, NULL));
+        gateInputs = true;
+        i += gotDelay + gotName + 3;
+      }
+      if (gateInputs) {
+        while (tokens[i].item != ")") {
+          if (tokens[i].item != ",") {
+            p_gate->ins.push_back(netl->addNet(tokens[i].item, p_gate));
+          }
+          i++;
+        }
+        gateInputs = false;
+      }
+    }
+
+    if ((tokens[i].item == "module") && (tokens[i].pos == 1)) {
+      i += 3;
+      readModule = true;
+    }
+
+    if ((tokens[i].item == "endmodule")) {
+      readModule = false;
+    }
+
+
+    if ((tokens[i].item == "#")) { // && (tokens[i].pos == 1)) {
+      currentTime = atoi(tokens[i+1].item.c_str());
+      i++;
+      time += currentTime;
+      i++;
+      //ev = *(simul_data->addEvent(time, netl->returnNet(tokens[i].item), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
+      while((tokens[i].item != "#") || (tokens[i].item != "$finish")) {
+          if((tokens[i].item == "#") || (tokens[i].item == "$finish")) {
+          simul_data->endTime = time;
+          i--;
+                break;
+            }
+            //ev = *(simul_data->addEvent(time, netl->addNet(tokens[i].item, NULL), LogicLevel(atoi(tokens[i + 2].item.c_str()))));
+        ev_map = *(simul_data->addMapEvent(time, netl->addNet(tokens[i].item, NULL), LogicLevel(atoi(tokens[i + 2].item.c_str())), false));
+        //ev_map.delayed.push_back(false);
+            i += 4;
+        }
+
+    }
+
+  }
+
+  netl->repeats = new int [netl->gates.size()];
+
+  for (size_t i = 0; i < netl->gates.size(); ++i) {
+    netl->gates[i]->repeat = &netl->repeats[i];
+    if (!netl->gates[i]->postprocess())
+      return false;
+  }
+
+  memset(netl->repeats, 0, sizeof(int)*netl->gates.size());
+
+  return true;
+}
+*/
+
