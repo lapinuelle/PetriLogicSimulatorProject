@@ -25,6 +25,7 @@ struct SuperDuperModule {
   std::vector < std::vector<std::string> > initials;
   std::vector < std::vector<std::string> > alwayses;
   std::vector < std::vector<std::string> > gates;
+
 } root;
 
 netlistreader_verilog::netlistreader_verilog(std::string fileName) : inetlistreader(fileName) {
@@ -255,7 +256,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       if(items[j] == "begin")
         ++j;
       for (; j < items.size(); ++j) {
-        if(items[j] == "#" || items[j] == ";" || items[j] == "=")
+        if(items[j] == "@" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "begin" || items[j] == "end")
           continue;
         if(isdigit(items[j][0]))
           continue;
@@ -269,7 +270,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
         if(k == vminfos[i_inst].pins.size())
           items[j] = real_name + std::string(".") + items[j];
       }
-      root.initials.push_back(items);
+      root.gates.push_back(items);
       ++i;
       continue;
     }
