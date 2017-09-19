@@ -69,6 +69,9 @@ gate * netlistreader_verilog::CreateGate(const std::string &gate_name, const std
   if (gate_type == "buf") {
     return new gate_buf(gate_name);
   };
+  if (gate_type == "beh") {
+    return new gate_beh(gate_name);
+  };
   return NULL;
 }
 
@@ -242,7 +245,11 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       ++i;
       continue;
     }
+
+    int tempi = 0;
+
     if ("always" == tokens[i].item) {
+      tempi = i;
       items.clear();
       while ("end" != tokens[i].item) {
         items.push_back(tokens[i].item);
@@ -281,7 +288,10 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
 
 
       ++i;
-      continue;
+
+      //if (items[1] != "@") 
+        continue;
+      //i = tempi;
     }
     if ("assign" == tokens[i].item) {
       items.clear();
@@ -319,6 +329,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
     }
     items.push_back(tokens[i].item);
     size_t j = 1;
+    
     if("#"  == items[j])
       j += 2;
 
@@ -676,6 +687,10 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
       for (int kk = 1; kk < root.alwaysGates[i].size(); kk++)
         behPins.push_back(root.alwaysGates[i][kk]);
       p_gate = CreateGate(gateName, "beh");
+
+      
+
+      // From here we're starting to parse behavioral description into assembler code
 
       printf("__err__ : Sorry, behavior description is not supported yet.\n");
       return false;

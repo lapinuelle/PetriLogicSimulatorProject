@@ -30,6 +30,7 @@ public:
   void t_minus();
   void operate();
   bool t_plus();
+  bool postprocess();
 };
 
 class gate_not: public gate{

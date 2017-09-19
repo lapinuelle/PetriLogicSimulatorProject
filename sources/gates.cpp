@@ -52,6 +52,16 @@ bool gate_beh::t_plus() {
     return changed;
   }
 
+bool gate_beh::postprocess() {
+  if (ins.capacity() != 1)
+    return false;
+  if (outs.capacity() != 1)
+    return false;
+  ins_temp.resize(ins.capacity());
+  outs_temp.resize(outs.capacity());
+  return true;
+}
+
 void gate_beh::operate() {
   NULL;
 }
