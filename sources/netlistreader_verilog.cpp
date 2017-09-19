@@ -21,10 +21,11 @@ struct VerilogModuleInfo {
 struct SuperDuperModule {
   std::string               name;
 
-  std::vector < std::vector<std::string> > assigns;
-  std::vector < std::vector<std::string> > initials;
-  std::vector < std::vector<std::string> > alwayses;
-  std::vector < std::vector<std::string> > gates;
+  std::vector < std::vector<std::string> >  assigns;
+  std::vector < std::vector<std::string> >  initials;
+  std::vector < std::vector<std::string> >  alwayses;
+  std::vector < std::vector<std::string> >  gates;
+  std::map <int, std::vector<std::string> > alwaysGates;
 
 } root;
 
@@ -256,6 +257,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       if(items[j] == "begin")
         ++j;
       for (; j < items.size(); ++j) {
+
         if(items[j] == "@" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "begin" || items[j] == "end")
           continue;
         if(isdigit(items[j][0]))
@@ -270,7 +272,14 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
         if(k == vminfos[i_inst].pins.size())
           items[j] = real_name + std::string(".") + items[j];
       }
-      root.gates.push_back(items);
+      root.alwayses.push_back(items);
+      if(items[1] == "@") {
+        root.alwaysGates[root.alwayses.size()-1].push_back(real_name);
+        for(size_t kk = 0; kk < real_pins.size(); kk++)
+          root.alwaysGates[root.alwayses.size()-1].push_back(real_pins[kk]);
+      }
+
+
       ++i;
       continue;
     }
@@ -660,6 +669,13 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
 
   for (size_t i = 0; i < root.alwayses.size(); ++i) {
     if (root.alwayses[i][1] == "@") {
+      gate* p_gate;
+
+      std::vector< std::string > behPins;
+      std::string gateName = root.alwaysGates[i][0];
+      for (int kk = 1; kk < root.alwaysGates[i].size(); kk++)
+        behPins.push_back(root.alwaysGates[i][kk]);
+
       printf("__err__ : Sorry, behavior description is not supported yet.\n");
       return false;
     }
