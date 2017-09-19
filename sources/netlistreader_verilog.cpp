@@ -669,12 +669,13 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
 
   for (size_t i = 0; i < root.alwayses.size(); ++i) {
     if (root.alwayses[i][1] == "@") {
-      gate* p_gate;
+      gate* p_gate = NULL;
 
       std::vector< std::string > behPins;
       std::string gateName = root.alwaysGates[i][0];
       for (int kk = 1; kk < root.alwaysGates[i].size(); kk++)
         behPins.push_back(root.alwaysGates[i][kk]);
+      p_gate = CreateGate(gateName, "beh");
 
       printf("__err__ : Sorry, behavior description is not supported yet.\n");
       return false;
@@ -753,7 +754,7 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
       readNames = false;
     }
 
-    // Обработчик $dumpfile, пока без $dumpvars
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ $dumpfile, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ $dumpvars
 
     if(tokens[i].item == "$dumpfile") {
         std::string vcdname;

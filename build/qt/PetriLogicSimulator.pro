@@ -9,7 +9,8 @@ CONFIG -= qt
 
 # Directories
 
-SOURCES += ../../sources/datawriter.cpp
+SOURCES += ../../sources/datawriter.cpp \
+    ../../sources/simulator_threads.cpp
 SOURCES += ../../sources/event.cpp
 SOURCES += ../../sources/gates.cpp
 SOURCES += ../../sources/interpreter.cpp
