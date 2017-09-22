@@ -18,6 +18,13 @@ struct VerilogModuleInfo {
   std::string               name;
 };
 
+struct behGateInfo {
+  unsigned char             type;
+  std::string               name;
+  std::vector<std::string>  inputs;
+  std::vector<std::string>  outputs;
+};
+
 struct SuperDuperModule {
   std::string               name;
 
@@ -26,6 +33,7 @@ struct SuperDuperModule {
   std::vector < std::vector<std::string> >  alwayses;
   std::vector < std::vector<std::string> >  gates;
   std::map <int, std::vector<std::string> > alwaysGates;
+  std::map <int, behGateInfo> alwsGates;
 
 } root;
 
@@ -208,8 +216,10 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       continue;
     }
     if ("wire" == tokens[i].item || "reg" == tokens[i].item || "input" == tokens[i].item || "output" == tokens[i].item) {
-      while (";" != tokens[i].item)
+      while (";" != tokens[i].item) {
+
         ++i;
+      }
       continue;
     }
     if ("initial" == tokens[i].item) {
@@ -281,6 +291,9 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       }
       root.alwayses.push_back(items);
       if(items[1] == "@") {
+        for(size_t lk = vminfos[i_inst].token_start; lk < vminfos[i_inst].token_end; lk++ ) {
+
+        }
         root.alwaysGates[root.alwayses.size()-1].push_back(real_name);
         for(size_t kk = 0; kk < real_pins.size(); kk++)
           root.alwaysGates[root.alwayses.size()-1].push_back(real_pins[kk]);
