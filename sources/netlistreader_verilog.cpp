@@ -218,6 +218,49 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
         ++i;
       continue;
     }
+    if ("input" == tokens[i].item) {
+      ++i;
+      while (";" != tokens[i].item) {
+        if ("," != tokens[i].item) {
+          std::string pin = tokens[i].item;
+          size_t k = 0;
+          for (; k < vminfos[i_inst].pins.size(); ++k)
+            if (pin == vminfos[i_inst].pins[k]) {
+              //if (items[j] == real_pins[k]) {
+              pin = real_pins[k];
+              break;
+            }
+          if (k == vminfos[i_inst].pins.size())
+            pin = real_name + std::string(".") + pin;
+          inputs.push_back(pin);
+
+        }
+        ++i;
+      }
+      ++i;
+      //continue;
+    }
+    if ("output" == tokens[i].item) {
+      ++i;
+      while (";" != tokens[i].item) {
+        if ("," != tokens[i].item) {
+          std::string pin = tokens[i].item;
+          size_t k = 0;
+          for (; k < vminfos[i_inst].pins.size(); ++k)
+            if (pin == vminfos[i_inst].pins[k]) {
+              //if (items[j] == real_pins[k]) {
+              pin = real_pins[k];
+              break;
+            }
+          if (k == vminfos[i_inst].pins.size())
+            pin = real_name + std::string(".") + pin;
+          outputs.push_back(pin);
+        }
+        ++i;
+      }
+      ++i;
+      //continue;
+    }
     if ("wire" == tokens[i].item || "reg" == tokens[i].item || "input" == tokens[i].item || "output" == tokens[i].item) {
       while (";" != tokens[i].item) {
         ++i;
@@ -293,20 +336,16 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       }
       root.alwayses.push_back(items);
       if(items[1] == "@") {
-        for(size_t lk = vminfos[i_inst].token_start; lk < vminfos[i_inst].token_end; lk++ ) {
-
-        }
-        root.alwaysGates[root.alwayses.size()-1].push_back(real_name);
-        for(size_t kk = 0; kk < real_pins.size(); kk++)
-          root.alwaysGates[root.alwayses.size()-1].push_back(real_pins[kk]);
+        root.alwsGates[root.alwayses.size() - 1].name = real_name;
+        root.alwsGates[root.alwayses.size() - 1].inputs = inputs;
+        root.alwsGates[root.alwayses.size() - 1].outputs = outputs;
       }
 
 
       ++i;
 
-      //if (items[1] != "@") 
+      
         continue;
-      //i = tempi;
     }
     if ("assign" == tokens[i].item) {
       items.clear();
