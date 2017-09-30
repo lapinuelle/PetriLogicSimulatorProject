@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "nets.h"
 
 class gate {
@@ -20,6 +21,8 @@ public:
   virtual void operate()=0;             ///< Момент сети Петри t_0
   bool t_plus();                        
   virtual bool postprocess() = 0;
+  std::vector<std::string> tokens;
+  std::map<std::string, int> jumps;
 public:
   virtual ~gate() {};
 };
@@ -31,6 +34,7 @@ public:
   void operate();
   bool t_plus();
   bool postprocess();
+  
 };
 
 class gate_not: public gate{

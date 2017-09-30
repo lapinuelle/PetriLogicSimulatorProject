@@ -737,11 +737,40 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
       gate* p_gate = NULL;
 
       std::vector< std::string > behPins;
-      std::string gateName = root.alwaysGates[i][0];
+      std::string gateName = root.alwsGates[i].name;
       for (int kk = 1; kk < root.alwaysGates[i].size(); kk++)
         behPins.push_back(root.alwaysGates[i][kk]);
       p_gate = CreateGate(gateName, "beh");
-
+      for (size_t iin = 0; iin < root.alwsGates[i].inputs.size(); iin++)
+        p_gate->ins.push_back(netl->addNetMap(root.alwsGates[i].inputs[iin], p_gate));
+      for (size_t iout = 0; iout < root.alwsGates[i].outputs.size(); iout++)
+        p_gate->outs.push_back(netl->addNetMap(root.alwsGates[i].outputs[iout], NULL));
+      size_t ii = 2;
+      while (root.alwayses[i][ii] != "end") {
+        if ((root.alwayses[i][ii] != "posedge") && (root.alwayses[i][ii] != "negedge")) {
+          p_gate->tokens.push_back("cmp");
+          p_gate->tokens.push_back(root.alwayses[i][ii]);
+          p_gate->tokens.push_back("*");
+          ii = ii + 2;
+        }
+        if (root.alwayses[i][ii] == "posedge") {
+          p_gate->tokens.push_back("cmp");
+          p_gate->tokens.push_back(root.alwayses[i][ii+1]);
+          p_gate->tokens.push_back("/");
+          ii = ii + 3;
+        } 
+        if (root.alwayses[i][ii] == "negedge") {
+          p_gate->tokens.push_back("cmp");
+          p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
+          p_gate->tokens.push_back("/");
+          ii = ii + 3;
+        }
+        if (root.alwayses[i][ii] == "end") {
+          p_gate->tokens.push_back("@alwsend");
+          p_gate->jumps["@alwsend"] = p_gate->tokens.size() - 1;
+          ii = ii + 1;
+        }
+      }
       
 
       // From here we're starting to parse behavioral description into assembler code
