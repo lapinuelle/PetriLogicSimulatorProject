@@ -23,7 +23,12 @@ module beh_inv(x, y);
   
   always @x
   begin
-    y = ~x;
+	if(x == 1) {
+	  y = 0;
+	}
+	if(x == 0) {
+	  y = 1;
+	}
   end
 endmodule
 
