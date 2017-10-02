@@ -21,6 +21,8 @@ void interpreter::cmp(net* net, LogicLevel value) {
 void interpreter::cmp(net* net, std::string value) {
   if (net->stability == value)
     flags["ZF"] = 1;
+  if (value == "*")
+    flags["ZF"] = 1;
 }
 
 void interpreter::mov(LogicLevel value, net* net) {
@@ -92,7 +94,7 @@ void interpreter::operate(std::vector<std::string> commands, std::map<std::strin
         i = jumps[commands[i + 1]];
     }
     if ((commands[i] == "cmp") || (commands[i] == "CMP")) {
-      if ((commands[i + 2] == "\\") || (commands[i + 2] == "/")) {
+      if ((commands[i + 2] == "\\") || (commands[i + 2] == "/") || (commands[i + 2] == "*")) {
         cmp(netl->returnNetMap(commands[i + 1]), commands[i + 2]);
       } else {
         cmp(netl->returnNetMap(commands[i + 1]), atol(commands[i + 2]));

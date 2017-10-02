@@ -621,6 +621,7 @@ bool netlistreader_verilog::parse_flat_gates(netlist *netl, sim_data *simul_data
 
     p_gate->repeat = 0;
     netl->addGate(p_gate);
+    netl->addGateMap(p_gate);
   }
   return true;
 }
@@ -692,6 +693,7 @@ bool netlistreader_verilog::parse_flat_assigns(netlist *netl, sim_data *simul_da
         p_gate->ins.push_back(netl->addNetMap(root.assigns[i][4 + del], p_gate));
         p_gate->setDelay(delay);
         netl->addGate(p_gate);
+        netl->addGateMap(p_gate);
       }
       //
       // or, and, xor
@@ -720,6 +722,7 @@ bool netlistreader_verilog::parse_flat_assigns(netlist *netl, sim_data *simul_da
         }
         p_gate->setDelay(delay);
         netl->addGate(p_gate);
+        netl->addGateMap(p_gate);
       }
     }
   }
@@ -826,6 +829,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
           if (condition) {
             
             p_gate->tokens.push_back("@if"+std::to_string(nesting+jumpz-1)+":");
+            p_gate->jumps["@if" + std::to_string(nesting + jumpz - 1)] = p_gate->tokens.size() - 1;;
             condition = false;
           }
           nesting--;
@@ -836,6 +840,8 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
       }
       if (ended) {
         ended = false;
+        netl->gatesMap[p_gate->name] = p_gate;
+        netl->returnMapGate(p_gate->name)->repeat = 0;
         return true;
       }
     }
@@ -880,13 +886,22 @@ bool netlistreader_verilog::parse_flat_netlist(netlist *netl, sim_data *simul_da
   if (!parse_flat_alwayses(netl, simul_data))
     return false;
 
-  netl->repeats = new int[netl->gates.size()];
+  netl->repeats = new int[netl->gatesMap.size()];
 
-  for (size_t i = 0; i < netl->gates.size(); ++i) {
-    netl->gates[i]->repeat = &netl->repeats[i];
-    if (!netl->gates[i]->postprocess())
+  /*
+  for (size_t i = 0; i < netl->gatesMap.size(); ++i) {
+    netl->gatesMap[i]->repeat = &netl->repeats[i];
+    if (!netl->gatesMap[i]->postprocess())
+      return false;
+      */
+  int i = 0;
+  for (std::map<std::string, gate*>::iterator it = netl->gatesMap.begin(); it != netl->gatesMap.end(); ++it) {
+    it->second->repeat = &netl->repeats[i];
+    i++;
+    if (!it->second->postprocess())
       return false;
   }
+  
 
   memset(netl->repeats, 0, sizeof(int)*netl->gates.size());
 

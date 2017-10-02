@@ -2,6 +2,7 @@
 #include "netlist.h"
 #include "simulation_data.h"
 #include "datawriter.h"
+#include "interpreter.h"
 #include "stack.h"
 #include <cstring>
 #include <thread>
@@ -93,8 +94,15 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
         }
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
-          if (*stackSim->gatesChain[index % stackSize]->repeat < 500)
-            stackSim->gatesChain[index % stackSize]->operate();
+          if (*stackSim->gatesChain[index % stackSize]->repeat < 500) {
+            gate *p_gate = stackSim->gatesChain[index % stackSize];
+            if (p_gate->tokens.empty()) {
+              p_gate->operate();
+            } else {
+              interpreter *interp = new interpreter();
+              interp->operate(stackSim->gatesChain[index % stackSize]->tokens, stackSim->gatesChain[index % stackSize]->jumps, netl);
+            }
+          }
         }
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t+ в сети Петри

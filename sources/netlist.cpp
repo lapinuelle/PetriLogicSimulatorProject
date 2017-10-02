@@ -114,6 +114,10 @@ std::vector<gate*> &netlist::returnGate(net* net) {									// возвращает gate, 
   return net->gates;
 }
 
+gate* netlist::returnMapGate(std::string name) {
+  return this->gatesMap[name];
+}
+
 
 void netlist::addGate(gate* gate) {
   this->gates.push_back(gate);
