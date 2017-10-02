@@ -1,4 +1,5 @@
 #include "gates.h"
+#include "interpreter.h"
 
 
 void gate::setDelay(int extDelay) {
@@ -63,7 +64,7 @@ bool gate_beh::postprocess() {
 }
 
 void gate_beh::operate() {
-  NULL;
+  interpreter *interp = new interpreter();
 }
 
 

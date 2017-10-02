@@ -320,7 +320,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
         ++j;
       for (; j < items.size(); ++j) {
 
-        if(items[j] == "@" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "begin" || items[j] == "end")
+        if(items[j] == "@" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "begin" || items[j] == "end" || items[j] == "==" || items[j] == "if" || items[j] == "{" || items[j] == "}" || items[j] == "else" || items[j] == "for" || items[j] == "(" || items[j] == ")")
           continue;
         if(isdigit(items[j][0]))
           continue;
@@ -748,13 +748,20 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
       for (size_t iout = 0; iout < root.alwsGates[i].outputs.size(); iout++)
         p_gate->outs.push_back(netl->addNetMap(root.alwsGates[i].outputs[iout], NULL));
       behGate = true;
+      p_gate->repeat = 0;
+      p_gate->setDelay(0);
     }
     
     if (behGate) {
       bool ended = false;
+      bool condition = false;
+      bool loop = false;
+      int nesting = 0;
+      int jumpz = 0;
       size_t ii = 1;
       while (!ended) {
         if ((root.alwayses[i][ii] == "begin")) {
+          nesting++;
           ii++;
           continue;
         }
@@ -790,13 +797,46 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
           p_gate->tokens.push_back("@alwsend:");
           p_gate->jumps["@alwsend"] = p_gate->tokens.size() - 1;
           ended = true;
+          nesting--;
+          continue;
+        }
+        if (root.alwayses[i][ii] == "if") {
+          p_gate->tokens.push_back("cmp");
+          p_gate->tokens.push_back(root.alwayses[i][ii + 2]);
+          p_gate->tokens.push_back(root.alwayses[i][ii + 4]);
+          if(root.alwayses[i][ii + 3] == "==")
+            p_gate->tokens.push_back("jnz");
+          p_gate->tokens.push_back("@if"+std::to_string(nesting+1+jumpz));
+          jumpz++;
+          condition = true;
+        }
+        if (root.alwayses[i][ii] == "{") {
+          nesting++;
+          ++ii;
+          continue;
+        }
+        if (root.alwayses[i][ii] == "=") {
+          p_gate->tokens.push_back("mov");
+          p_gate->tokens.push_back(root.alwayses[i][ii - 1]);
+          p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
+          ii+=2;
+          continue;
+        }
+        if (root.alwayses[i][ii] == "}") {
+          if (condition) {
+            
+            p_gate->tokens.push_back("@if"+std::to_string(nesting+jumpz-1)+":");
+            condition = false;
+          }
+          nesting--;
+          ++ii;
           continue;
         }
         ++ii;
       }
       if (ended) {
-        p_gate->tokens.push_back("exit");
-        return false;
+        ended = false;
+        return true;
       }
     }
     
