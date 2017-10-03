@@ -6,27 +6,37 @@
 #include "nets.h"
 
 void interpreter::cmp(net* net, LogicLevel value) {
-  if (net->value == value)
-    flags["ZF"] = 1;
-  if (net->value > value) {
-    flags["ZF"] = 0;
-    flags["GF"] = 1;
+  for (size_t i = 0; i < this->modeGate->ins.size(); i++) {
+    if (this->modeGate->ins[i]->name == net->name) {
+      if (this->modeGate->ins_temp[i] == value)
+        flags["ZF"] = 1;
+      if (this->modeGate->ins_temp[i] > value) {
+        flags["ZF"] = 0;
+        flags["GF"] = 1;
+      }
+      if (this->modeGate->ins_temp[i] < value) {
+        flags["ZF"] = 0;
+        flags["LF"] = 1;
+      }
+    }
   }
-  if (net->value < value) {
-    flags["ZF"] = 0;
-    flags["LF"] = 1;
-  }
+  
 }
 
 void interpreter::cmp(net* net, std::string value) {
   if (net->stability == value)
     flags["ZF"] = 1;
   if (value == "*")
-    flags["ZF"] = 1;
+    if ((net->stability == "/") || (net->stability == "\\"))
+      flags["ZF"] = 1;
 }
 
 void interpreter::mov(LogicLevel value, net* net) {
-  net->value = value;
+  for (size_t i = 0; i < this->modeGate->outs.size(); i++) {
+    if (this->modeGate->outs[i]->name == net->name) {
+      this->modeGate->outs_temp[i] = value;
+    }
+  }
 }
 
 void interpreter::add(LogicLevel value1, LogicLevel value2) {
@@ -63,7 +73,10 @@ interpreter::interpreter() {
   this->reset();
 }
 
-void interpreter::operate(std::vector<std::string> commands, std::map<std::string, int> jumps, netlist* netl) {
+void interpreter::operate(gate* currentGate, netlist* netl) {
+  this->modeGate = currentGate;
+  std::vector<std::string> commands = this->modeGate->tokens;
+  std::map<std::string, int> jumps = this->modeGate->jumps;
   int commandsSize = commands.size();
   int i = 0;
   while (i < commandsSize) {

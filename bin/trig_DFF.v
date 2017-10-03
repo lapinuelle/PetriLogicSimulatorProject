@@ -36,9 +36,9 @@ module dff(D, C, Q, nQ);
   input D, C;
   output Q, nQ;
   
-  //assign net0 = ~D;
+  assign net0 = ~D;
   //not   not1(net0, D);
-  inv i1(D, net0);
+  //inv i1(D, net0);
   
   assign net1 = D | C;
   //or    or1(net1, D, C);

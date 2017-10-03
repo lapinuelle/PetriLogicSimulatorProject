@@ -7,6 +7,7 @@
 #include <map>
 #include "logiclevel.h"
 #include "netlist.h"
+#include "gates.h"
 
 class gate;
 class net;
@@ -26,7 +27,8 @@ public:
   void pnxor(LogicLevel, LogicLevel);
 
   void reset();
-  void operate(std::vector<std::string>, std::map<std::string, int>, netlist*);
+  void operate(gate*, netlist*);
+  gate* modeGate;
 
   std::map <std::string, int> flags;
   std::map <std::string, int> intRegisters;

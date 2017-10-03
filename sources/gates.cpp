@@ -8,9 +8,14 @@ void gate::setDelay(int extDelay) {
 
 //methods for Petri
 void gate::t_minus() {
-    for(size_t i =0 ; i < ins.size(); ++i)
-      ins_temp[i] = ins[i]->value;
+  for (size_t i = 0; i < ins.size(); ++i) {
+    if (((ins[i]->value == level_0) || (ins[i]->value == level_u)) && (ins_temp[i] == level_1))
+      ins[i]->stability = '\\';
+    if (((ins[i]->value == level_1) || (ins[i]->value == level_u)) && (ins_temp[i] == level_0))
+      ins[i]->stability = '/';
+    ins_temp[i] = ins[i]->value;
   }
+}
 
 bool gate::t_plus() {
   ++(*repeat);
@@ -33,9 +38,9 @@ gate_beh::gate_beh(std::string nameFile) {
 void gate_beh::t_minus() {
     for (size_t i = 0; i < ins.size(); ++i) {
       if (((ins[i]->value == level_0) || (ins[i]->value == level_u)) && (ins_temp[i] == level_1))
-        ins[i]->stability = '/';
-      if (((ins[i]->value == level_1) || (ins[i]->value == level_u)) && (ins_temp[i] == level_0))
         ins[i]->stability = '\\';
+      if (((ins[i]->value == level_1) || (ins[i]->value == level_u)) && (ins_temp[i] == level_0))
+        ins[i]->stability = '/';
     ins_temp[i] = ins[i]->value;
     }
   }

@@ -100,7 +100,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
               p_gate->operate();
             } else {
               interpreter *interp = new interpreter();
-              interp->operate(stackSim->gatesChain[index % stackSize]->tokens, stackSim->gatesChain[index % stackSize]->jumps, netl);
+              interp->operate(stackSim->gatesChain[index % stackSize], netl);
             }
           }
         }
