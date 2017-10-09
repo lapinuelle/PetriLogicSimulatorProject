@@ -8,6 +8,13 @@ module 3invertors (in, out);
 	not not1(inv1, in);
 	not not2(inv2, inv1);
 	not not3(out, inv2);
+endmodule
+
+module tb_3inv();
+	reg in;
+	wire out;
+	
+	3invertors invert(in, out);
 	
 	initial begin
     $dumpfile("3inv.vcd");

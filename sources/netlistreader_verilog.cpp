@@ -523,12 +523,12 @@ bool netlistreader_verilog::unwrap_from_root(std::string rootname) {
 
     std::string name = root.gates[i][1];
 
-    size_t j = 2;
+    size_t j = 1;
     while (")" != root.gates[i][j]) {
       ++j;
-      if (")" == root.gates[i][j])
+      if (")" == root.gates[i][j] || "(" == root.gates[i][j])
         continue;
-      if ("," == root.gates[i][j] || "input" == root.gates[i][j] || "out" == root.gates[i][j])
+      if ("," == root.gates[i][j] || "input" == root.gates[i][j] || "output" == root.gates[i][j])
         continue;
       pins.push_back(root.gates[i][j]);
     };

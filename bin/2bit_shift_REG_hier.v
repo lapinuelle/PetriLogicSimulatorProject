@@ -35,7 +35,7 @@ endmodule
 
 module shift_REG_2bits(D, C, Q1, Q2);
   input D, C;
-  output Q1, Q2;
+  output Q1, Q2, nQ1, nQ2;
  
   dff d1(D,  C, Q1, nQ1);
   dff d2(Q1, C, Q2, nQ2);
