@@ -11,6 +11,8 @@ void gate::t_minus() {
   for (size_t i = 0; i < ins.size(); ++i) {
     if (((ins[i]->value == level_0) || (ins[i]->value == level_u)) && (ins_temp[i] == level_1))
       ins[i]->stability = '\\';
+    if (ins[i]->value == ins_temp[i])
+      ins[i]->stability = '_';
     if (((ins[i]->value == level_1) || (ins[i]->value == level_u)) && (ins_temp[i] == level_0))
       ins[i]->stability = '/';
     ins_temp[i] = ins[i]->value;

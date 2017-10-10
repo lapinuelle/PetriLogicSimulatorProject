@@ -63,10 +63,21 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
               break;
             }
           }
-          if (!stateChanged)
+          if (!stateChanged) {
+            if (((simData->newEventChain[time]->netsChain[i]->value == level_0) || (simData->newEventChain[time]->netsChain[i]->value == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
+              simData->newEventChain[time]->netsChain[i]->stability = '\\';
+            if (((simData->newEventChain[time]->netsChain[i]->value == level_1) || (simData->newEventChain[time]->netsChain[i]->value == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
+              simData->newEventChain[time]->netsChain[i]->stability = '/';
             simData->newEventChain[time]->netsChain[i]->value = simData->newEventChain[time]->statesChain[i];
+
+          }
         } else {
+          if (((simData->newEventChain[time]->netsChain[i]->value == level_0) || (simData->newEventChain[time]->netsChain[i]->value == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
+            simData->newEventChain[time]->netsChain[i]->stability = '\\';
+          if (((simData->newEventChain[time]->netsChain[i]->value == level_1) || (simData->newEventChain[time]->netsChain[i]->value == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
+            simData->newEventChain[time]->netsChain[i]->stability = '/';
           simData->newEventChain[time]->netsChain[i]->value = simData->newEventChain[time]->statesChain[i];
+
         }
       }
 

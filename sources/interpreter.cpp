@@ -27,7 +27,7 @@ void interpreter::cmp(net* net, std::string value) {
   if (net->stability == value)
     flags["ZF"] = 1;
   if (value == "*")
-    if ((net->stability == "/") || (net->stability == "\\"))
+    if (net->stability != "_")
       flags["ZF"] = 1;
 }
 
@@ -112,9 +112,11 @@ void interpreter::operate(gate* currentGate, netlist* netl) {
       } else {
         cmp(netl->returnNetMap(commands[i + 1]), atol(commands[i + 2]));
       }
+      i += 2;
     }
     if ((commands[i] == "mov") || (commands[i] == "MOV")) {
       mov(atol(commands[i + 2]), (netl->returnNetMap(commands[i + 1])));
+      i += 2;
     }
     if ((commands[i] == "add") || (commands[i] == "ADD")) {
       if (atol(commands[i + 1]) != level_u) {
@@ -122,18 +124,23 @@ void interpreter::operate(gate* currentGate, netlist* netl) {
       } else {
         add(atoi(commands[i + 1].c_str()), atoi(commands[i + 2].c_str()));
       }
+      i += 2;
     }
     if ((commands[i] == "sub") || (commands[i] == "SUB")) {
       sub(atol(commands[i + 1]), atol(commands[i + 2]));
+      i += 2;
     }
     if ((commands[i] == "and") || (commands[i] == "AND")) {
       pnand(atol(commands[i + 1]), atol(commands[i + 2]));
+      i += 2;
     }
     if ((commands[i] == "or") || (commands[i] == "OR")) {
       pnor(atol(commands[i + 1]), atol(commands[i + 2]));
+      i += 2;
     }
     if ((commands[i] == "xor") || (commands[i] == "XOR")) {
       pnxor(atol(commands[i + 1]), atol(commands[i + 2]));
+      i += 2;
     }
 
     i++;

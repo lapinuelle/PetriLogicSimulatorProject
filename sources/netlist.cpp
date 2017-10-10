@@ -83,7 +83,7 @@ net* netlist::addNetMap(const std::string &net_name, gate *gate) {
 
 		netPointer = new net(net_name);
 		if (gate != NULL)
-		netPointer->gates.push_back(gate);
+		  netPointer->gates.push_back(gate);
 		netsMap[net_name] = netPointer;
 		return netPointer;
 	}

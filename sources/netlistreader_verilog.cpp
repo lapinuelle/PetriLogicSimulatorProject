@@ -746,6 +746,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
       for (int kk = 1; kk < root.alwaysGates[i].size(); kk++)
         behPins.push_back(root.alwaysGates[i][kk]);
       p_gate = CreateGate(gateName, "beh");
+     
       for (size_t iin = 0; iin < root.alwsGates[i].inputs.size(); iin++)
         p_gate->ins.push_back(netl->addNetMap(root.alwsGates[i].inputs[iin], p_gate));
       for (size_t iout = 0; iout < root.alwsGates[i].outputs.size(); iout++)
@@ -842,7 +843,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
         ended = false;
         netl->gatesMap[p_gate->name] = p_gate;
         netl->returnMapGate(p_gate->name)->repeat = 0;
-        return true;
+        continue;
       }
     }
     

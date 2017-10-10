@@ -1,10 +1,24 @@
 // -i 2bit_shift_REG_hier.v -r DFF_test -s 20 -multicore
+module inv(in, out);
+  input in;
+  output out;
+  always @in
+    begin
+      if(in == 0) {
+        out = 1;
+      }
+      if(in == 1) {
+        out = 0;
+      }
+    end
+endmodule
+
 module dff(D, C, Q, nQ);
   input D, C;
   output Q, nQ;
   
-  not   not1(net0, D);
-  //inv not1(net0, D);
+  //not   not1(net0, D);
+  inv not1(net0, D);
   
   or    or1(net1, D, C);
   or    or2(net2, C, net0);
@@ -19,19 +33,7 @@ module dff(D, C, Q, nQ);
   nor   nor2(nQ, Q, net6);
 endmodule
 
-//module inv(in, out);
-//  input in;
-//  output out;
-//  always @in
-//    begin
-//      if(in == 0) {
-//        out = 1;
-//      }
-//      if(in == 1) {
-//        out = 0;
-//      }
-//    end
-//endmodule
+
 
 module shift_REG_2bits(D, C, Q1, Q2);
   input D, C;
