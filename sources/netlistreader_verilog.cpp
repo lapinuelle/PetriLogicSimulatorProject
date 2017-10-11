@@ -654,9 +654,21 @@ bool netlistreader_verilog::parse_flat_initials(netlist *netl, sim_data *simul_d
         if(simul_data->endTime < time)
           simul_data->endTime = time;
         ++j;
+        
         //ev_map = *(simul_data->addMapEvent(time, netl->addNet(root.initials[i][j], NULL), LogicLevel(atoi(root.initials[i][j + 2].c_str())), false));
-        ev_map = *(simul_data->addMapEvent(time, netl->addNetMap(root.initials[i][j], NULL), LogicLevel(atoi(root.initials[i][j + 2].c_str())), false));
-        j += 3;
+        while ((root.initials[i][j] != "#") || (root.initials[i][j] != "$finish")) {
+          if (root.initials[i][j] == "#" || root.initials[i][j] == "$finish") {
+            j--;
+            break;
+          }
+          if (root.initials[i][j] == ";") {
+            j++;
+            continue;
+          }
+
+          ev_map = *(simul_data->addMapEvent(time, netl->addNetMap(root.initials[i][j], NULL), LogicLevel(atoi(root.initials[i][j + 2].c_str())), false));
+          j += 3;
+        }
         continue;
       } // read delay #
 
