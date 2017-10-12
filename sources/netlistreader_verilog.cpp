@@ -882,7 +882,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
 
       
 
-      // From here we're starting to parse behavioral description into assembler code
+      
 
    //   printf("__err__ : Sorry, behavior description is not supported yet.\n");
    //   return false;

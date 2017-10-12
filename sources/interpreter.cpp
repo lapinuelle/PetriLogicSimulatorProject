@@ -6,6 +6,9 @@
 #include "nets.h"
 
 void interpreter::cmp(net* net, LogicLevel value) {
+  flags["ZF"] = 0;
+  flags["GF"] = 0;
+  flags["LF"] = 0;
   for (size_t i = 0; i < this->modeGate->ins.size(); i++) {
     if (this->modeGate->ins[i]->name == net->name) {
       if (this->modeGate->ins_temp[i] == value)

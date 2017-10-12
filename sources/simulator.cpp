@@ -40,6 +40,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
   //for (size_t time = 0; time < simData->eventChain.size(); ++time) {
   for (int time = 0; time < simData->endTime; time++) {
     if (simData->newEventChain[time]) {
+      printf("Current time: %d\n", time);
    
 
   #if defined DEBUG_PRINT_CYCLE_TIME
@@ -100,8 +101,9 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
           temp_free = stackSim->free;
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t- в сети Петри
-          if (*stackSim->gatesChain[index % stackSize]->repeat < 500)
+          if (*stackSim->gatesChain[index % stackSize]->repeat < 500) {
             stackSim->gatesChain[index % stackSize]->t_minus();
+          }
         }
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
@@ -124,21 +126,19 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
                 for (int y = 0, gatchsize = stackSim->gatesChain[index % stackSize]->outs.size(); y < gatchsize; ++y) {
                   std::vector <gate*> &returned = netl->returnGate(stackSim->gatesChain[index % stackSize]->outs[y]);
                   if (!returned.empty())
-                    for (int index = 0, retsize = returned.size(); index < retsize; ++index) 
-                      stackSim->push_back(returned[index]);
+                    for (int indexx = 0, retsize = returned.size(); indexx < retsize; ++indexx) {
+                      stackSim->push_back(returned[indexx]);
+                    }
                 }
               }
             } else {
               for (size_t outst = 0; outst < stackSim->gatesChain[index % stackSize]->outs.size(); outst++) {
                 if (stackSim->gatesChain[index % stackSize]->outs[outst]->value != stackSim->gatesChain[index % stackSize]->outs_temp[outst]) {
                   Event *ev = (simData->addMapEvent(time + stackSim->gatesChain[index % stackSize]->delay, stackSim->gatesChain[index % stackSize]->outs[outst], stackSim->gatesChain[index % stackSize]->outs_temp[outst], true));
-                  //ev->delayed.push_back(true);
                   for (size_t ins = 0; ins < stackSim->gatesChain[index % stackSize]->ins.size(); ins++) {
                     (ev->inputStates[stackSim->gatesChain[index % stackSize]->outs[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->ins[ins]);
                     (ev->inputStatesValues[stackSim->gatesChain[index % stackSize]->outs[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->ins[ins]->value);
                   }
-                  
-
                 }
               }
             }
