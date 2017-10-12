@@ -42,6 +42,7 @@ public:
   netlistreader_verilog(std::string fileName);
  ~netlistreader_verilog();
 public:
+  std::map < std::string, std::string > realPins;
   bool is_my_format();
   bool read(netlist *netl, sim_data *simul_data, std::string rootname);
 private:

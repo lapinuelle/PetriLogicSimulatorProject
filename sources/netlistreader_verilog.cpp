@@ -15,6 +15,7 @@ struct VerilogModuleInfo {
   size_t                    token_start,
                             token_end;
   std::vector<std::string>  pins;
+  std::vector<std::string>  realPins;
   std::string               name;
 };
 
@@ -230,8 +231,10 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
               pin = real_pins[k];
               break;
             }
-          if (k == vminfos[i_inst].pins.size())
+          if (k == vminfos[i_inst].pins.size()) {
+            this->realPins[real_name + std::string(".") + pin] = pin;
             pin = real_name + std::string(".") + pin;
+          }
           inputs.push_back(pin);
 
         }
@@ -252,8 +255,10 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
               pin = real_pins[k];
               break;
             }
-          if (k == vminfos[i_inst].pins.size())
+          if (k == vminfos[i_inst].pins.size()) {
+            this->realPins[real_name + std::string(".") + pin] = pin;
             pin = real_name + std::string(".") + pin;
+          }
           outputs.push_back(pin);
         }
         ++i;
@@ -293,8 +298,10 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
             items[j] = real_pins[k];
             break;
           }
-        if(k == vminfos[i_inst].pins.size())
+        if (k == vminfos[i_inst].pins.size()) {
+          this->realPins[real_name + std::string(".") + items[j]] = items[j];
           items[j] = real_name + std::string(".") + items[j];
+        }
       }
       root.initials.push_back(items);
       ++i;
@@ -331,8 +338,10 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
             items[j] = real_pins[k];
             break;
           }
-        if(k == vminfos[i_inst].pins.size())
+        if (k == vminfos[i_inst].pins.size()) {
+          this->realPins[real_name + std::string(".") + items[j]] = items[j];
           items[j] = real_name + std::string(".") + items[j];
+        }
       }
       root.alwayses.push_back(items);
       if(items[1] == "@") {
@@ -367,8 +376,10 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
             items[j] = real_pins[k];
             break;
           }
-        if (k == vminfos[i_inst].pins.size())
+        if (k == vminfos[i_inst].pins.size()) {
+          this->realPins[real_name + std::string(".") + items[j]] = items[j];
           items[j] = real_name + std::string(".") + items[j];
+        }
       }
       root.assigns.push_back(items);
       //++i;
@@ -400,8 +411,10 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
           items[j] = real_pins[k];
           break;
         }
-      if (k == vminfos[i_inst].pins.size())
+      if (k == vminfos[i_inst].pins.size()) {
+        this->realPins[real_name + std::string(".") + items[j]] = items[j];
         items[j] = real_name + std::string(".") + items[j];
+      }
     }
     root.gates.push_back(items);
 
@@ -522,6 +535,9 @@ bool netlistreader_verilog::unwrap_from_root(std::string rootname) {
     std::vector<std::string>  pins;
 
     std::string name = root.gates[i][1];
+    if (name == "(")
+      name = root.gates[i][0] + std::to_string(i);
+
 
     size_t j = 1;
     while (")" != root.gates[i][j]) {
@@ -613,6 +629,8 @@ bool netlistreader_verilog::parse_flat_gates(netlist *netl, sim_data *simul_data
     }
 
     //p_gate->outs.push_back(netl->addNet(root.gates[i][j_pins], NULL));
+
+
     p_gate->outs.push_back(netl->addNetMap(root.gates[i][j_pins], NULL));
     j_pins += 2;
     for (; j_pins < root.gates[i].size() - 1; j_pins += 2)
@@ -665,8 +683,10 @@ bool netlistreader_verilog::parse_flat_initials(netlist *netl, sim_data *simul_d
             j++;
             continue;
           }
-
-          ev_map = *(simul_data->addMapEvent(time, netl->addNetMap(root.initials[i][j], NULL), LogicLevel(atoi(root.initials[i][j + 2].c_str())), false));
+          net* p_net;
+          p_net = netl->addNetMap(root.initials[i][j], NULL);
+          ev_map = *(simul_data->addMapEvent(time, p_net, LogicLevel(atoi(root.initials[i][j + 2].c_str())), false));
+          p_net->realName = this->realPins[p_net->name];
           j += 3;
         }
         continue;
@@ -898,7 +918,13 @@ bool netlistreader_verilog::parse_flat_netlist(netlist *netl, sim_data *simul_da
     return false;
   if (!parse_flat_alwayses(netl, simul_data))
     return false;
-
+  for (std::map<std::string, net*>::iterator it = netl->netsMap.begin(); it != netl->netsMap.end(); ++it) {
+    if (this->realPins[it->second->name] != "" && !this->realPins[it->second->name].empty()) {
+      it->second->realName = this->realPins[it->second->name];
+    } else {
+      it->second->realName = it->second->name;
+    }
+  }
   netl->repeats = new int[netl->gatesMap.size()];
 
   /*
