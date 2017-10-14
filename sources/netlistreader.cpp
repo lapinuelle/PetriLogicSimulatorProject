@@ -69,7 +69,8 @@ bool netlistreader_verilog::tokenize() {
     }
   }
   fclose(p_file);
-  tokens.pop_back();
+  if(tokens[tokens.size() - 1].item == tokens[tokens.size() - 2].item)
+	tokens.pop_back();
   
   // Find composite operands
   for(size_t i = 0; i < tokens.size() - 1; ++i) {
