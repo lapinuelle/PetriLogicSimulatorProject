@@ -45,7 +45,7 @@ void datawriter::PrintHeader() {
   fprintf(p_file,  "$scope module logic $end\n");
 
   for(size_t i = 0; i < nets.size(); ++i)
-    fprintf(p_file, "$var wire 1 %c %s $end\n", (char)i + 33, nets[i]->realName.c_str());
+    fprintf(p_file, "$var wire 1 %c %s $end\n", (char)i + 33, nets[i]->name.c_str());
   
   fprintf(p_file,  "$upscope $end\n");
   fprintf(p_file,  "$enddefinitions $end\n");
