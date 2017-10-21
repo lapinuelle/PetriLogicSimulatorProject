@@ -1,4 +1,11 @@
 // -i 2bit_shift_REG_hier.v -r DFF_test -s 20 -multicore
+
+`timescale 1ns/1ps
+
+`define LOGIC_FALSE 0
+`define LOGIC_TRUE  1
+`define OR_MACRO (x1, x2) x1 | x2
+
 module inv(in, out);
   input in;
   output out;
@@ -17,8 +24,8 @@ module dff(D, C, Q, nQ);
   input D, C;
   output Q, nQ;
   
-  //not   not1(net0, D);
-  inv not1(net0, D);
+  not   not1(net0, D);
+  //inv not1(net0, D);
   
   or    or1(net1, D, C);
   or    or2(net2, C, net0);
@@ -51,8 +58,8 @@ module DFF_test ();
   begin
     $dumpfile("2bit_shift_REG_hier.vcd");
     $dumpvars;
-    #0    D=0;
-    #0    C=0;
+    #0    D=`LOGIC_FALSE;
+          C=`LOGIC_FALSE;
     #10   C=1;
     #2   C=0;
     #3   D=1;

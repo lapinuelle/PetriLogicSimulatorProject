@@ -39,6 +39,10 @@ struct SuperDuperModule {
 } root;
 
 netlistreader_verilog::netlistreader_verilog(std::string fileName) : inetlistreader(fileName) {
+  timescale.str_timescale = "1ns";
+  timescale.str_precision = "1ps";
+  timescale.timescale = 1e-9;
+  timescale.precision = 1e-12;
 }
 
 netlistreader_verilog::~netlistreader_verilog() {
@@ -86,12 +90,75 @@ gate * netlistreader_verilog::CreateGate(const std::string &gate_name, const std
 
 
 bool netlistreader_verilog::read_macro(size_t &i) {
-  size_t line_orig = tokens[i].line;
-  // Just skip this line
-  while(line_orig == tokens[i].line)
+  if (tokens[i + 1].item == "timescale") {
+    timescale.str_timescale = tokens[i + 2].item;
+    timescale.str_precision = tokens[i + 4].item;
+    // Convert string to double
+    tokens.erase(tokens.begin() + i, tokens.begin() + i + 5);
+    return true;
+  }
+  
+  if (tokens[i + 1].item == "define" && tokens[i + 3].item != "(") {
+    size_t i_saved = i;
     ++i;
-  --i;
+    Macro m;
+    m.name = tokens[++i].item.c_str();
+
+    size_t line_orig = tokens[i].line;
+    while (line_orig == tokens[++i].line)
+      m.tokens.push_back(tokens[i].item);
+    //--i;
+    macros.push_back(m);
+    tokens.erase(tokens.begin() + i_saved, tokens.begin() + i);
+    i = i_saved;
+    return true;
+  }
+
+  if (tokens[i + 1].item == "define" && tokens[i + 3].item == "(") {
+    size_t i_saved = i;
+    ++i;
+    printf("\n__wrn__ [%d,%d]: '%s' macro with args is not supported yet.\n", tokens[i].line, tokens[i].pos, tokens[i].item.c_str());
+    printf("               '%s' macro will not be defined\n", tokens[i + 1].item.c_str());
+    size_t line_orig = tokens[i].line;
+    // Just skip this line
+    while (line_orig == tokens[i].line)
+      ++i;
+    //--i;
+    tokens.erase(tokens.begin() + i_saved, tokens.begin() + i);
+    i = i_saved;
+    return true;
+  }
+
+  // Если мы добрались до сюда - остаётся только одно - разворачивать макросы
+  size_t j = 0;
+  for (j = 0; j < macros.size(); ++j)
+    if (macros[j].name == tokens[i + 1].item)
+      break;
+  if (j >= macros.size()) {
+    printf("\n__err__ [%d,%d]: unknown macro '%s' is used.\n", tokens[i].line, tokens[i].pos, tokens[i + 1].item.c_str());
+    return false;
+  }
+  size_t line = tokens[i].line;
+  tokens.erase(tokens.begin() + i);
+  tokens.erase(tokens.begin() + i);
+  token t;
+  for (size_t k = 0; k < macros[j].tokens.size(); ++k) {
+    t.line = line;
+    t.item = macros[j].tokens[k];
+    tokens.insert(tokens.begin() + i + k, t);
+  }
   return true;
+}
+
+bool netlistreader_verilog::preprocess_file() {
+  for (size_t i = 0; i < tokens.size(); ++i) {
+    // Reading some kind of macro
+    if ("`" == tokens[i].item) {
+      if (!this->read_macro(i))
+        return false;
+      --i;
+    }
+  }
 }
 
 bool netlistreader_verilog::read_moduleInfo(size_t &i, VMIs &vminfos) {
@@ -560,6 +627,8 @@ bool netlistreader_verilog::unwrap_from_root(std::string rootname) {
 bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data, std::string rootname) {
   if(!tokenize())
     return false;
+  if (!preprocess_file())
+    return false;
 
   size_t  errCounter = 0;
 
@@ -582,6 +651,8 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data, std::strin
       if(!this->read_macro(i))
         ++errCounter;
       continue;
+      //printf("__err__ [%d,%d]: Unhandled macro '%s'.\n", tokens[i].line, tokens[i].pos, tokens[i + 1].item.c_str());
+      //return false;
     }
 
     if ("module" == tokens[i].item) {
@@ -943,6 +1014,7 @@ bool netlistreader_verilog::parse_flat_netlist(netlist *netl, sim_data *simul_da
   
 
   memset(netl->repeats, 0, sizeof(int)*netl->gates.size());
+  simul_data->timescale = this->timescale;
 
   return true;
 }

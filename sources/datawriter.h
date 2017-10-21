@@ -27,12 +27,14 @@ public:
 class datawriter {
   std::string fileNameVCD;
   std::vector<net *>  nets;
+  std::string         timescale_value;
 public:
   datawriter(std::string fileName);
 public:
   void AddDumpVar(net *net);
   void PrintHeader();
   void DumpVars(int time);
+  void SetTimescale(std::string val);
 };
 
 #endif

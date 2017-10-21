@@ -13,6 +13,11 @@ struct token {
               pos;
 };
 
+struct Macro {
+  std::string               name;
+  std::vector<std::string>  tokens;
+};
+
 void clear_at_left(std::string &line);
 void clear_at_right(std::string &line);
 
@@ -37,7 +42,9 @@ typedef std::vector <VerilogModuleInfo> VMIs;
 
 // netlistreader implementation for Verilog file format
 class netlistreader_verilog : public inetlistreader {
-  VMIs              vminfos;
+  VMIs                vminfos;
+  TimescaleInfo       timescale;
+  std::vector<Macro>  macros;
 public:
   netlistreader_verilog(std::string fileName);
  ~netlistreader_verilog();
@@ -47,6 +54,7 @@ public:
   bool read(netlist *netl, sim_data *simul_data, std::string rootname);
 private:
   bool read_macro(size_t &i);
+  bool preprocess_file();
   bool read_moduleInfo(size_t &i, VMIs &vminfos);
   bool unwrap_from_root(std::string rootname);
   bool unwrap_module(size_t &i_gate, std::string &real_name, std::vector<std::string> &real_pins);

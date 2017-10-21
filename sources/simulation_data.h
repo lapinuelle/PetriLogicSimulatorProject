@@ -10,6 +10,12 @@
 #include "stack.h"
 #include <map>
 
+struct TimescaleInfo {
+  std::string str_timescale, str_precision;
+  double      timescale, precision;
+};
+
+
 class sim_data {
 public:
   std::vector <LogicLevel> oneState;
@@ -34,6 +40,7 @@ public:
   sim_data();
   void setVCDname(std::string name);
   std::string getVCDname();
+  TimescaleInfo timescale;
 private:
 	std::string vcdName;
 };
