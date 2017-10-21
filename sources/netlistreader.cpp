@@ -49,9 +49,9 @@ bool netlistreader_verilog::tokenize() {
       clear_at_left(line);
 	  
       ++token_no;
-      tk.line = line_no;
-      tk.pos = token_no;
-      pos = line.find_first_of(" \t\n\"()+-*/=.,[]{}#@!~;`");
+      tk.line = tk.line_orig = line_no;
+      tk.pos = tk.pos_orig = token_no;
+      pos = line.find_first_of(" \t\n\"()+-*/=.,[]{}#@!~;`\\");
       if(pos == std::string::npos) {
         tk.item = line;
         tokens.push_back(tk);
@@ -133,6 +133,26 @@ bool netlistreader_verilog::tokenize() {
     }
   }
   
+  // Merge strings by "\" at the end of line
+  for (size_t i = 0; i < tokens.size(); ++i) {
+    if (tokens[i].item != "\\")
+      continue;
+    if (tokens[i].line == tokens[i + 1].line)
+      continue;
+    size_t line_1 = tokens[i].line;
+    size_t line_2 = tokens[i + 1].line;
+    size_t pos = tokens[i].pos;
+
+    size_t j = i + 1;
+    while (line_2 == tokens[j].line) {
+      tokens[j].line = line_1;
+      tokens[j].pos = pos++;
+      ++j;
+    }
+    tokens.erase(tokens.begin() + i);
+    i = j - 2;
+  }
+
   return true;
 }
 

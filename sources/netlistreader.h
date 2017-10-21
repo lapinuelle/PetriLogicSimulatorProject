@@ -10,7 +10,9 @@
 struct token {
   std::string item;
   size_t      line,
-              pos;
+              line_orig,
+              pos,
+              pos_orig;
 };
 
 struct Macro {

@@ -151,14 +151,15 @@ bool netlistreader_verilog::read_macro(size_t &i) {
 }
 
 bool netlistreader_verilog::preprocess_file() {
+  // Reading some kind of macro
   for (size_t i = 0; i < tokens.size(); ++i) {
-    // Reading some kind of macro
     if ("`" == tokens[i].item) {
       if (!this->read_macro(i))
         return false;
       --i;
     }
   }
+  return true;
 }
 
 bool netlistreader_verilog::read_moduleInfo(size_t &i, VMIs &vminfos) {
@@ -648,11 +649,11 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data, std::strin
 
     // Reading some kind of macro
     if ("`" == tokens[i].item) {
-      if(!this->read_macro(i))
-        ++errCounter;
-      continue;
-      //printf("__err__ [%d,%d]: Unhandled macro '%s'.\n", tokens[i].line, tokens[i].pos, tokens[i + 1].item.c_str());
-      //return false;
+      //if(!this->read_macro(i))
+      //  ++errCounter;
+      //continue;
+      printf("__err__ [%d,%d]: Unhandled macro '%s'.\n", tokens[i].line, tokens[i].pos, tokens[i + 1].item.c_str());
+      return false;
     }
 
     if ("module" == tokens[i].item) {
