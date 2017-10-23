@@ -830,10 +830,21 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
           continue;
         }
         if (root.alwayses[i][ii] == "end") {
-          p_gate->tokens.push_back("@alwsend:");
-          p_gate->jumps["@alwsend"] = p_gate->tokens.size() - 1;
-          ended = true;
+          if (condition) {
+
+            p_gate->tokens.push_back("@if" + std::to_string(nesting + jumpz - 1) + ":");
+            p_gate->jumps["@if" + std::to_string(nesting + jumpz - 1)] = p_gate->tokens.size() - 1;;
+            condition = false;
+          }
+
           nesting--;
+          if (nesting == 0) {
+            p_gate->tokens.push_back("@alwsend:");
+            p_gate->jumps["@alwsend"] = p_gate->tokens.size() - 1;
+            ended = true;
+            continue;
+          }
+          ++ii;
           continue;
         }
         if (root.alwayses[i][ii] == "if") {
@@ -846,11 +857,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
           jumpz++;
           condition = true;
         }
-        if (root.alwayses[i][ii] == "{") {
-          nesting++;
-          ++ii;
-          continue;
-        }
+        
         if (root.alwayses[i][ii] == "=") {
           p_gate->tokens.push_back("mov");
           p_gate->tokens.push_back(root.alwayses[i][ii - 1]);
@@ -858,7 +865,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
           ii+=2;
           continue;
         }
-        if (root.alwayses[i][ii] == "}") {
+        /*if (root.alwayses[i][ii] == "}") {
           if (condition) {
             
             p_gate->tokens.push_back("@if"+std::to_string(nesting+jumpz-1)+":");
@@ -868,7 +875,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
           nesting--;
           ++ii;
           continue;
-        }
+        }*/
         ++ii;
       }
       if (ended) {
