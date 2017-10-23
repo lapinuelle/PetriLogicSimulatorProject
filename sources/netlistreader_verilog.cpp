@@ -191,7 +191,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
     ++i;
     if (")" == root.gates[i_gate][i])
       continue;
-    if ("," == root.gates[i_gate][i] || "input" == root.gates[i_gate][i] || "out" == root.gates[i_gate][i])
+    if ("," == root.gates[i_gate][i] || "input" == root.gates[i_gate][i] || "output" == root.gates[i_gate][i])
       continue;
     pins.push_back(root.gates[i_gate][i]);
   };
@@ -311,9 +311,10 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
     int tempi = 0;
 
     if ("always" == tokens[i].item) {
+      int nesting = 0;
       tempi = i;
       items.clear();
-      while ("end" != tokens[i].item) {
+      while (("end" != tokens[i].item) && (nesting)) {
         items.push_back(tokens[i].item);
         ++i;
       }
@@ -323,10 +324,23 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
         items.push_back(tokens[i].item);
       }
       size_t j = 1;
-      if(items[j] == "begin")
+      if (items[j] == "begin") {
+        nesting++;
         ++j;
+      }
+      if (items[j] == "end") {
+        nesting--;
+        ++j;
+      }
       for (; j < items.size(); ++j) {
-
+        if (items[j] == "begin") {
+          nesting++;
+          ++j;
+        }
+        if (items[j] == "end") {
+          nesting--;
+          ++j;
+        }
         if(items[j] == "@" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "begin" || items[j] == "end" || items[j] == "==" || items[j] == "if" || items[j] == "{" || items[j] == "}" || items[j] == "else" || items[j] == "for" || items[j] == "(" || items[j] == ")")
           continue;
         if(isdigit(items[j][0]))
