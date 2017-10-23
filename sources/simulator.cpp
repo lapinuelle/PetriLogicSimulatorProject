@@ -40,14 +40,12 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
   //for (size_t time = 0; time < simData->eventChain.size(); ++time) {
   for (int time = 0; time < simData->endTime; time++) {
     if (simData->newEventChain[time]) {
-      printf("Current time: %d\n", time);
-   
 
   #if defined DEBUG_PRINT_CYCLE_TIME
       clock_t time_start = clock();
   #endif
       //printf("=== Time = [%d] ===\n", time);
-      memset(netl->repeats, 0, sizeof(int)*netl->gates.size());
+      memset(netl->repeats, 0, sizeof(int)*netl->gatesMap.size());
 
       // присваиваем новые входные воздействия из тестбенча портам
       
@@ -101,9 +99,8 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
           temp_free = stackSim->free;
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t- в сети Петри
-          if (*stackSim->gatesChain[index % stackSize]->repeat < 500) {
+          if (*stackSim->gatesChain[index % stackSize]->repeat < 500) 
             stackSim->gatesChain[index % stackSize]->t_minus();
-          }
         }
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри

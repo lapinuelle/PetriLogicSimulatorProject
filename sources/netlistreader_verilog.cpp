@@ -638,7 +638,7 @@ bool netlistreader_verilog::parse_flat_gates(netlist *netl, sim_data *simul_data
       //p_gate->ins.push_back(netl->addNet(root.gates[i][j_pins], p_gate));
 
     p_gate->repeat = 0;
-    netl->addGate(p_gate);
+    //netl->addGate(p_gate);
     netl->addGateMap(p_gate);
   }
   return true;
@@ -942,7 +942,7 @@ bool netlistreader_verilog::parse_flat_netlist(netlist *netl, sim_data *simul_da
   }
   
 
-  memset(netl->repeats, 0, sizeof(int)*netl->gates.size());
+  memset(netl->repeats, 0, sizeof(int)*netl->gatesMap.size());
 
   return true;
 }

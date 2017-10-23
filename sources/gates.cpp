@@ -37,29 +37,6 @@ gate_beh::gate_beh(std::string nameFile) {
     name = nameFile;
   }
 
-void gate_beh::t_minus() {
-    for (size_t i = 0; i < ins.size(); ++i) {
-      if (((ins[i]->value == level_0) || (ins[i]->value == level_u)) && (ins_temp[i] == level_1))
-        ins[i]->stability = '\\';
-      if (((ins[i]->value == level_1) || (ins[i]->value == level_u)) && (ins_temp[i] == level_0))
-        ins[i]->stability = '/';
-    ins_temp[i] = ins[i]->value;
-    }
-  }
-
-bool gate_beh::t_plus() {
-  ++(*repeat);
-  bool changed = false;
-    for(size_t i = 0; i < ins.size(); ++i)
-      ins[i]->stability = '_';
-    for(size_t i = 0; i < outs.size(); ++i)
-      if (outs[i]->value != outs_temp[i]) {
-        outs[i]->value = outs_temp[i];
-        changed = true;
-      }
-    return changed;
-  }
-
 bool gate_beh::postprocess() {
   if (ins.capacity() != 1)
     return false;
@@ -71,7 +48,6 @@ bool gate_beh::postprocess() {
 }
 
 void gate_beh::operate() {
-  interpreter *interp = new interpreter();
 }
 
 
