@@ -24,6 +24,7 @@ struct behGateInfo {
   std::string               name;
   std::vector<std::string>  inputs;
   std::vector<std::string>  outputs;
+  int                       delay;
 };
 
 struct SuperDuperModule {
@@ -181,11 +182,19 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
   std::vector<std::string>  pins;
   std::string               instance_name;
   std::string               module_name;
+  int delay = 0;
 
   module_name = root.gates[i_gate][0];
   instance_name = root.gates[i_gate][1];
-
   size_t i = 2;
+  if ("#" == instance_name) {
+    instance_name = root.gates[i_gate][3];
+    i = 4;
+    delay = atoi(root.gates[i_gate][2].c_str());
+  }
+  
+
+  
 
   while (")" != root.gates[i_gate][i]) {
     ++i;
@@ -371,6 +380,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
         root.alwsGates[root.alwayses.size() - 1].name = real_name;
         root.alwsGates[root.alwayses.size() - 1].inputs = inputs;
         root.alwsGates[root.alwayses.size() - 1].outputs = outputs;
+        root.alwsGates[root.alwayses.size() - 1].delay = delay;
       }
 
 
@@ -447,9 +457,9 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       }
     }
     root.gates.push_back(items);
-
+    
   }
-
+  
   return true;
 }
 
@@ -563,13 +573,21 @@ bool netlistreader_verilog::unwrap_from_root(std::string rootname) {
       continue;
 
     std::vector<std::string>  pins;
-
-    std::string name = root.gates[i][1];
-    if (name == "(")
-      name = root.gates[i][0] + std::to_string(i);
+   
 
 
     size_t j = 1;
+    std::string name = root.gates[i][1];
+    if ("#" == root.gates[i][1]) {
+      name = root.gates[i][3];
+      j = 3;
+    }
+    
+    if (name == "(") {
+      name = root.gates[i][0] + std::to_string(i);
+    }
+
+
     while (")" != root.gates[i][j]) {
       ++j;
       if (")" == root.gates[i][j] || "(" == root.gates[i][j])
@@ -815,7 +833,8 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
         p_gate->outs.push_back(netl->addNetMap(root.alwsGates[i].outputs[iout], NULL));
       behGate = true;
       p_gate->repeat = 0;
-      p_gate->setDelay(0);
+      p_gate->setDelay(root.alwsGates[i].delay);
+      
     }
     
     if (behGate) {

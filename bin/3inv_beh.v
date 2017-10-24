@@ -1,4 +1,4 @@
-// -i 3inv.v -r tb_3inv -s 20 -multicore
+// -i 3inv_beh.v -r tb_3inv -s 20 -multicore
 
 module beh_inv(x, y);
   input x;
@@ -23,9 +23,9 @@ module 3invertors (in, out);
 	output out;
 	wire inv1, inv2;
 
-	beh_inv not1(in, inv1);
-	beh_inv not2(inv1, inv2);
-	beh_inv not3(inv2, out);
+	beh_inv #1 not1(in, inv1);
+	beh_inv #2 not2(inv1, inv2);
+	beh_inv #3 not3(inv2, out);
 endmodule
 
 module tb_3inv();
@@ -34,13 +34,12 @@ module tb_3inv();
 	
 	3invertors invert(in, out);
 	
+	always #5 in = ~in;
+	
 	initial begin
     $dumpfile("3inv_beh.vcd");
     $dumpvars;
-		#0 in = 0;
-		#5 in = 1;
-		#7 in = 0;
-		#20 in = 1;
+	#100 in = 0;
     $finish;
 	end 
 
