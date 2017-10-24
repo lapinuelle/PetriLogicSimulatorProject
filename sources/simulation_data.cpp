@@ -1,6 +1,11 @@
 #include "simulation_data.h"
 
-sim_data::sim_data() {};
+sim_data::sim_data() {
+  timescale.str_timescale = "1ns";
+  timescale.str_precision = "1ps";
+  timescale.timescale = 1e-9;
+  timescale.precision = 1e-12;
+};
 
 void sim_data::setVCDname(std::string name) {
 	vcdName = name;

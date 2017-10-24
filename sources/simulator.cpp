@@ -29,6 +29,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
   for (it = netl->netsMap.begin(); it != netl->netsMap.end(); it++) {
     wr.AddDumpVar(it->second);
   }
+  wr.SetTimescale(simData->timescale.str_timescale);
 
   /*
   for (size_t i = 0; i < netl->nets.size(); i++)

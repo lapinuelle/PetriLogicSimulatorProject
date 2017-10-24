@@ -91,32 +91,9 @@ gate * netlistreader_verilog::CreateGate(const std::string &gate_name, const std
 
 
 bool netlistreader_verilog::read_macro(size_t &i) {
-  if (tokens[i + 1].item == "timescale") {
-    timescale.str_timescale = tokens[i + 2].item;
-    timescale.str_precision = tokens[i + 4].item;
-    // Convert string to double
-    tokens.erase(tokens.begin() + i, tokens.begin() + i + 5);
-    return true;
-  }
-  
-  if (tokens[i + 1].item == "define" && tokens[i + 3].item != "(") {
-    size_t i_saved = i;
-    ++i;
-    Macro m;
-    m.name = tokens[++i].item.c_str();
-
-    size_t line_orig = tokens[i].line;
-    while (line_orig == tokens[++i].line)
-      m.tokens.push_back(tokens[i].item);
-    //--i;
-    macros.push_back(m);
-    tokens.erase(tokens.begin() + i_saved, tokens.begin() + i);
-    i = i_saved;
-    return true;
-  }
-
-  if (tokens[i + 1].item == "define" && tokens[i + 3].item == "(") {
-    size_t i_saved = i;
+  size_t line_orig = tokens[i].line;
+  // Just skip this line
+  while(line_orig == tokens[i].line)
     ++i;
     printf("\n__wrn__ [%d,%d]: '%s' macro with args is not supported yet.\n", tokens[i].line, tokens[i].pos, tokens[i].item.c_str());
     printf("               '%s' macro will not be defined\n", tokens[i + 1].item.c_str());
@@ -895,7 +872,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
 
       std::vector< std::string > behPins;
       std::string gateName = root.alwsGates[i].name;
-      for (size_t kk = 1; kk < root.alwaysGates[i].size(); kk++)
+      for (int kk = 1; kk < root.alwaysGates[i].size(); kk++)
         behPins.push_back(root.alwaysGates[i][kk]);
       p_gate = CreateGate(gateName, "beh");
      

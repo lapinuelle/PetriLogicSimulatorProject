@@ -7,7 +7,7 @@
 #include <fstream>
 #include "logiclevel.h"
 
-datawriter::datawriter(const std::string fileName) : fileNameVCD(fileName) {
+datawriter::datawriter(const std::string fileName) : fileNameVCD(fileName), timescale_value("1ns") {
 /*  size_t pos = fileNameVCD.find_last_of("_flat");
   if(pos != std::string::npos)
     fileNameVCD.erase(pos-4, fileNameVCD.length() - (pos-4));
@@ -41,11 +41,11 @@ void datawriter::PrintHeader() {
   fprintf(p_file,  "$comment\n");
   fprintf(p_file,  "  Any comment text.\n");
   fprintf(p_file,  "$end\n");
-  fprintf(p_file,  "$timescale 1ns $end\n");
+  fprintf(p_file,  "$timescale %s $end\n", timescale_value.c_str());
   fprintf(p_file,  "$scope module logic $end\n");
 
   for(size_t i = 0; i < nets.size(); ++i)
-    fprintf(p_file, "$var wire 1 %c %s $end\n", (char)i + 33, nets[i]->name.c_str());
+    fprintf(p_file, "$var wire 1 %c %s $end\n", (char)i + 33, nets[i]->realName.c_str());
   
   fprintf(p_file,  "$upscope $end\n");
   fprintf(p_file,  "$enddefinitions $end\n");
@@ -80,4 +80,8 @@ void datawriter::DumpVars(int time) {
                       break;
     }
   fclose(p_file);
+}
+
+void datawriter::SetTimescale(std::string val) {
+  timescale_value = val;
 }
