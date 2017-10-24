@@ -1,4 +1,4 @@
-// -i 3inv.v -r 3invertors -s 20 -multicore
+// -i 3inv.v -r tb_3inv -s 20 -multicore
 
 module beh_inv(x, y);
   input x;
@@ -6,12 +6,14 @@ module beh_inv(x, y);
   
   always @x
   begin
-	if(x == 1) {
-	  y = 0;
-	}
-	if(x == 0) {
-	  y = 1;
-	}
+	if(x == 1)
+	  begin
+	    y = 0;
+      end
+	if(x == 0)
+	  begin
+	    y = 1;
+	  end
   end
 endmodule
 

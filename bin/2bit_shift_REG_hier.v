@@ -4,12 +4,14 @@ module inv(in, out);
   output out;
   always @in
     begin
-      if(in == 0) {
-        out = 1;
-      }
-      if(in == 1) {
-        out = 0;
-      }
+      if(in == 0)
+	    begin
+          out = 1;
+        end
+      if(in == 1) 
+	    begin
+          out = 0;
+        end
     end
 endmodule
 
@@ -18,8 +20,8 @@ module dff(D, C, Q, nQ);
   output Q, nQ;
   
   //assign net0 = ~D;
-  //not   i1(net0, D);
-  inv i1(D, net0);
+  not   i1(net0, D);
+  //inv i1(D, net0);
   
   //assign net1 = D | C;
   or    or1(net1, D, C);
@@ -51,25 +53,16 @@ endmodule
 module DFF_test ();
 
   shift_REG_2bits(D, C, Q1, Q2);
+  
+  always #5 C = ~C;
+  always #13 D = ~D;
 
   initial 
   begin
     $dumpfile("2bit_shift_REG_hier.vcd");
     $dumpvars;
-    #0    D=0;
-    #0    C=0;
-    #10   C=1;
-    #2   C=0;
-    #3   D=1;
-    #5   C=1;
-    #2   C=0;
-    #18   D=0;
-    #10   C=1;
-    #5   D=1;
-    #5   C=0;
-    #25   C=1;
-    #10   C=0;
-    #0   D=0;
+    
+    #100   D=0;
     $finish;
   end
   

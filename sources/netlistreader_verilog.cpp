@@ -311,10 +311,23 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
     int tempi = 0;
 
     if ("always" == tokens[i].item) {
-      int nesting = 0;
+      int nesting = -1;
       tempi = i;
       items.clear();
-      while (("end" != tokens[i].item) && (nesting)) {
+      bool finished = false;
+      
+      while (!finished) {
+        if (nesting == -1 && tokens[i].item == "begin")
+          nesting = 0;
+        if (tokens[i].item == "begin")
+          nesting++;
+        if (tokens[i].item == "end") {
+          nesting--;
+          if (nesting == 0) {
+            finished = true;
+            continue;
+          }
+        }
         items.push_back(tokens[i].item);
         ++i;
       }
@@ -328,18 +341,13 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
         nesting++;
         ++j;
       }
-      if (items[j] == "end") {
-        nesting--;
-        ++j;
-      }
+
       for (; j < items.size(); ++j) {
         if (items[j] == "begin") {
           nesting++;
-          ++j;
         }
         if (items[j] == "end") {
           nesting--;
-          ++j;
         }
         if(items[j] == "@" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "begin" || items[j] == "end" || items[j] == "==" || items[j] == "if" || items[j] == "{" || items[j] == "}" || items[j] == "else" || items[j] == "for" || items[j] == "(" || items[j] == ")")
           continue;
