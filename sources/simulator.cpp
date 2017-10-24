@@ -45,7 +45,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
       clock_t time_start = clock();
   #endif
       //printf("=== Time = [%d] ===\n", time);
-      memset(netl->repeats, 0, sizeof(int)*netl->gatesMap.size());
+      //memset(netl->repeats, 0, sizeof(int)*netl->gatesMap.size());
 
       // присваиваем новые входные воздействия из тестбенча портам
       
@@ -99,12 +99,12 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
           temp_free = stackSim->free;
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t- в сети Петри
-          if (*stackSim->gatesChain[index % stackSize]->repeat < 500) 
+          if (stackSim->gatesChain[index % stackSize]->repeat < 500) 
             stackSim->gatesChain[index % stackSize]->t_minus();
         }
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
-          if (*stackSim->gatesChain[index % stackSize]->repeat < 500) {
+          if (stackSim->gatesChain[index % stackSize]->repeat < 500) {
             gate *p_gate = stackSim->gatesChain[index % stackSize];
             if (p_gate->tokens.empty()) {
               p_gate->operate();
@@ -116,7 +116,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
         }
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t+ в сети Петри
-          if (*stackSim->gatesChain[index % stackSize]->repeat < 500) {
+          if (stackSim->gatesChain[index % stackSize]->repeat < 500) {
             if (stackSim->gatesChain[index % stackSize]->delay == 0) {
               bool valueChanged = stackSim->gatesChain[index % stackSize]->t_plus();
               if (valueChanged) {                                                                                 

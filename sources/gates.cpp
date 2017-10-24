@@ -18,7 +18,7 @@ void gate::t_minus() {
 }
 
 bool gate::t_plus() {
-  ++(*repeat);
+  ++repeat;
   for (size_t i = 0; i < ins.size(); ++i)
     ins[i]->stability = "_";
   bool changed = false;

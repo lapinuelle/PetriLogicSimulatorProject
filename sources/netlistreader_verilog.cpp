@@ -198,6 +198,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
 
   // now we have to search our file for this module and instantiate it to root module
   size_t i_inst = 0;
+  int nameless = 1;
   for (; i_inst < vminfos.size(); ++i_inst) {
     if(vminfos[i_inst].name == module_name)
       break;
@@ -420,8 +421,15 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
     if("#"  == items[j])
       j += 2;
 
-    items[j] = real_name + std::string(".") + items[j];
-    j += 2;
+    if (items[j] == "(") {
+      items[j] = real_name + std::string(".") + items[0] + std::to_string(nameless);
+      nameless++;
+      j++;
+    } else {
+      items[j] = real_name + std::string(".") + items[j];
+      j += 2;
+    }
+   
 
     for (; j < items.size() - 2; ++j) {
       if(items[j] == ",")
@@ -954,7 +962,8 @@ bool netlistreader_verilog::parse_flat_netlist(netlist *netl, sim_data *simul_da
       it->second->realName = it->second->name;
     }
   }
-  netl->repeats = new int[netl->gatesMap.size()];
+  //netl->repeats = new int[netl->gatesMap.size()];
+  //memset(netl->repeats, 0, sizeof(int)*netl->gatesMap.size());
 
   /*
   for (size_t i = 0; i < netl->gatesMap.size(); ++i) {
@@ -964,14 +973,14 @@ bool netlistreader_verilog::parse_flat_netlist(netlist *netl, sim_data *simul_da
       */
   int i = 0;
   for (std::map<std::string, gate*>::iterator it = netl->gatesMap.begin(); it != netl->gatesMap.end(); ++it) {
-    it->second->repeat = &netl->repeats[i];
+    it->second->repeat = 0;
     i++;
     if (!it->second->postprocess())
       return false;
   }
   
 
-  memset(netl->repeats, 0, sizeof(int)*netl->gatesMap.size());
+  //memset(netl->repeats, 0, sizeof(int)*netl->gatesMap.size());
 
   return true;
 }
