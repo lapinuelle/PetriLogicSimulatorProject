@@ -287,12 +287,15 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
   }
 
   std::vector<std::string>  items;
+  std::vector<std::string> inputs;
+  std::vector<std::string> outputs;
 
   for (size_t i = vminfos[i_inst].token_start; i < vminfos[i_inst].token_end; i++) {
-    std::vector<std::string> inputs;
-    std::vector<std::string> outputs;
+    
 
     if ("module" == tokens[i].item) {
+      inputs.clear();
+      outputs.clear();
       while(tokens[i].item != ";")
         ++i;
       continue;
@@ -344,7 +347,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
       ++i;
       //continue;
     }
-    if ("wire" == tokens[i].item || "reg" == tokens[i].item || "input" == tokens[i].item || "output" == tokens[i].item) {
+    if ("wire" == tokens[i].item || "reg" == tokens[i].item) {
       while (";" != tokens[i].item) {
         ++i;
       }
