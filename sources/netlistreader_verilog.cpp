@@ -1,5 +1,6 @@
 #include "netlistreader.h"
 #include <stdlib.h>
+#include <sstream>
 #include <cstring>
 
 // Information about module's internals
