@@ -2,6 +2,7 @@ COMPILER=g++
 TARGETS=datawriter \
         event \
         gates \
+		interpreter \
         logiclevel \
         netlist \
         netlistreader \
@@ -14,6 +15,7 @@ TARGETS=datawriter \
 MODULES=datawriter.o \
         event.o \
         gates.o \
+		interpreter.o \
         logiclevel.o \
         netlist.o \
         netlistreader.o \
@@ -22,7 +24,7 @@ MODULES=datawriter.o \
         simulation_data.o \
         simulator.o \
         stack.o
-FLAGS=-Wall
+FLAGS=-Wall -std=c++11
 SRC_DIR=../../sources
 
 
@@ -36,6 +38,9 @@ event	                : $(SRC_DIR)/event.h $(SRC_DIR)/event.cpp
 
 gates		              : $(SRC_DIR)/gates.h $(SRC_DIR)/gates.cpp
 	$(COMPILER) -c $(FLAGS) -o gates.o $(SRC_DIR)/gates.cpp
+	
+interpreter		              : $(SRC_DIR)/interpreter.h $(SRC_DIR)/interpreter.cpp
+	$(COMPILER) -c $(FLAGS) -o interpreter.o $(SRC_DIR)/interpreter.cpp
 
 logiclevel	          : $(SRC_DIR)/logiclevel.h $(SRC_DIR)/logiclevel.cpp
 	$(COMPILER) -c $(FLAGS) -o logiclevel.o $(SRC_DIR)/logiclevel.cpp
@@ -61,8 +66,8 @@ simulator	            : $(SRC_DIR)/simulator.h $(SRC_DIR)/simulator.cpp
 stack	                : $(SRC_DIR)/stack.h $(SRC_DIR)/stack.cpp
 	$(COMPILER) -c $(FLAGS) -o stack.o $(SRC_DIR)/stack.cpp
 
-main		              : datawriter.o event.o gates.o logiclevel.o netlist.o netlistreader.o netlistreader_verilog.o nets.o simulation_data.o simulator.o stack.o
-	$(COMPILER) $(FLAGS) $(MODULES) $(SRC_DIR)/main.cpp -o PetriLogicSimulator
+main		              : datawriter.o event.o gates.o interpreter.o logiclevel.o netlist.o netlistreader.o netlistreader_verilog.o nets.o simulation_data.o simulator.o stack.o
+	$(COMPILER) $(FLAGS) $(MODULES) $(SRC_DIR)/main.cpp -o ../../bin/PetriLogicSimulator
 
 clean		:
 	rm -f *.o
