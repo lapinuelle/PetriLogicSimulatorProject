@@ -118,6 +118,8 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize) {
 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t+ в сети Петри
           if (stackSim->gatesChain[index % stackSize]->repeat < 500) {
+            for (int hj = 0; hj < stackSim->gatesChain[index % stackSize]->ins.size(); hj++)
+              stackSim->gatesChain[index % stackSize]->ins[hj]->stability = "_";
             if (stackSim->gatesChain[index % stackSize]->delay == 0) {
               bool valueChanged = stackSim->gatesChain[index % stackSize]->t_plus();
               if (valueChanged) {                                                                                 

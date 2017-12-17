@@ -950,17 +950,24 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
                 p_gate->tokens.push_back("cmp");
                 p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
                 p_gate->tokens.push_back("/");
-                p_gate->tokens.push_back("jnz");
-                p_gate->tokens.push_back("@alwsend");
+                //p_gate->tokens.push_back("jnz");
+                //p_gate->tokens.push_back("@alwsend");
                 ii = ii + 2;
+                continue;
+              }
+              if ((root.alwayses[i][ii] == "(") && (root.alwayses[i][ii + 1] != "posedge") && (root.alwayses[i][ii + 1] != "negedge")) {
+                p_gate->tokens.push_back("cmp");
+                p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
+                p_gate->tokens.push_back("*");
+                ii++;
                 continue;
               }
               if (root.alwayses[i][ii] == "negedge") {
                 p_gate->tokens.push_back("cmp");
                 p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
                 p_gate->tokens.push_back("\\");
-                p_gate->tokens.push_back("jnz");
-                p_gate->tokens.push_back("@alwsend");
+                //p_gate->tokens.push_back("jnz");
+                //p_gate->tokens.push_back("@alwsend");
 
                 ii = ii + 2;
                 continue;
@@ -970,13 +977,16 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
                 p_gate->tokens.push_back("jz");
                 p_gate->tokens.push_back("@sensend");
 
-                ii = ii + 2;
+                ii++;
                 continue;
               }
               ii++;
             }
             sensList = false;
+            p_gate->tokens.push_back("jnz");
+            p_gate->tokens.push_back("@alwsend");
             p_gate->tokens.push_back("@sensend:");
+            p_gate->jumps["@sensend"] = p_gate->tokens.size() - 1;
           }
         }
         if (root.alwayses[i][ii] == "end") {
