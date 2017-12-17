@@ -432,7 +432,7 @@ bool netlistreader_verilog::unwrap_module(size_t &i_gate, std::string &real_name
         if (items[j] == "end") {
           nesting--;
         }
-        if(items[j] == "@" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "begin" || items[j] == "end" || items[j] == "==" || items[j] == "if" || items[j] == "{" || items[j] == "}" || items[j] == "else" || items[j] == "for" || items[j] == "(" || items[j] == ")")
+        if(items[j] == "@" || items[j] == ";" || items[j] == "=" || items[j] == "~" || items[j] == "begin" || items[j] == "end" || items[j] == "==" || items[j] == "if" || items[j] == "{" || items[j] == "}" || items[j] == "else" || items[j] == "for" || items[j] == "(" || items[j] == ")" || items[j] == "posedge" || items[j] == "negedge")
           continue;
         if(isdigit(items[j][0]))
           continue;
@@ -918,6 +918,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
       bool ended = false;
       bool condition = false;
       bool loop = false;
+      bool sensList = false;
       int nesting = 0;
       int jumpz = 0;
       size_t ii = 1;
@@ -927,33 +928,56 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
           ii++;
           continue;
         }
-        if ((root.alwayses[i][ii] == "@") && (root.alwayses[i][ii+1] != "posedge") && (root.alwayses[i][ii+1] != "negedge")) {
-          p_gate->tokens.push_back("cmp");
-          p_gate->tokens.push_back(root.alwayses[i][ii+1]);
-          p_gate->tokens.push_back("*");
-          p_gate->tokens.push_back("jnz");
-          p_gate->tokens.push_back("@alwsend");
-          ii = ii + 2;
-          continue;
-        }
-        if (root.alwayses[i][ii] == "posedge") {
-          p_gate->tokens.push_back("cmp");
-          p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
-          p_gate->tokens.push_back("/");
-          p_gate->tokens.push_back("jnz");
-          p_gate->tokens.push_back("@alwsend");
-          ii = ii + 3;
-          continue;
-        }
-        if (root.alwayses[i][ii] == "negedge") {
-          p_gate->tokens.push_back("cmp");
-          p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
-          p_gate->tokens.push_back("\\");
-          p_gate->tokens.push_back("jnz");
-          p_gate->tokens.push_back("@alwsend");
+        if ((root.alwayses[i][ii] == "@"))
+          sensList = true;
+        if (sensList) {
+          if ((root.alwayses[i][ii + 1] != "(")) {
+            if ((root.alwayses[i][ii] == "@") && (root.alwayses[i][ii + 1] != "posedge") && (root.alwayses[i][ii + 1] != "negedge")) {
+              p_gate->tokens.push_back("cmp");
+              p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
+              p_gate->tokens.push_back("*");
+              p_gate->tokens.push_back("jnz");
+              p_gate->tokens.push_back("@alwsend");
+              ii = ii + 2;
+              sensList = false;
+              continue;
+            }
+          }
+          else {
+            while (root.alwayses[i][ii] != ")") {
 
-          ii = ii + 3;
-          continue;
+              if (root.alwayses[i][ii] == "posedge") {
+                p_gate->tokens.push_back("cmp");
+                p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
+                p_gate->tokens.push_back("/");
+                p_gate->tokens.push_back("jnz");
+                p_gate->tokens.push_back("@alwsend");
+                ii = ii + 2;
+                continue;
+              }
+              if (root.alwayses[i][ii] == "negedge") {
+                p_gate->tokens.push_back("cmp");
+                p_gate->tokens.push_back(root.alwayses[i][ii + 1]);
+                p_gate->tokens.push_back("\\");
+                p_gate->tokens.push_back("jnz");
+                p_gate->tokens.push_back("@alwsend");
+
+                ii = ii + 2;
+                continue;
+              }
+              if (root.alwayses[i][ii] == "or") {
+                
+                p_gate->tokens.push_back("jz");
+                p_gate->tokens.push_back("@sensend");
+
+                ii = ii + 2;
+                continue;
+              }
+              ii++;
+            }
+            sensList = false;
+            p_gate->tokens.push_back("@sensend:");
+          }
         }
         if (root.alwayses[i][ii] == "end") {
           if (condition) {
