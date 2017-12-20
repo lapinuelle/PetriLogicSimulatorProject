@@ -43,23 +43,31 @@ void datawriter::PrintHeader() {
   fprintf(p_file,  "$end\n");
   fprintf(p_file,  "$timescale %s $end\n", timescale_value.c_str());
   fprintf(p_file,  "$scope module logic $end\n");
-
-  for(size_t i = 0; i < nets.size(); ++i)
-    fprintf(p_file, "$var wire 1 %c %s $end\n", (char)i + 33, nets[i]->realName.c_str());
+  int add1 = 33;
+  for (size_t i = 0; i < nets.size(); ++i) {
+    if ((i % 93) == 92)
+      add1++;
+    fprintf(p_file, "$var wire 1 %c%c %s $end\n", (char)(i % 93) + 33, (char)(add1 > 33 ? add1 : 32), nets[i]->realName.c_str());
+  }
   
   fprintf(p_file,  "$upscope $end\n");
   fprintf(p_file,  "$enddefinitions $end\n");
   fprintf(p_file,  "$dumpvars\n");
   
-  for(size_t i = 0; i < nets.size(); ++i)
-    switch(nets[i]->value) {
-      case level_0  : fprintf(p_file, "0%c\n", (char)i + 33);
-                      break;
-      case level_1  : fprintf(p_file, "1%c\n", (char)i + 33);
-                      break;
-      case level_u  : fprintf(p_file, "x%c\n", (char)i + 33);
-                      break;
+  int add = 33;
+  for (size_t i = 0; i < nets.size(); ++i) {
+    
+    if ((i % 93) == 92)
+      add++;
+    switch (nets[i]->value) {
+    case level_0: fprintf(p_file, "0%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
+      break;
+    case level_1: fprintf(p_file, "1%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
+      break;
+    case level_u: fprintf(p_file, "x%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
+      break;
     }
+  }
   
   fprintf(p_file,  "$end\n");
   fclose(p_file);
@@ -70,15 +78,19 @@ void datawriter::DumpVars(int time) {
   if(!p_file)
     return;
   fprintf(p_file, "#%d\n", time);
-  for(size_t i = 0; i < nets.size(); ++i)
-    switch(nets[i]->value) {
-      case level_0  : fprintf(p_file, "0%c\n", (char)i + 33);
-                      break;
-      case level_1  : fprintf(p_file, "1%c\n", (char)i + 33);
-                      break;
-      case level_u  : fprintf(p_file, "x%c\n", (char)i + 33);
-                      break;
+  int add = 33;
+  for (size_t i = 0; i < nets.size(); ++i) {
+    if ((i % 93) == 92)
+      add++;
+    switch (nets[i]->value) {
+    case level_0: fprintf(p_file, "0%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
+      break;
+    case level_1: fprintf(p_file, "1%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
+      break;
+    case level_u: fprintf(p_file, "x%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
+      break;
     }
+  }
   fclose(p_file);
 }
 
