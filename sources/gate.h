@@ -4,7 +4,7 @@
 #include "internal/IGate.h"
 
 class gate : public IGate {
-private:
+protected:
 	std::vector <net*> ins;               ///< Входы вентиля
 	std::vector<LogicLevel> ins_temp;     ///< Временные (внутренние) входы для переноса меток
 	std::vector <net*> outs;              ///< Выходы вентиля
