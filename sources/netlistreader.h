@@ -72,6 +72,6 @@ private:
 // netlistreader implementation for VHDL file format
 
 inetlistreader *get_appropriate_reader(std::string fileName);
-void free_reader(inetlistreader *p_reader);
+void free_reader(inetlistreader **p_reader);
 
 #endif

@@ -70,7 +70,7 @@ bool netlistreader_verilog::tokenize() {
   }
   fclose(p_file);
   if(tokens[tokens.size() - 1].item == tokens[tokens.size() - 2].item)
-	tokens.pop_back();
+	  tokens.pop_back();
   
   // Find composite operands
   for(size_t i = 0; i < tokens.size() - 1; ++i) {
@@ -128,6 +128,7 @@ bool netlistreader_verilog::tokenize() {
     if(tokens[i].item == "/*") {
       while(tokens[i].item != "*/" && i <= tokens.size())
         tokens.erase(tokens.begin() + i);
+      tokens.erase(tokens.begin() + i);
       --i;
       continue;
     }
@@ -183,9 +184,9 @@ inetlistreader *get_appropriate_reader(std::string fileName) {
   return NULL;
 }
 
-void free_reader(inetlistreader *p_reader) {
-  if(!p_reader)
+void free_reader(inetlistreader **p_reader) {
+  if(!(* p_reader))
     return;
-  delete p_reader;
-  p_reader = NULL;
+  delete *p_reader;
+  *p_reader = NULL;
 }

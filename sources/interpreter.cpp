@@ -5,6 +5,35 @@
 #include "netlist.h"
 #include "nets.h"
 
+LogicLevel interpreter::not(LogicLevel value) {
+  if (value == level_0)
+    return level_1;
+  if (value == level_1)
+    return level_0;
+  return level_u;
+}
+
+LogicLevel interpreter::not(net* net) {
+  for (size_t i = 0; i < this->modeGate->ins.size(); i++) {
+    if (this->modeGate->ins[i]->name == net->name) {
+      if (this->modeGate->ins_temp[i] == level_0)
+        return level_1;
+      if (this->modeGate->ins_temp[i] == level_1)
+        return level_0;
+      return level_u;
+    }
+  }
+  for (size_t i = 0; i < this->modeGate->outs.size(); i++) {
+    if (this->modeGate->outs[i]->name == net->name) {
+      if (this->modeGate->outs_temp[i] == level_0)
+        return level_1;
+      if (this->modeGate->outs_temp[i] == level_1)
+        return level_0;
+      return level_u;
+    }
+  }
+}
+
 void interpreter::cmp(net* net, LogicLevel value) {
   flags["ZF"] = 0;
   flags["GF"] = 0;
@@ -85,6 +114,8 @@ void interpreter::operate(gate* currentGate, netlist* netl) {
   while (i < commandsSize) {
     if (i >= commandsSize)
       break;
+    if ((commands[i] == "jmp"))
+      i = jumps[commands[i + 1]];
     if ((commands[i] == "jz") || (commands[i] == "je") || (commands[i] == "JZ") || (commands[i] == "JE")) {
       if(flags["ZF"] == 1)
         i = jumps[commands[i + 1]];
@@ -118,8 +149,18 @@ void interpreter::operate(gate* currentGate, netlist* netl) {
       i += 2;
     }
     if ((commands[i] == "mov") || (commands[i] == "MOV")) {
-      mov(atol(commands[i + 2]), (netl->returnNetMap(commands[i + 1])));
-      i += 2;
+      if (commands[i + 2] == "~") {
+        mov(not(netl->returnNetMap(commands[i + 3])), (netl->returnNetMap(commands[i + 1])));
+      }
+      else {
+        if (netl->returnNetMap(commands[i + 2])) {
+          mov(netl->returnNetMap(commands[i + 2])->value, (netl->returnNetMap(commands[i + 1])));
+        }
+        else {
+          mov(atol(commands[i + 2]), (netl->returnNetMap(commands[i + 1])));
+        }
+        i += 2;
+      }
     }
     if ((commands[i] == "add") || (commands[i] == "ADD")) {
       if (atol(commands[i + 1]) != level_u) {

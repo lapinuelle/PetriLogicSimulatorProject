@@ -14,6 +14,10 @@ class net;
 
 class interpreter {
 public:
+  LogicLevel interpreter::not(LogicLevel);
+
+  LogicLevel interpreter::not(net* net);
+  
   void cmp(net*, LogicLevel);
   void cmp(net*, std::string);
   void mov(LogicLevel, net*);

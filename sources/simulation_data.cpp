@@ -16,7 +16,7 @@ std::string sim_data::getVCDname() {
 }
 
 
-Event* sim_data::addEvent(int time, net* net, LogicLevel state) {
+Event* sim_data::addEvent(float time, net* net, LogicLevel state) {
   
   Event* eventPointer = NULL;
   size_t i = 0, j = 0;
@@ -50,7 +50,7 @@ Event* sim_data::addEvent(int time, net* net, LogicLevel state) {
   }
 }
 
-Event* sim_data::addMapEvent(int time, net* net, LogicLevel state) {
+Event* sim_data::addMapEvent(float time, net* net, LogicLevel state) {
   
   Event* eventPointer = NULL;
   size_t i = 0, j = 0;
@@ -80,7 +80,7 @@ Event* sim_data::addMapEvent(int time, net* net, LogicLevel state) {
   
 }
 
-Event* sim_data::addMapEvent(int time, net* net, LogicLevel state, bool delayedState) {
+Event* sim_data::addMapEvent(float time, net* net, LogicLevel state, bool delayedState) {
 
   Event* eventPointer = NULL;
   size_t i = 0, j = 0;

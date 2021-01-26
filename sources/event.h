@@ -14,7 +14,7 @@ class Event {
 public:
   Event();
 public:
-  int time;
+  float time;
   std::vector<net*> netsChain;
   std::vector<bool> delayed;
   std::vector<LogicLevel> statesChain;
