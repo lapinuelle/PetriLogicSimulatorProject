@@ -91,6 +91,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\sources\datawriter.cpp" />
     <ClCompile Include="..\..\sources\event.cpp" />
+    <ClCompile Include="..\..\sources\gate.cpp" />
     <ClCompile Include="..\..\sources\gates.cpp" />
     <ClCompile Include="..\..\sources\interpreter.cpp" />
     <ClCompile Include="..\..\sources\logiclevel.cpp" />
@@ -107,7 +108,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\sources\datawriter.h" />
     <ClInclude Include="..\..\sources\event.h" />
+    <ClInclude Include="..\..\sources\gate.h" />
     <ClInclude Include="..\..\sources\gates.h" />
+    <ClInclude Include="..\..\sources\internal\IGate.h" />
+    <ClInclude Include="..\..\sources\internal\INet.h" />
     <ClInclude Include="..\..\sources\interpreter.h" />
     <ClInclude Include="..\..\sources\logiclevel.h" />
     <ClInclude Include="..\..\sources\netlist.h" />

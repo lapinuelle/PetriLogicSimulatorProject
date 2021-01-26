@@ -1,5 +1,5 @@
-#if !defined(GATE_HEADER)
-#define GATE_HEADER
+#if !defined(GATES_HEADER)
+#define GATES_HEADER
 
 #include <string>
 #include <vector>

@@ -8,18 +8,7 @@
 
 class net;
 
-class igate {
-private:
-	std::vector <net*> ins;               ///< Входы вентиля
-	std::vector<LogicLevel> ins_temp;     ///< Временные (внутренние) входы для переноса меток
-	std::vector <net*> outs;              ///< Выходы вентиля
-	std::vector<LogicLevel> outs_temp;    ///< Временные (внутренние) выходы для переноса меток
-	std::string realName;                     ///< Имя вентиля
-	std::string name;                     ///< Имя вентиля
-	int repeat;                          ///< Количество повторений моделирования вентиля в конкретный момент времени
-	float delay;                            ///< Задержка вентиля
-	std::vector<std::string> tokens;
-	std::map<std::string, int> jumps;
+class IGate {
 
 public:
 	virtual void t_minus() = 0;                       ///< Момент сети Петри t_minus
@@ -39,7 +28,7 @@ public:
 	virtual void addOutput(net*) = 0;
 	virtual std::vector<net*> getOutputs() = 0;
 public:
-	virtual ~igate();
+	virtual ~IGate();
 };
 
 #endif // GATE_H
