@@ -62,6 +62,26 @@ std::vector<net*> gate::getOutputs()
 	return this->outs;
 }
 
+void gate::setInternalInputValue(int index, LogicLevel value)
+{
+	this->ins_temp[index] = value;
+}
+
+LogicLevel gate::getInternalInputValue(int index)
+{
+	return this->ins_temp[index];
+}
+
+void gate::setInternalOutputValue(int index, LogicLevel value)
+{
+	this->outs_temp[index] = value;
+}
+
+LogicLevel gate::getInternalOutputValue(int index)
+{
+	return this->outs_temp[index];
+}
+
 void gate::setDelay(float delay)
 {
 	this->delay = delay;

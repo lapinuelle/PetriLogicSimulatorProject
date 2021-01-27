@@ -124,5 +124,5 @@ void netlist::addGate(gate* gate) {
 }
 
 void netlist::addGateMap(gate* gate) {
-  this->gatesMap[gate->name] = gate;
+  this->gatesMap[gate->getName] = gate;
 }

@@ -30,6 +30,19 @@ public:
 	std::vector<net*> getInputs() override;
 	void addOutput(net *) override;
 	std::vector<net*> getOutputs() override;
+
+
+	// Унаследовано через IGate
+	virtual void setInternalInputValue(int, LogicLevel) override;
+
+	virtual LogicLevel getInternalInputValue(int) override;
+
+
+	// Унаследовано через IGate
+	virtual void setInternalOutputValue(int, LogicLevel) override;
+
+	virtual LogicLevel getInternalOutputValue(int) override;
+
 };
 
 #endif

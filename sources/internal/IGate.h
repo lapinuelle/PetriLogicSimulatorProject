@@ -27,6 +27,12 @@ public:
 
 	virtual void addOutput(net*) = 0;
 	virtual std::vector<net*> getOutputs() = 0;
+
+	virtual void setInternalInputValue(int, LogicLevel) = 0;
+	virtual LogicLevel getInternalInputValue(int) = 0;
+
+	virtual void setInternalOutputValue(int, LogicLevel) = 0;
+	virtual LogicLevel getInternalOutputValue(int) = 0;
 public:
 	virtual ~IGate();
 };
