@@ -43,6 +43,16 @@ public:
 
 	virtual LogicLevel getInternalOutputValue(int) override;
 
+
+	// Унаследовано через IGate
+	virtual void setRealName(std::string name) override;
+
+	virtual std::string getRealName() override;
+
+
+	// Унаследовано через IGate
+	virtual int getRepeatCount() override;
+
 };
 
 #endif

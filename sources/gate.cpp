@@ -82,6 +82,21 @@ LogicLevel gate::getInternalOutputValue(int index)
 	return this->outs_temp[index];
 }
 
+void gate::setRealName(std::string name)
+{
+	this->realName = name;
+}
+
+std::string gate::getRealName()
+{
+	return this->realName;
+}
+
+int gate::getRepeatCount()
+{
+	return this->repeat;
+}
+
 void gate::setDelay(float delay)
 {
 	this->delay = delay;

@@ -15,7 +15,7 @@ LogicLevel interpreter::not(LogicLevel value) {
 
 LogicLevel interpreter::not(net* net) {
   for (size_t i = 0; i < this->modeGate->getInputs().size(); i++) {
-    if (this->modeGate->getInputs[i]->name == net->name) {
+    if (this->modeGate->getInputs()[i]->name == net->name) {
       if (this->modeGate->getInternalInputValue(i) == level_0)
         return level_1;
       if (this->modeGate->getInternalInputValue(i) == level_1)

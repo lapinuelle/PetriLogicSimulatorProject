@@ -22,6 +22,9 @@ public:
 	virtual void setName(std::string name) = 0;
 	virtual std::string getName() = 0;
 
+	virtual void setRealName(std::string name) = 0;
+	virtual std::string getRealName() = 0;
+
 	virtual void addInput(net*) = 0;
 	virtual std::vector<net*> getInputs() = 0;
 
@@ -33,6 +36,8 @@ public:
 
 	virtual void setInternalOutputValue(int, LogicLevel) = 0;
 	virtual LogicLevel getInternalOutputValue(int) = 0;
+
+	virtual int getRepeatCount() = 0;
 public:
 	virtual ~IGate();
 };
