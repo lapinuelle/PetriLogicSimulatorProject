@@ -53,6 +53,24 @@ public:
 	// Унаследовано через IGate
 	virtual int getRepeatCount() override;
 
+
+	// Унаследовано через IGate
+	virtual void setRepeatCount(int) override;
+
+
+	// Унаследовано через IGate
+	virtual std::vector<std::string> getTokens() override;
+
+	virtual void addToken(std::string) override;
+
+	virtual void addJump(std::string, int) override;
+
+	virtual int getTokensCount() override;
+
+
+	// Унаследовано через IGate
+	virtual std::map<std::string, int> getJumps() override;
+
 };
 
 #endif

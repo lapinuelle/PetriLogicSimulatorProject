@@ -121,7 +121,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
           if (stackSim->gatesChain[index % stackSize]->getRepeatCount() < 500) {
             gate *p_gate = stackSim->gatesChain[index % stackSize];
-            if (p_gate->tokens.empty()) {
+            if (p_gate->getTokens().empty()) {
               p_gate->operate();
             } else {
               interpreter *interp = new interpreter();
@@ -151,7 +151,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
               for (size_t outst = 0; outst < stackSim->gatesChain[index % stackSize]->getOutputs().size(); outst++) {
                 if (stackSim->gatesChain[index % stackSize]->getOutputs()[outst]->value != stackSim->gatesChain[index % stackSize]->getInternalOutputValue(outst)) {
                   Event *ev = (simData->addMapEvent(time + stackSim->gatesChain[index % stackSize]->getDelay(), stackSim->gatesChain[index % stackSize]->getOutputs()[outst], stackSim->gatesChain[index % stackSize]->getInternalOutputValue(outst), true));
-                  for (size_t ins = 0; ins < stackSim->gatesChain[index % stackSize]->getInputs.size(); ins++) {
+                  for (size_t ins = 0; ins < stackSim->gatesChain[index % stackSize]->getInputs().size(); ins++) {
                     (ev->inputStates[stackSim->gatesChain[index % stackSize]->getOutputs()[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->getInputs()[ins]);
                     (ev->inputStatesValues[stackSim->gatesChain[index % stackSize]->getOutputs()[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->getInputs()[ins]->value);
                   }
@@ -337,7 +337,7 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
           if (stackSim->gatesChain[index % stackSize]->getRepeatCount() < 500) {
             gate *p_gate = stackSim->gatesChain[index % stackSize];
-            if (p_gate->tokens.empty()) {
+            if (p_gate->getTokens().empty()) {
               p_gate->operate();
             } else {
               interpreter *interp = new interpreter();

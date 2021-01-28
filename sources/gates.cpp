@@ -1,7 +1,7 @@
 #include "gates.h"
 #include "interpreter.h"
 
-
+/*
 void gate::setDelay(float extDelay) {
   delay = extDelay;
 }
@@ -34,7 +34,7 @@ bool gate::t_plus() {
         changed = true;
       }
     return changed;
-  }
+  }*/
 
 
 // BEH Gate

@@ -107,9 +107,9 @@ interpreter::interpreter() {
 
 void interpreter::operate(gate* currentGate, netlist* netl) {
   this->modeGate = currentGate;
-  std::vector<std::string> commands = this->modeGate->tokens;
-  std::map<std::string, int> jumps = this->modeGate->jumps;
-  int commandsSize = commands.size();
+  std::vector<std::string> commands = this->modeGate->getTokens();
+  std::map<std::string, int> jumps = this->modeGate->getJumps();
+  int commandsSize = this->modeGate->getTokensCount();
   int i = 0;
   while (i < commandsSize) {
     if (i >= commandsSize)

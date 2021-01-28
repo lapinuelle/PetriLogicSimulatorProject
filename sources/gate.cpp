@@ -97,6 +97,36 @@ int gate::getRepeatCount()
 	return this->repeat;
 }
 
+void gate::setRepeatCount(int count)
+{
+	this->repeat = count;
+}
+
+std::vector<std::string> gate::getTokens()
+{
+	return this->tokens;
+}
+
+void gate::addToken(std::string token)
+{
+	this->tokens.push_back(token);
+}
+
+void gate::addJump(std::string tag, int position)
+{
+	this->jumps[tag] = position;
+}
+
+int gate::getTokensCount()
+{
+	return 0;
+}
+
+std::map<std::string, int> gate::getJumps()
+{
+	return this->jumps;
+}
+
 void gate::setDelay(float delay)
 {
 	this->delay = delay;

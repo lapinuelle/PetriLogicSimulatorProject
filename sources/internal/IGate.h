@@ -38,8 +38,16 @@ public:
 	virtual LogicLevel getInternalOutputValue(int) = 0;
 
 	virtual int getRepeatCount() = 0;
-public:
-	virtual ~IGate();
+	virtual void setRepeatCount(int) = 0;
+
+	virtual std::vector<std::string> getTokens() = 0;
+	virtual void addToken(std::string) = 0;
+	
+	virtual void addJump(std::string, int) = 0;
+	virtual std::map<std::string, int> getJumps() = 0;
+	
+	virtual int getTokensCount() = 0;
+
 };
 
 #endif // GATE_H
