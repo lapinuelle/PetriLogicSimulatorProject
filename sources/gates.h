@@ -1,13 +1,12 @@
-#if !defined(GATES_HEADER)
-#define GATES_HEADER
+#if !defined(GATE_HEADER)
+#define GATE_HEADER
 
 #include <string>
 #include <vector>
 #include <map>
 #include "nets.h"
-#include "gate.h"
 
-class gate_orig {
+class gate {
 public:
   std::vector <net*> ins;               ///< Входы вентиля
   std::vector<LogicLevel> ins_temp;     ///< Временные (внутренние) входы для переноса меток
@@ -26,71 +25,71 @@ public:
   std::vector<std::string> tokens;
   std::map<std::string, int> jumps;
 public:
-  virtual ~gate_orig() {};
+  virtual ~gate() {};
 };
 
 class gate_beh: public gate {
 public:
   gate_beh(std::string nameFile);
-  void operate() override;
-  bool postprocess() override;
+  void operate();
+  bool postprocess();
   
 };
 
 class gate_not: public gate{
 public:
   gate_not(std::string nameFile);
-  void operate() override;
-  bool postprocess() override;
+  void operate();
+  bool postprocess();
 };
 
 class gate_buf: public gate{
 public:
   gate_buf(std::string nameFile);
-  void operate() override;
-  bool postprocess() override;
+  void operate();
+  bool postprocess();
 };
 
 class gate_and: public gate{
 public:
   gate_and(std::string nameFile);
-  void operate() override;
-  bool postprocess() override;
+  void operate();
+  bool postprocess();
 };
 
 class gate_or: public gate{
 public:
   gate_or(std::string nameFile);
-  void operate() override;
-  bool postprocess() override;
+  void operate();
+  bool postprocess();
 };
 
 class gate_nor: public gate{
 public:
   gate_nor(std::string nameFile);
-  void operate() override;
-  bool postprocess() override;
+  void operate();
+  bool postprocess();
 };
 
 class gate_nand: public gate{
 public:
   gate_nand(std::string nameFile);
-  void operate() override;
-  bool postprocess() override;
+  void operate();
+  bool postprocess();
 };
 
 class gate_xor: public gate{
 public:
   gate_xor(std::string nameFile);
-  void operate() override;
-  bool postprocess() override;
+  void operate();
+  bool postprocess();
 };
 
 class gate_xnor: public gate{
 public:
   gate_xnor(std::string nameFile);
-  void operate() override;
-  bool postprocess() override;
+  void operate();
+  bool postprocess();
 };
 
 
