@@ -10,11 +10,12 @@ class gate {
 protected:
 	std::vector <net*> ins;               ///< Входы вентиля
 	std::vector<LogicLevel> ins_temp;     ///< Временные (внутренние) входы для переноса меток
+	std::vector <net*> outs;              ///< Выходы вентиля
+	std::vector<LogicLevel> outs_temp;    ///< Временные (внутренние) выходы для переноса меток
 
 public:
   
-  std::vector <net*> outs;              ///< Выходы вентиля
-  std::vector<LogicLevel> outs_temp;    ///< Временные (внутренние) выходы для переноса меток
+  
   std::string realName;                     ///< Имя вентиля
   std::string name;                     ///< Имя вентиля
   int repeat;                          ///< Количество повторений моделирования вентиля в конкретный момент времени
@@ -33,6 +34,12 @@ public:
   net* getInput(int);
   LogicLevel getInternalInput(int);
   int getInputsCount();
+
+  void addOutput(net*);
+  void setInternalOutput(int, LogicLevel);
+  net* getOutput(int);
+  LogicLevel getInternalOutput(int);
+  int getOutputsCount();
 
 public:
   virtual ~gate() {};

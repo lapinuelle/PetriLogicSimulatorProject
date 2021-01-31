@@ -61,6 +61,31 @@ int gate::getInputsCount()
 	return this->ins.size();
 }
 
+void gate::addOutput(net* net)
+{
+	this->outs.push_back(net);
+}
+
+void gate::setInternalOutput(int index, LogicLevel value)
+{
+	this->outs_temp[index] = value;
+}
+
+net * gate::getOutput(int index)
+{
+	return this->outs[index];
+}
+
+LogicLevel gate::getInternalOutput(int index)
+{
+	return this->outs_temp[index];
+}
+
+int gate::getOutputsCount()
+{
+	return this->outs.size();
+}
+
 
 // BEH Gate
 

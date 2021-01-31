@@ -139,8 +139,8 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
             if (stackSim->gatesChain[index % stackSize]->delay == 0) {
               bool valueChanged = stackSim->gatesChain[index % stackSize]->t_plus();
               if (valueChanged) {                                                                                 
-                for (int y = 0, gatchsize = stackSim->gatesChain[index % stackSize]->outs.size(); y < gatchsize; ++y) {
-                  std::vector <gate*> &returned = netl->returnGate(stackSim->gatesChain[index % stackSize]->outs[y]);
+                for (int y = 0, gatchsize = stackSim->gatesChain[index % stackSize]->getOutputsCount(); y < gatchsize; ++y) {
+                  std::vector <gate*> &returned = netl->returnGate(stackSim->gatesChain[index % stackSize]->getOutput(y));
                   if (!returned.empty())
                     for (int indexx = 0, retsize = returned.size(); indexx < retsize; ++indexx) {
                       stackSim->push_back(returned[indexx]);
@@ -148,12 +148,12 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
                 }
               }
             } else {
-              for (size_t outst = 0; outst < stackSim->gatesChain[index % stackSize]->outs.size(); outst++) {
-                if (stackSim->gatesChain[index % stackSize]->outs[outst]->value != stackSim->gatesChain[index % stackSize]->outs_temp[outst]) {
-                  Event *ev = (simData->addMapEvent(time + stackSim->gatesChain[index % stackSize]->delay, stackSim->gatesChain[index % stackSize]->outs[outst], stackSim->gatesChain[index % stackSize]->outs_temp[outst], true));
+              for (size_t outst = 0; outst < stackSim->gatesChain[index % stackSize]->getOutputsCount(); outst++) {
+                if (stackSim->gatesChain[index % stackSize]->getOutput(outst)->value != stackSim->gatesChain[index % stackSize]->getInternalOutput(outst)) {
+                  Event *ev = (simData->addMapEvent(time + stackSim->gatesChain[index % stackSize]->delay, stackSim->gatesChain[index % stackSize]->getOutput(outst), stackSim->gatesChain[index % stackSize]->getInternalOutput(outst), true));
                   for (size_t ins = 0; ins < stackSim->gatesChain[index % stackSize]->getInputsCount(); ins++) {
-                    (ev->inputStates[stackSim->gatesChain[index % stackSize]->outs[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->getInput(ins));
-                    (ev->inputStatesValues[stackSim->gatesChain[index % stackSize]->outs[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->getInput(ins)->value);
+                    (ev->inputStates[stackSim->gatesChain[index % stackSize]->getOutput(outst)->name]).push_back(stackSim->gatesChain[index % stackSize]->getInput(ins));
+                    (ev->inputStatesValues[stackSim->gatesChain[index % stackSize]->getOutput(outst)->name]).push_back(stackSim->gatesChain[index % stackSize]->getInput(ins)->value);
                   }
                 }
               }
@@ -355,8 +355,8 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
             if (stackSim->gatesChain[index % stackSize]->delay == 0) {
               bool valueChanged = stackSim->gatesChain[index % stackSize]->t_plus();
               if (valueChanged) {                                                                                 
-                for (int y = 0, gatchsize = stackSim->gatesChain[index % stackSize]->outs.size(); y < gatchsize; ++y) {
-                  std::vector <gate*> &returned = netl->returnGate(stackSim->gatesChain[index % stackSize]->outs[y]);
+                for (int y = 0, gatchsize = stackSim->gatesChain[index % stackSize]->getOutputsCount(); y < gatchsize; ++y) {
+                  std::vector <gate*> &returned = netl->returnGate(stackSim->gatesChain[index % stackSize]->getOutput(y));
                   if (!returned.empty())
                     for (int indexx = 0, retsize = returned.size(); indexx < retsize; ++indexx) {
                       stackSim->push_back(returned[indexx]);
@@ -364,12 +364,12 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
                 }
               }
             } else {
-              for (size_t outst = 0; outst < stackSim->gatesChain[index % stackSize]->outs.size(); outst++) {
-                if (stackSim->gatesChain[index % stackSize]->outs[outst]->value != stackSim->gatesChain[index % stackSize]->outs_temp[outst]) {
-                  Event *ev = (simData->addMapEvent(time + stackSim->gatesChain[index % stackSize]->delay, stackSim->gatesChain[index % stackSize]->outs[outst], stackSim->gatesChain[index % stackSize]->outs_temp[outst], true));
+              for (size_t outst = 0; outst < stackSim->gatesChain[index % stackSize]->getOutputsCount(); outst++) {
+                if (stackSim->gatesChain[index % stackSize]->getOutput(outst)->value != stackSim->gatesChain[index % stackSize]->getInternalOutput(outst)) {
+                  Event *ev = (simData->addMapEvent(time + stackSim->gatesChain[index % stackSize]->delay, stackSim->gatesChain[index % stackSize]->getOutput(outst), stackSim->gatesChain[index % stackSize]->getInternalOutput(outst), true));
                   for (size_t ins = 0; ins < stackSim->gatesChain[index % stackSize]->getInputsCount(); ins++) {
-                    (ev->inputStates[stackSim->gatesChain[index % stackSize]->outs[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->getInput(ins));
-                    (ev->inputStatesValues[stackSim->gatesChain[index % stackSize]->outs[outst]->name]).push_back(stackSim->gatesChain[index % stackSize]->getInput(ins)->value);
+                    (ev->inputStates[stackSim->gatesChain[index % stackSize]->getOutput(outst)->name]).push_back(stackSim->gatesChain[index % stackSize]->getInput(ins));
+                    (ev->inputStatesValues[stackSim->gatesChain[index % stackSize]->getOutput(outst)->name]).push_back(stackSim->gatesChain[index % stackSize]->getInput(ins)->value);
                   }
                 }
               }

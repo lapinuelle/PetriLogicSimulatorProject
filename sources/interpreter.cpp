@@ -23,11 +23,11 @@ LogicLevel interpreter::not(net* net) {
       return level_u;
     }
   }
-  for (size_t i = 0; i < this->modeGate->outs.size(); i++) {
-    if (this->modeGate->outs[i]->name == net->name) {
-      if (this->modeGate->outs_temp[i] == level_0)
+  for (size_t i = 0; i < this->modeGate->getOutputsCount(); i++) {
+    if (this->modeGate->getOutput(i)->name == net->name) {
+      if (this->modeGate->getInternalOutput(i) == level_0)
         return level_1;
-      if (this->modeGate->outs_temp[i] == level_1)
+      if (this->modeGate->getInternalOutput(i) == level_1)
         return level_0;
       return level_u;
     }
@@ -64,9 +64,9 @@ void interpreter::cmp(net* net, std::string value) {
 }
 
 void interpreter::mov(LogicLevel value, net* net) {
-  for (size_t i = 0; i < this->modeGate->outs.size(); i++) {
-    if (this->modeGate->outs[i]->name == net->name) {
-      this->modeGate->outs_temp[i] = value;
+  for (size_t i = 0; i < this->modeGate->getOutputsCount(); i++) {
+    if (this->modeGate->getOutput(i)->name == net->name) {
+      this->modeGate->setInternalOutput(i, value);
     }
   }
 }

@@ -764,7 +764,7 @@ bool netlistreader_verilog::parse_flat_gates(netlist *netl, sim_data *simul_data
     //p_gate->outs.push_back(netl->addNet(root.gates[i][j_pins], NULL));
 
 
-    p_gate->outs.push_back(netl->addNetMap(root.gates[i][j_pins], NULL));
+    p_gate->addOutput(netl->addNetMap(root.gates[i][j_pins], NULL));
     j_pins += 2;
     for (; j_pins < root.gates[i].size() - 1; j_pins += 2)
       p_gate->addInput(netl->addNetMap(root.gates[i][j_pins], p_gate));
@@ -854,7 +854,7 @@ bool netlistreader_verilog::parse_flat_assigns(netlist *netl, sim_data *simul_da
         p_gate = CreateGate("not_"+root.assigns[i][1 + del], "not");
         if (!p_gate)
           return false;
-        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1 + del], NULL));
+        p_gate->addOutput(netl->addNetMap(root.assigns[i][1 + del], NULL));
         p_gate->addInput(netl->addNetMap(root.assigns[i][4 + del], p_gate));
         p_gate->setDelay(delay);
         netl->addGate(p_gate);
@@ -875,7 +875,7 @@ bool netlistreader_verilog::parse_flat_assigns(netlist *netl, sim_data *simul_da
         p_gate = CreateGate(type + root.assigns[i][1 + del], type);
         if (!p_gate)
           return false;
-        p_gate->outs.push_back(netl->addNetMap(root.assigns[i][1 + del], NULL));
+        p_gate->addOutput(netl->addNetMap(root.assigns[i][1 + del], NULL));
         int step = 0;
         while(";" != root.assigns[i][3 + del + step]) {
           if(root.assigns[i][3 + del + step] == "|" || root.assigns[i][3 + del + step] == "&" || root.assigns[i][3 + del + step] == "^") {
@@ -915,7 +915,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
       for (size_t iin = 0; iin < root.alwsGates[i].inputs.size(); iin++)
         p_gate->addInput(netl->addNetMap(root.alwsGates[i].inputs[iin], p_gate));
       for (size_t iout = 0; iout < root.alwsGates[i].outputs.size(); iout++)
-        p_gate->outs.push_back(netl->addNetMap(root.alwsGates[i].outputs[iout], NULL));
+        p_gate->addOutput(netl->addNetMap(root.alwsGates[i].outputs[iout], NULL));
       behGate = true;
       p_gate->repeat = 0;
       p_gate->setDelay(root.alwsGates[i].delay);
