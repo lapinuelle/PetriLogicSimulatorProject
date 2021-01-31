@@ -7,9 +7,12 @@
 #include "nets.h"
 
 class gate {
+protected:
+	std::vector <net*> ins;               ///< Входы вентиля
+	std::vector<LogicLevel> ins_temp;     ///< Временные (внутренние) входы для переноса меток
+
 public:
-  std::vector <net*> ins;               ///< Входы вентиля
-  std::vector<LogicLevel> ins_temp;     ///< Временные (внутренние) входы для переноса меток
+  
   std::vector <net*> outs;              ///< Выходы вентиля
   std::vector<LogicLevel> outs_temp;    ///< Временные (внутренние) выходы для переноса меток
   std::string realName;                     ///< Имя вентиля
@@ -24,6 +27,13 @@ public:
   virtual bool postprocess() = 0;
   std::vector<std::string> tokens;
   std::map<std::string, int> jumps;
+
+  void addInput(net*);
+  void setInternalInput(int,LogicLevel);
+  net* getInput(int);
+  LogicLevel getInternalInput(int);
+  int getInputsCount();
+
 public:
   virtual ~gate() {};
 };

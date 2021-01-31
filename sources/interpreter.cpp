@@ -14,11 +14,11 @@ LogicLevel interpreter::not(LogicLevel value) {
 }
 
 LogicLevel interpreter::not(net* net) {
-  for (size_t i = 0; i < this->modeGate->ins.size(); i++) {
-    if (this->modeGate->ins[i]->name == net->name) {
-      if (this->modeGate->ins_temp[i] == level_0)
+  for (size_t i = 0; i < this->modeGate->getInputsCount(); i++) {
+    if (this->modeGate->getInput(i)->name == net->name) {
+      if (this->modeGate->getInternalInput(i) == level_0)
         return level_1;
-      if (this->modeGate->ins_temp[i] == level_1)
+      if (this->modeGate->getInternalInput(i) == level_1)
         return level_0;
       return level_u;
     }
@@ -38,15 +38,15 @@ void interpreter::cmp(net* net, LogicLevel value) {
   flags["ZF"] = 0;
   flags["GF"] = 0;
   flags["LF"] = 0;
-  for (size_t i = 0; i < this->modeGate->ins.size(); i++) {
-    if (this->modeGate->ins[i]->name == net->name) {
-      if (this->modeGate->ins_temp[i] == value)
+  for (size_t i = 0; i < this->modeGate->getInputsCount(); i++) {
+    if (this->modeGate->getInput(i)->name == net->name) {
+      if (this->modeGate->getInternalInput(i) == value)
         flags["ZF"] = 1;
-      if (this->modeGate->ins_temp[i] > value) {
+      if (this->modeGate->getInternalInput(i) > value) {
         flags["ZF"] = 0;
         flags["GF"] = 1;
       }
-      if (this->modeGate->ins_temp[i] < value) {
+      if (this->modeGate->getInternalInput(i) < value) {
         flags["ZF"] = 0;
         flags["LF"] = 1;
       }

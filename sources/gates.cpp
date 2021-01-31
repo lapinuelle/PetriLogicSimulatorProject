@@ -36,6 +36,31 @@ bool gate::t_plus() {
     return changed;
   }
 
+void gate::addInput(net* net)
+{
+	this->ins.push_back(net);
+}
+
+void gate::setInternalInput(int index, LogicLevel value)
+{
+	this->ins_temp[index] = value;
+}
+
+net* gate::getInput(int index)
+{
+	return this->ins[index];
+}
+
+LogicLevel gate::getInternalInput(int index)
+{
+	return this->ins_temp[index];
+}
+
+int gate::getInputsCount()
+{
+	return this->ins.size();
+}
+
 
 // BEH Gate
 
