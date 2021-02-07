@@ -19,12 +19,6 @@ protected:
   std::vector<gate *>  gates;
 
 public:
-
-  
-  
-  
-
-public:
 	net(const std::string &net_name);
 
 	std::string getName();

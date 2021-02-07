@@ -23,25 +23,25 @@ Event* sim_data::addEvent(float time, net* net, LogicLevel state) {
 
   
   for (i = 0; i < eventChain.size(); ++i) {
-    if (eventChain[i].time == time)
+    if (eventChain[i].getTime() == time)
       break;
   }
   if (i < eventChain.size()) {
     if (net != NULL) {
-      for (j = 0; j < eventChain[i].netsChain.size(); ++j)
-        if (eventChain[i].netsChain[j] == net)
+      for (j = 0; j < eventChain[i].getNetsChainSize(); ++j)
+        if (eventChain[i].getNet(j) == net)
           break;
-      if (j >= eventChain[i].netsChain.size()) {
-        eventChain[i].netsChain.push_back(net);
+      if (j >= eventChain[i].getNetsChainSize()) {
+        eventChain[i].addNet(net);
         eventChain[i].statesChain.push_back(state);
       }
     }
     return &eventChain[i];
   } else {
     eventPointer = new Event();
-    eventPointer->time = time;
+    eventPointer->setTime(time);
     if (net != NULL) {
-      eventPointer->netsChain.push_back(net);
+      eventPointer->addNet(net);
       eventPointer->statesChain.push_back(state);
     }
     eventChain.push_back(*eventPointer);
@@ -57,20 +57,20 @@ Event* sim_data::addMapEvent(float time, net* net, LogicLevel state) {
 
   if (newEventChain[time]) {
     if (net != NULL) {
-      for (j = 0; j < newEventChain[time]->netsChain.size(); ++j)
-        if (newEventChain[time]->netsChain[j] == net)
+      for (j = 0; j < newEventChain[time]->getNetsChainSize(); ++j)
+        if (newEventChain[time]->getNet(j) == net)
           break;
-      if (j >= newEventChain[time]->netsChain.size()) {
-        newEventChain[time]->netsChain.push_back(net);
+      if (j >= newEventChain[time]->getNetsChainSize()) {
+        newEventChain[time]->addNet(net);
         newEventChain[time]->statesChain.push_back(state);
       }
     }
     return newEventChain[time];
   } else {
     eventPointer = new Event();
-    eventPointer->time = time;
+    eventPointer->setTime(time);
     if (net != NULL) {
-      eventPointer->netsChain.push_back(net);
+      eventPointer->addNet(net);
       eventPointer->statesChain.push_back(state);
     }
     eventChain.push_back(*eventPointer);
@@ -82,16 +82,16 @@ Event* sim_data::addMapEvent(float time, net* net, LogicLevel state) {
 
 Event* sim_data::addMapEvent(float time, net* net, LogicLevel state, bool delayedState) {
 
-  Event* eventPointer = NULL;
+  Event* fEvent = NULL;
   size_t i = 0, j = 0;
 
   if (newEventChain[time]) {
     if (net != NULL) {
-      for (j = 0; j < newEventChain[time]->netsChain.size(); ++j)
-        if (newEventChain[time]->netsChain[j] == net)
+      for (j = 0; j < newEventChain[time]->getNetsChainSize(); ++j)
+        if (newEventChain[time]->getNet(j) == net)
           break;
-      if (j >= newEventChain[time]->netsChain.size()) {
-        newEventChain[time]->netsChain.push_back(net);
+      if (j >= newEventChain[time]->getNetsChainSize()) {
+        newEventChain[time]->addNet(net);
         newEventChain[time]->statesChain.push_back(state);
       }
     }
@@ -99,16 +99,16 @@ Event* sim_data::addMapEvent(float time, net* net, LogicLevel state, bool delaye
     return newEventChain[time];
   }
   else {
-    eventPointer = new Event();
-    eventPointer->time = time;
+    fEvent = new Event();
+    fEvent->setTime(time);
     if (net != NULL) {
-      eventPointer->netsChain.push_back(net);
-      eventPointer->statesChain.push_back(state);
+      fEvent->addNet(net);
+      fEvent->statesChain.push_back(state);
     }
-    eventChain.push_back(*eventPointer);
-    newEventChain[time] = eventPointer;
+    eventChain.push_back(*fEvent);
+    newEventChain[time] = fEvent;
     newEventChain[time]->delayed.push_back(delayedState);
-    return eventPointer;
+    return fEvent;
   }
 
 }

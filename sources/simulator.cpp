@@ -61,11 +61,11 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
 
       // присваиваем новые входные воздействия из тестбенча портам
       
-      for (size_t i = 0; i < simData->newEventChain[time]->netsChain.size(); ++i) {
+      for (size_t i = 0; i < simData->newEventChain[time]->getNetsChainSize(); ++i) {
         if (simData->newEventChain[time]->delayed[i]) {
           bool stateChanged = false;
           Event* eventCh = simData->newEventChain.find(time)->second;
-          std::string assignNet = eventCh->netsChain[i]->getName();
+          std::string assignNet = eventCh->getNet(i)->getName();
           std::vector<net*> evInputs = eventCh->inputStates.find(assignNet)->second;
           std::vector<LogicLevel> evInputsValues = eventCh->inputStatesValues.find(assignNet)->second;
           for (size_t inp = 0; inp < evInputs.size(); inp++) {
@@ -75,19 +75,19 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
             }
           }
           if (!stateChanged) {
-            if (((simData->newEventChain[time]->netsChain[i]->getValue() == level_0) || (simData->newEventChain[time]->netsChain[i]->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
-              simData->newEventChain[time]->netsChain[i]->getStability() = '/';
-            if (((simData->newEventChain[time]->netsChain[i]->getValue() == level_1) || (simData->newEventChain[time]->netsChain[i]->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
-              simData->newEventChain[time]->netsChain[i]->getStability() = '\\';
-            simData->newEventChain[time]->netsChain[i]->setValue(simData->newEventChain[time]->statesChain[i]);
+            if (((simData->newEventChain[time]->getNet(i)->getValue() == level_0) || (simData->newEventChain[time]->getNet(i)->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
+              simData->newEventChain[time]->getNet(i)->getStability() = '/';
+            if (((simData->newEventChain[time]->getNet(i)->getValue() == level_1) || (simData->newEventChain[time]->getNet(i)->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
+              simData->newEventChain[time]->getNet(i)->getStability() = '\\';
+            simData->newEventChain[time]->getNet(i)->setValue(simData->newEventChain[time]->statesChain[i]);
 
           }
         } else {
-          if (((simData->newEventChain[time]->netsChain[i]->getValue() == level_0) || (simData->newEventChain[time]->netsChain[i]->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
-            simData->newEventChain[time]->netsChain[i]->getStability() = '/';
-          if (((simData->newEventChain[time]->netsChain[i]->getValue() == level_1) || (simData->newEventChain[time]->netsChain[i]->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
-            simData->newEventChain[time]->netsChain[i]->getStability() = '\\';
-          simData->newEventChain[time]->netsChain[i]->setValue(simData->newEventChain[time]->statesChain[i]);
+          if (((simData->newEventChain[time]->getNet(i)->getValue() == level_0) || (simData->newEventChain[time]->getNet(i)->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
+            simData->newEventChain[time]->getNet(i)->getStability() = '/';
+          if (((simData->newEventChain[time]->getNet(i)->getValue() == level_1) || (simData->newEventChain[time]->getNet(i)->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
+            simData->newEventChain[time]->getNet(i)->getStability() = '\\';
+          simData->newEventChain[time]->getNet(i)->setValue(simData->newEventChain[time]->statesChain[i]);
 
         }
       }
@@ -96,9 +96,9 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
 
           // инициируем начальную цепочку вентилей на основе изменения состояний на входах
 
-      for (int l = 0, ecncsize = simData->newEventChain[time]->netsChain.size(); l < ecncsize; l++)
-        for (int m = 0, ecncgsize = simData->newEventChain[time]->netsChain[l]->getGatesCount(); m < ecncgsize; m++)
-          stackSim->push_back(simData->newEventChain[time]->netsChain[l]->getConnectedGate(m));
+      for (int l = 0, ecncsize = simData->newEventChain[time]->getNetsChainSize(); l < ecncsize; l++)
+        for (int m = 0, ecncgsize = simData->newEventChain[time]->getNet(l)->getGatesCount(); m < ecncgsize; m++)
+          stackSim->push_back(simData->newEventChain[time]->getNet(l)->getConnectedGate(m));
 
       //
       // Вот тут-то и начинается самый сок
@@ -267,11 +267,11 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
       //memset(netl->repeats, 0, sizeof(int)*netl->gatesMap.size());
 
       // присваиваем новые входные воздействия из тестбенча портам
-      for (size_t i = 0; i < simData->newEventChain[time]->netsChain.size(); ++i) {
+      for (size_t i = 0; i < simData->newEventChain[time]->getNetsChainSize(); ++i) {
         if (simData->newEventChain[time]->delayed[i]) {
           bool stateChanged = false;
           Event* eventCh = simData->newEventChain.find(time)->second;
-          std::string assignNet = eventCh->netsChain[i]->getName();
+          std::string assignNet = eventCh->getNet(i)->getName();
           std::vector<net*> evInputs = eventCh->inputStates.find(assignNet)->second;
           std::vector<LogicLevel> evInputsValues = eventCh->inputStatesValues.find(assignNet)->second;
           for (size_t inp = 0; inp < evInputs.size(); inp++) {
@@ -281,27 +281,27 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
             }
           }
           if (!stateChanged) {
-            if (((simData->newEventChain[time]->netsChain[i]->getValue() == level_0) || (simData->newEventChain[time]->netsChain[i]->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
-              simData->newEventChain[time]->netsChain[i]->getStability() = '/';
-            if (((simData->newEventChain[time]->netsChain[i]->getValue() == level_1) || (simData->newEventChain[time]->netsChain[i]->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
-              simData->newEventChain[time]->netsChain[i]->getStability() = '\\';
-            simData->newEventChain[time]->netsChain[i]->setValue(simData->newEventChain[time]->statesChain[i]);
+            if (((simData->newEventChain[time]->getNet(i)->getValue() == level_0) || (simData->newEventChain[time]->getNet(i)->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
+              simData->newEventChain[time]->getNet(i)->getStability() = '/';
+            if (((simData->newEventChain[time]->getNet(i)->getValue() == level_1) || (simData->newEventChain[time]->getNet(i)->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
+              simData->newEventChain[time]->getNet(i)->getStability() = '\\';
+            simData->newEventChain[time]->getNet(i)->setValue(simData->newEventChain[time]->statesChain[i]);
             
-            if(signal == simData->newEventChain[time]->netsChain[i]->getRealName())
-              if ((simData->newEventChain[time]->netsChain[i]->getStability() == "/" && edge == "posedge") || (simData->newEventChain[time]->netsChain[i]->getStability() == "\\" && edge == "negedge")) {
+            if(signal == simData->newEventChain[time]->getNet(i)->getRealName())
+              if ((simData->newEventChain[time]->getNet(i)->getStability() == "/" && edge == "posedge") || (simData->newEventChain[time]->getNet(i)->getStability() == "\\" && edge == "negedge")) {
                 flagStopSim = true;
                 stopTime = time + 0.175f;
               }
           }
         } else {
-          if (((simData->newEventChain[time]->netsChain[i]->getValue() == level_0) || (simData->newEventChain[time]->netsChain[i]->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
-            simData->newEventChain[time]->netsChain[i]->getStability() = '/';
-          if (((simData->newEventChain[time]->netsChain[i]->getValue() == level_1) || (simData->newEventChain[time]->netsChain[i]->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
-            simData->newEventChain[time]->netsChain[i]->getStability() = '\\';
-          simData->newEventChain[time]->netsChain[i]->setValue(simData->newEventChain[time]->statesChain[i]);
+          if (((simData->newEventChain[time]->getNet(i)->getValue() == level_0) || (simData->newEventChain[time]->getNet(i)->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_1))
+            simData->newEventChain[time]->getNet(i)->getStability() = '/';
+          if (((simData->newEventChain[time]->getNet(i)->getValue() == level_1) || (simData->newEventChain[time]->getNet(i)->getValue() == level_u)) && (simData->newEventChain[time]->statesChain[i] == level_0))
+            simData->newEventChain[time]->getNet(i)->getStability() = '\\';
+          simData->newEventChain[time]->getNet(i)->setValue(simData->newEventChain[time]->statesChain[i]);
 
-          if(signal == simData->newEventChain[time]->netsChain[i]->getRealName())
-            if ((simData->newEventChain[time]->netsChain[i]->getStability() == "/" && edge == "posedge") || (simData->newEventChain[time]->netsChain[i]->getStability() == "\\" && edge == "negedge")) {
+          if(signal == simData->newEventChain[time]->getNet(i)->getRealName())
+            if ((simData->newEventChain[time]->getNet(i)->getStability() == "/" && edge == "posedge") || (simData->newEventChain[time]->getNet(i)->getStability() == "\\" && edge == "negedge")) {
               flagStopSim = true;
               stopTime = time + 0.175f;
             }
@@ -312,9 +312,9 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
 
       // инициируем начальную цепочку вентилей на основе изменения состояний на входах
 
-      for (int l = 0, ecncsize = simData->newEventChain[time]->netsChain.size(); l < ecncsize; l++)
-        for (int m = 0, ecncgsize = simData->newEventChain[time]->netsChain[l]->getGatesCount(); m < ecncgsize; m++)
-          stackSim->push_back(simData->newEventChain[time]->netsChain[l]->getConnectedGate(m));
+      for (int l = 0, ecncsize = simData->newEventChain[time]->getNetsChainSize(); l < ecncsize; l++)
+        for (int m = 0, ecncgsize = simData->newEventChain[time]->getNet(l)->getGatesCount(); m < ecncgsize; m++)
+          stackSim->push_back(simData->newEventChain[time]->getNet(l)->getConnectedGate(m));
 
       //
       // Вот тут-то и начинается самый сок
