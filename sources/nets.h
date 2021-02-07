@@ -11,9 +11,10 @@ class gate;
 class net {
 protected:
 	std::string name;
+  std::string realName;
 
 public:
-  std::string realName;
+  
   LogicLevel value;
   char type;
   std::string stability;
@@ -26,6 +27,9 @@ public:
 
 	std::string getName();
 	void setName(std::string);
+
+  std::string getRealName();
+  void setRealName(std::string);
 
 	LogicLevel getValue();
 	void setValue(LogicLevel);

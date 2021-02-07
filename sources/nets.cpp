@@ -14,6 +14,16 @@ void net::setName(std::string name)
 	this->name = name;
 }
 
+std::string net::getRealName()
+{
+  return this->realName;
+}
+
+void net::setRealName(std::string name)
+{
+  this->realName = name;
+}
+
 LogicLevel net::getValue()
 {
 	return this->value;

@@ -47,7 +47,7 @@ void datawriter::PrintHeader() {
   for (size_t i = 0; i < nets.size(); ++i) {
     if ((i % 93) == 92)
       add1++;
-    fprintf(p_file, "$var wire 1 %c%c %s $end\n", (char)(i % 93) + 33, (char)(add1 > 33 ? add1 : 32), nets[i]->realName.c_str());
+    fprintf(p_file, "$var wire 1 %c%c %s $end\n", (char)(i % 93) + 33, (char)(add1 > 33 ? add1 : 32), nets[i]->getRealName().c_str());
   }
   
   fprintf(p_file,  "$upscope $end\n");

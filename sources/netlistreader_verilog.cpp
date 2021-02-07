@@ -819,7 +819,7 @@ bool netlistreader_verilog::parse_flat_initials(netlist *netl, sim_data *simul_d
           net* p_net;
           p_net = netl->addNetMap(root.initials[i][j], NULL);
           ev_map = *(simul_data->addMapEvent(time, p_net, LogicLevel(atoi(root.initials[i][j + 2].c_str())), false));
-          p_net->realName = this->realPins[p_net->getName()];
+          p_net->setRealName(this->realPins[p_net->getName()]);
           j += 3;
         }
         continue;
@@ -1127,9 +1127,9 @@ bool netlistreader_verilog::parse_flat_netlist(netlist *netl, sim_data *simul_da
     return false;
   for (std::map<std::string, net*>::iterator it = netl->netsMap.begin(); it != netl->netsMap.end(); ++it) {
     if (this->realPins[it->second->getName()] != "" && !this->realPins[it->second->getName()].empty()) {
-      it->second->realName = this->realPins[it->second->getName()];
+      it->second->setRealName(this->realPins[it->second->getName()]);
     } else {
-      it->second->realName = it->second->getName();
+      it->second->setRealName(it->second->getName());
     }
   }
   //

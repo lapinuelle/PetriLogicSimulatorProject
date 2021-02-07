@@ -287,7 +287,7 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
               simData->newEventChain[time]->netsChain[i]->stability = '\\';
             simData->newEventChain[time]->netsChain[i]->value = simData->newEventChain[time]->statesChain[i];
             
-            if(signal == simData->newEventChain[time]->netsChain[i]->realName)
+            if(signal == simData->newEventChain[time]->netsChain[i]->getRealName())
               if ((simData->newEventChain[time]->netsChain[i]->stability == "/" && edge == "posedge") || (simData->newEventChain[time]->netsChain[i]->stability == "\\" && edge == "negedge")) {
                 flagStopSim = true;
                 stopTime = time + 0.175f;
@@ -300,7 +300,7 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
             simData->newEventChain[time]->netsChain[i]->stability = '\\';
           simData->newEventChain[time]->netsChain[i]->value = simData->newEventChain[time]->statesChain[i];
 
-          if(signal == simData->newEventChain[time]->netsChain[i]->realName)
+          if(signal == simData->newEventChain[time]->netsChain[i]->getRealName())
             if ((simData->newEventChain[time]->netsChain[i]->stability == "/" && edge == "posedge") || (simData->newEventChain[time]->netsChain[i]->stability == "\\" && edge == "negedge")) {
               flagStopSim = true;
               stopTime = time + 0.175f;
