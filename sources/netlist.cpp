@@ -31,7 +31,7 @@ net* netlist::addNet(const std::string &net_name, gate *gate) {
 	size_t i = 0, j = 0;
 
 	for(i = 0; i < nets.size(); ++i) {
-		if(nets[i]->name == net_name)
+		if(nets[i]->getName() == net_name)
 			break;
 	}
 	if(i < nets.size()) {
@@ -56,7 +56,7 @@ net* netlist::addNet(const std::string &net_name, gate *gate) {
 
 net* netlist::returnNet(std::string netName) {
   for (size_t i=0; i<nets.size(); i++) {
-	  if (nets[i]->name == netName) {
+	  if (nets[i]->getName() == netName) {
 		  return nets[i];
 	  } 
   }

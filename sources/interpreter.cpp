@@ -15,7 +15,7 @@ LogicLevel interpreter::not(LogicLevel value) {
 
 LogicLevel interpreter::not(net* net) {
   for (size_t i = 0; i < this->modeGate->getInputsCount(); i++) {
-    if (this->modeGate->getInput(i)->name == net->name) {
+    if (this->modeGate->getInput(i)->getName() == net->getName()) {
       if (this->modeGate->getInternalInput(i) == level_0)
         return level_1;
       if (this->modeGate->getInternalInput(i) == level_1)
@@ -24,7 +24,7 @@ LogicLevel interpreter::not(net* net) {
     }
   }
   for (size_t i = 0; i < this->modeGate->getOutputsCount(); i++) {
-    if (this->modeGate->getOutput(i)->name == net->name) {
+    if (this->modeGate->getOutput(i)->getName() == net->getName()) {
       if (this->modeGate->getInternalOutput(i) == level_0)
         return level_1;
       if (this->modeGate->getInternalOutput(i) == level_1)
@@ -39,7 +39,7 @@ void interpreter::cmp(net* net, LogicLevel value) {
   flags["GF"] = 0;
   flags["LF"] = 0;
   for (size_t i = 0; i < this->modeGate->getInputsCount(); i++) {
-    if (this->modeGate->getInput(i)->name == net->name) {
+    if (this->modeGate->getInput(i)->getName() == net->getName()) {
       if (this->modeGate->getInternalInput(i) == value)
         flags["ZF"] = 1;
       if (this->modeGate->getInternalInput(i) > value) {
@@ -65,7 +65,7 @@ void interpreter::cmp(net* net, std::string value) {
 
 void interpreter::mov(LogicLevel value, net* net) {
   for (size_t i = 0; i < this->modeGate->getOutputsCount(); i++) {
-    if (this->modeGate->getOutput(i)->name == net->name) {
+    if (this->modeGate->getOutput(i)->getName() == net->getName()) {
       this->modeGate->setInternalOutput(i, value);
     }
   }
@@ -107,8 +107,8 @@ interpreter::interpreter() {
 
 void interpreter::operate(gate* currentGate, netlist* netl) {
   this->modeGate = currentGate;
-  std::vector<std::string> commands = this->modeGate->tokens;
-  std::map<std::string, int> jumps = this->modeGate->jumps;
+  std::vector<std::string> commands = this->modeGate->getTokens();
+  std::map<std::string, int> jumps = this->modeGate->getJumps();
   int commandsSize = commands.size();
   int i = 0;
   while (i < commandsSize) {

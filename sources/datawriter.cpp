@@ -19,7 +19,7 @@ datawriter::datawriter(const std::string fileName) : fileNameVCD(fileName), time
 void datawriter::AddDumpVar(net *net) {
   size_t i = 0;
   for(i = 0; i < nets.size(); ++i)
-    if(nets[i]->name == net->name)
+    if(nets[i]->getName() == net->getName())
       return;
   nets.push_back(net);
 }

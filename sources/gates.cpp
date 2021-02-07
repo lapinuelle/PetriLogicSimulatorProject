@@ -41,6 +41,41 @@ bool gate::t_plus() {
     return changed;
   }
 
+std::string gate::getToken(int index)
+{
+	return this->tokens[index];
+}
+
+std::vector<std::string> gate::getTokens()
+{
+	return this->tokens;
+}
+
+void gate::addToken(std::string token)
+{
+	this->tokens.push_back(token);
+}
+
+int gate::getTokensCount()
+{
+	return this->tokens.size();
+}
+
+void gate::addJump(std::string jumpName, int index)
+{
+	this->jumps[jumpName] = index;
+}
+
+int gate::getJump(std::string jumpName)
+{
+	return this->jumps[jumpName];
+}
+
+std::map<std::string, int> gate::getJumps()
+{
+	return this->jumps;
+}
+
 void gate::setName(std::string name)
 {
 	this->name = name;

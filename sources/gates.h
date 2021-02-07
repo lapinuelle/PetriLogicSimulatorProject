@@ -16,7 +16,8 @@ protected:
 	std::string name;                     ///< Имя вентиля
 	int repeat;                          ///< Количество повторений моделирования вентиля в конкретный момент времени
 	float delay;                            ///< Задержка вентиля
-
+	std::vector<std::string> tokens;
+	std::map<std::string, int> jumps;
 
 public:
   void t_minus();                       ///< Момент сети Петри t_minus
@@ -24,8 +25,16 @@ public:
   bool t_plus();                        
   virtual bool postprocess() = 0;
   
-  std::vector<std::string> tokens;
-  std::map<std::string, int> jumps;
+  
+
+  std::string getToken(int);
+  std::vector<std::string> getTokens();
+  void addToken(std::string);
+  int getTokensCount();
+
+  void addJump(std::string, int);
+  int getJump(std::string);
+  std::map<std::string, int> getJumps();
 
   void setName(std::string);
   std::string getName();
