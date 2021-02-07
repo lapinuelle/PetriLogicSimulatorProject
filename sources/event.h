@@ -14,11 +14,12 @@ class Event {
 private:
   float time;
   std::vector<net*> netsChain;
+  std::vector<bool> delayed;
 public:
   Event();
 public:
   
-  std::vector<bool> delayed;
+  
   std::vector<LogicLevel> statesChain;
   std::list<gate*> gatesChain;
   std::map<std::string, std::vector<net*> > inputStates;
@@ -33,6 +34,9 @@ public:
   std::vector<net*> getNetsChain();
   void addNet(net*);
   int getNetsChainSize();
+
+  bool isDelayed(int);
+  void setDelayed(bool);
 };
 
 #endif

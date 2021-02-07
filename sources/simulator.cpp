@@ -62,7 +62,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
       // присваиваем новые входные воздействия из тестбенча портам
       
       for (size_t i = 0; i < simData->newEventChain[time]->getNetsChainSize(); ++i) {
-        if (simData->newEventChain[time]->delayed[i]) {
+        if (simData->newEventChain[time]->isDelayed(i)) {
           bool stateChanged = false;
           Event* eventCh = simData->newEventChain.find(time)->second;
           std::string assignNet = eventCh->getNet(i)->getName();
@@ -268,7 +268,7 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
 
       // присваиваем новые входные воздействия из тестбенча портам
       for (size_t i = 0; i < simData->newEventChain[time]->getNetsChainSize(); ++i) {
-        if (simData->newEventChain[time]->delayed[i]) {
+        if (simData->newEventChain[time]->isDelayed(i)) {
           bool stateChanged = false;
           Event* eventCh = simData->newEventChain.find(time)->second;
           std::string assignNet = eventCh->getNet(i)->getName();

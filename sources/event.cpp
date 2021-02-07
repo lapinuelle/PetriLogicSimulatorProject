@@ -32,4 +32,12 @@ int Event::getNetsChainSize()
 {
   return this->netsChain.size();
 }
+bool Event::isDelayed(int index)
+{
+  return this->delayed[index];
+}
+void Event::setDelayed(bool state)
+{
+  this->delayed.push_back(state);
+}
 ;

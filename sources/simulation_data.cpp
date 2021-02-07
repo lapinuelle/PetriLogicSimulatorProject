@@ -95,7 +95,7 @@ Event* sim_data::addMapEvent(float time, net* net, LogicLevel state, bool delaye
         newEventChain[time]->statesChain.push_back(state);
       }
     }
-    newEventChain[time]->delayed.push_back(delayedState);
+    newEventChain[time]->setDelayed(delayedState);
     return newEventChain[time];
   }
   else {
@@ -107,7 +107,7 @@ Event* sim_data::addMapEvent(float time, net* net, LogicLevel state, bool delaye
     }
     eventChain.push_back(*fEvent);
     newEventChain[time] = fEvent;
-    newEventChain[time]->delayed.push_back(delayedState);
+    newEventChain[time]->setDelayed(delayedState);
     return fEvent;
   }
 
