@@ -16,14 +16,14 @@ void gate::t_minus() {
   for (size_t i = 0; i < ins.size(); ++i) {
 
     if ((ins[i]->getValue() == level_0) && (ins_temp[i] == level_u))
-      ins[i]->stability = '\\';
+      ins[i]->getStability() = '\\';
     if ((ins[i]->getValue() == level_1) && (ins_temp[i] == level_u))
-      ins[i]->stability = '/';
+      ins[i]->getStability() = '/';
 
     if (((ins[i]->getValue() == level_0) || (ins[i]->getValue() == level_u)) && (ins_temp[i] == level_1))// && (ins[i]->stability == "_"))
-      ins[i]->stability = '\\';
+      ins[i]->getStability() = '\\';
     if (((ins[i]->getValue() == level_1) || (ins[i]->getValue() == level_u)) && (ins_temp[i] == level_0))// && (ins[i]->stability == "_"))
-      ins[i]->stability = '/';
+      ins[i]->getStability() = '/';
     ins_temp[i] = ins[i]->getValue();
   }
 }
@@ -31,7 +31,7 @@ void gate::t_minus() {
 bool gate::t_plus() {
   ++repeat;
   for (size_t i = 0; i < ins.size(); ++i)
-    ins[i]->stability = "_";
+    ins[i]->getStability() = "_";
   bool changed = false;
     for(size_t i =0 ; i < outs.size(); ++i)
       if (outs[i]->getValue() != outs_temp[i]) {

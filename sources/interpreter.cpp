@@ -56,10 +56,10 @@ void interpreter::cmp(net* net, LogicLevel value) {
 }
 
 void interpreter::cmp(net* net, std::string value) {
-  if (net->stability == value)
+  if (net->getStability() == value)
     flags["ZF"] = 1;
   if (value == "*")
-    if (net->stability != "_")
+    if (net->getStability() != "_")
       flags["ZF"] = 1;
 }
 

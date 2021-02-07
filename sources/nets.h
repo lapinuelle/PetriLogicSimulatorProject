@@ -13,10 +13,12 @@ protected:
 	std::string name;
   std::string realName;
   LogicLevel value;
-
-public:
   char type;
   std::string stability;
+
+public:
+
+  
   int delay;
   std::vector<gate *>  gates;
   
