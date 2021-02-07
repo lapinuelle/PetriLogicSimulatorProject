@@ -97,8 +97,8 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
           // инициируем начальную цепочку вентилей на основе изменения состояний на входах
 
       for (int l = 0, ecncsize = simData->newEventChain[time]->netsChain.size(); l < ecncsize; l++)
-        for (int m = 0, ecncgsize = simData->newEventChain[time]->netsChain[l]->gates.size(); m < ecncgsize; m++)
-          stackSim->push_back(simData->newEventChain[time]->netsChain[l]->gates[m]);
+        for (int m = 0, ecncgsize = simData->newEventChain[time]->netsChain[l]->getGatesCount(); m < ecncgsize; m++)
+          stackSim->push_back(simData->newEventChain[time]->netsChain[l]->getConnectedGate(m));
 
       //
       // Вот тут-то и начинается самый сок
@@ -313,8 +313,8 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
       // инициируем начальную цепочку вентилей на основе изменения состояний на входах
 
       for (int l = 0, ecncsize = simData->newEventChain[time]->netsChain.size(); l < ecncsize; l++)
-        for (int m = 0, ecncgsize = simData->newEventChain[time]->netsChain[l]->gates.size(); m < ecncgsize; m++)
-          stackSim->push_back(simData->newEventChain[time]->netsChain[l]->gates[m]);
+        for (int m = 0, ecncgsize = simData->newEventChain[time]->netsChain[l]->getGatesCount(); m < ecncgsize; m++)
+          stackSim->push_back(simData->newEventChain[time]->netsChain[l]->getConnectedGate(m));
 
       //
       // Вот тут-то и начинается самый сок

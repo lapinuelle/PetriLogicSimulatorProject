@@ -1274,15 +1274,15 @@ bool netlistreader_verilog::read(netlist *netl, sim_data *simul_data) {
 
   }
 
-  netl->repeats = new int [netl->gates.size()];
+  netl->repeats = new int [netl->getGates.size()];
 
-  for (size_t i = 0; i < netl->gates.size(); ++i) {
+  for (size_t i = 0; i < netl->getGates.size(); ++i) {
     netl->gates[i]->repeat = &netl->repeats[i];
     if (!netl->gates[i]->postprocess())
       return false;
   }
 
-  memset(netl->repeats, 0, sizeof(int)*netl->gates.size());
+  memset(netl->repeats, 0, sizeof(int)*netl->getGates.size());
 
   return true;
 }

@@ -36,11 +36,11 @@ net* netlist::addNet(const std::string &net_name, gate *gate) {
 	}
 	if(i < nets.size()) {
 		if(gate != NULL) {
-			for(j = 0; j < nets[i]->gates.size(); ++j)
-				if(nets[i]->gates[j] == gate)
+			for(j = 0; j < nets[i]->getGatesCount(); ++j)
+				if(nets[i]->getConnectedGate(j) == gate)
 					break;
-			if(j >= nets[i]->gates.size())
-				nets[i]->gates.push_back(gate);
+			if(j >= nets[i]->getGatesCount())
+				nets[i]->connectToGate(gate);
 		}
 		return nets[i];
 	} else {
@@ -48,7 +48,7 @@ net* netlist::addNet(const std::string &net_name, gate *gate) {
 
 		netPointer = new net(net_name);
 		if (gate != NULL)
-		netPointer->gates.push_back(gate);
+		netPointer->connectToGate(gate);
 		nets.push_back(netPointer);
 		return netPointer;
 	}
@@ -71,11 +71,11 @@ net* netlist::addNetMap(const std::string &net_name, gate *gate) {
 
 	if(netsMap[net_name]) {
 		if(gate != NULL) {
-			for(j = 0; j < netsMap[net_name]->gates.size(); ++j)
-				if(netsMap[net_name]->gates[j] == gate)
+			for(j = 0; j < netsMap[net_name]->getGatesCount(); ++j)
+				if(netsMap[net_name]->getConnectedGate(j) == gate)
 					break;
-			if(j >= netsMap[net_name]->gates.size())
-				netsMap[net_name]->gates.push_back(gate);
+			if(j >= netsMap[net_name]->getGatesCount())
+				netsMap[net_name]->connectToGate(gate);
 		}
 		return netsMap[net_name];
 	} else {
@@ -83,7 +83,7 @@ net* netlist::addNetMap(const std::string &net_name, gate *gate) {
 
 		netPointer = new net(net_name);
 		if (gate != NULL)
-		  netPointer->gates.push_back(gate);
+		  netPointer->connectToGate(gate);
 		netsMap[net_name] = netPointer;
 		return netPointer;
 	}
@@ -99,10 +99,10 @@ net* netlist::returnNetMap(std::string netName) {
 //////////////////////////////////////////////////
 
 
-std::vector<gate*> &netlist::returnGate(net* net) {									// возвращает gate, у которого данный net на входе
+std::vector<gate*> netlist::returnGate(net* net) {									// возвращает gate, у которого данный net на входе
 	/*
   std::vector <gate*> returned;
-	for (size_t i = 0; i < gates.size(); i++) {
+	for (size_t i = 0; i < getGates.size(); i++) {
     for (size_t j = 0; j < gates[i]->ins.size(); j++) {
       if (net->name == this->gates[i]->ins[j]->name) {
         returned.push_back(gates[i]);
@@ -111,7 +111,7 @@ std::vector<gate*> &netlist::returnGate(net* net) {									// возвращает gate, 
   }
   return returned;
   //*/
-  return net->gates;
+  return net->getGates();
 }
 
 gate* netlist::returnMapGate(std::string name) {

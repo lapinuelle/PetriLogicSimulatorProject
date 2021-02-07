@@ -78,3 +78,8 @@ std::vector<gate*> net::getGates()
 {
 	return this->gates;
 }
+
+int net::getGatesCount()
+{
+  return this->gates.size();
+}

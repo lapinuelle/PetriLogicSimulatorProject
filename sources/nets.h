@@ -15,12 +15,13 @@ protected:
   LogicLevel value;
   char type;
   std::string stability;
+  int delay;
+  std::vector<gate *>  gates;
 
 public:
 
   
-  int delay;
-  std::vector<gate *>  gates;
+  
   
 
 public:
@@ -47,6 +48,7 @@ public:
 	void connectToGate(gate*);
 	gate* getConnectedGate(int);
 	std::vector<gate*> getGates();
+  int getGatesCount();
 
 
 };
