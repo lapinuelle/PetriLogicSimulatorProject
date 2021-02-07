@@ -59,7 +59,7 @@ void datawriter::PrintHeader() {
     
     if ((i % 93) == 92)
       add++;
-    switch (nets[i]->value) {
+    switch (nets[i]->getValue()) {
     case level_0: fprintf(p_file, "0%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
       break;
     case level_1: fprintf(p_file, "1%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
@@ -82,7 +82,7 @@ void datawriter::DumpVars(int time) {
   for (size_t i = 0; i < nets.size(); ++i) {
     if ((i % 93) == 92)
       add++;
-    switch (nets[i]->value) {
+    switch (nets[i]->getValue()) {
     case level_0: fprintf(p_file, "0%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
       break;
     case level_1: fprintf(p_file, "1%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));

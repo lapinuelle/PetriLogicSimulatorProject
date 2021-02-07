@@ -154,7 +154,7 @@ void interpreter::operate(gate* currentGate, netlist* netl) {
       }
       else {
         if (netl->returnNetMap(commands[i + 2])) {
-          mov(netl->returnNetMap(commands[i + 2])->value, (netl->returnNetMap(commands[i + 1])));
+          mov(netl->returnNetMap(commands[i + 2])->getValue(), (netl->returnNetMap(commands[i + 1])));
         }
         else {
           mov(atol(commands[i + 2]), (netl->returnNetMap(commands[i + 1])));

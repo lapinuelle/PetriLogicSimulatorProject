@@ -164,9 +164,9 @@ int main(int argc, char *argv[]) {
 
         if((*i).second->getName().find('.') != std::string::npos)
           continue;
-        if ((*i).second->value != netl2->netsMap[(*i).second->getName()]->value) {
+        if ((*i).second->getValue() != netl2->netsMap[(*i).second->getName()]->getValue()) {
           printf("__inf__ : [1:%f] [2:%f] : Pin values are not equal for pin '%s'\n", t1, t2, (*i).first.c_str());
-          printf("          [1] :  %d, [2] : %d\n", (*i).second->value, netl2->netsMap[(*i).second->getName()]->value);
+          printf("          [1] :  %d, [2] : %d\n", (*i).second->getValue(), netl2->netsMap[(*i).second->getName()]->getValue());
         }
       }
 

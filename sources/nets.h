@@ -12,10 +12,9 @@ class net {
 protected:
 	std::string name;
   std::string realName;
+  LogicLevel value;
 
 public:
-  
-  LogicLevel value;
   char type;
   std::string stability;
   int delay;
