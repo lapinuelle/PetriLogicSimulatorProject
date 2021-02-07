@@ -770,7 +770,7 @@ bool netlistreader_verilog::parse_flat_gates(netlist *netl, sim_data *simul_data
       p_gate->addInput(netl->addNetMap(root.gates[i][j_pins], p_gate));
       //p_gate->ins.push_back(netl->addNet(root.gates[i][j_pins], p_gate));
 
-    p_gate->repeat = 0;
+    p_gate->setRepeatCount(0);
     //netl->addGate(p_gate);
     netl->addGateMap(p_gate);
   }
@@ -917,7 +917,7 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
       for (size_t iout = 0; iout < root.alwsGates[i].outputs.size(); iout++)
         p_gate->addOutput(netl->addNetMap(root.alwsGates[i].outputs[iout], NULL));
       behGate = true;
-      p_gate->repeat = 0;
+      p_gate->setRepeatCount(0);
       p_gate->setDelay(root.alwsGates[i].delay);
       
     }
@@ -1080,8 +1080,8 @@ bool netlistreader_verilog::parse_flat_alwayses(netlist *netl, sim_data *simul_d
       }
       if (ended) {
         ended = false;
-        netl->gatesMap[p_gate->name] = p_gate;
-        netl->returnMapGate(p_gate->name)->repeat = 0;
+        netl->gatesMap[p_gate->getName()] = p_gate;
+        netl->returnMapGate(p_gate->getName())->setRepeatCount(0);
         continue;
       }
     }
@@ -1144,7 +1144,7 @@ bool netlistreader_verilog::parse_flat_netlist(netlist *netl, sim_data *simul_da
       */
   int i = 0;
   for (std::map<std::string, gate*>::iterator it = netl->gatesMap.begin(); it != netl->gatesMap.end(); ++it) {
-    it->second->repeat = 0;
+    it->second->setRepeatCount(0);
     i++;
     if (!it->second->postprocess())
       return false;

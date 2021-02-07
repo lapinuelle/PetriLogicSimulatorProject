@@ -2,6 +2,11 @@
 #include "interpreter.h"
 
 
+float gate::getDelay()
+{
+	return this->delay;
+}
+
 void gate::setDelay(float extDelay) {
   delay = extDelay;
 }
@@ -35,6 +40,26 @@ bool gate::t_plus() {
       }
     return changed;
   }
+
+void gate::setName(std::string name)
+{
+	this->name = name;
+}
+
+std::string gate::getName()
+{
+	return this->name;
+}
+
+void gate::setRealName(std::string realName)
+{
+	this->realName = realName;
+}
+
+std::string gate::getRealName()
+{
+	return this->realName;
+}
 
 void gate::addInput(net* net)
 {
@@ -84,6 +109,16 @@ LogicLevel gate::getInternalOutput(int index)
 int gate::getOutputsCount()
 {
 	return this->outs.size();
+}
+
+int gate::getRepeatCount()
+{
+	return this->repeat;
+}
+
+void gate::setRepeatCount(int repeat)
+{
+	this->repeat = repeat;
 }
 
 
