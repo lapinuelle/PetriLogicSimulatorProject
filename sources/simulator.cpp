@@ -21,6 +21,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
 
   valueChanged = false;                                                                               // флаг изменения состояния на выходе вентиля
   //int time = 0;
+  GateDumper gdumper;
   datawriter wr(simData->getVCDname().c_str());                                                                    // контейнер выходных данных
   stack *stackSim = new stack(stackSize);                                                             // стек моделирования
 
@@ -30,6 +31,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
   }
   //wr.SetTimescale(simData->timescale.str_timescale);
   wr.SetTimescale(simData->timescale.str_precision);
+  gdumper.init(simData->getVCDname());
 
   if (sdf) {
     for (std::map<std::string, gate*>::iterator it = netl->gatesMap.begin(); it != netl->gatesMap.end(); ++it) {
@@ -51,6 +53,8 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
   for(std::map<float, Event*>::iterator itt = simData->newEventChain.begin(); itt != simData->newEventChain.end(); itt++ ) {
     float time = itt->first;
     printf("Current time: %f\n", time);
+    gdumper.dumpTime((int)(time));
+    
     if (simData->newEventChain[time]) {
 
   #if defined DEBUG_PRINT_CYCLE_TIME
@@ -110,6 +114,8 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
         else
           temp_free = stackSim->free;
 
+        
+
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t- в сети Петри
           if (stackSim->gatesChain[index % stackSize]->getRepeatCount() < 500) {
             stackSim->gatesChain[index % stackSize]->t_minus();
@@ -117,7 +123,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
             printf("T- > 500\n");
           }
         }
-
+        
         for (int index = stackSim->busy; index < temp_free; index++) {                                          // момент времени t0 в сети Петри
           if (stackSim->gatesChain[index % stackSize]->getRepeatCount() < 500) {
             gate *p_gate = stackSim->gatesChain[index % stackSize];
@@ -127,6 +133,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
               interpreter *interp = new interpreter();
               interp->operate(stackSim->gatesChain[index % stackSize], netl);
             }
+            gdumper.dumpGateName(p_gate->getName());
           } else {
             printf("T0 > 500\n");
           }
@@ -163,6 +170,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
             printf("T+ > 500\n");
           }
         }
+        gdumper.finish();
       }
 
   #if defined DEBUG_PRINT_CYCLE_TIME
