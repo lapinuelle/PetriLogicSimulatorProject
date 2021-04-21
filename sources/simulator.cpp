@@ -170,8 +170,9 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
             printf("T+ > 500\n");
           }
         }
-        gdumper.finish();
+        
       }
+      gdumper.finish();
 
   #if defined DEBUG_PRINT_CYCLE_TIME
       clock_t time_end = clock();

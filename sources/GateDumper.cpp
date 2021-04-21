@@ -36,6 +36,8 @@ void GateDumper::dumpGateName(std::string gateName)
 void GateDumper::finish()
 {
   fclose(dumpFile);
+  dumpFile = nullptr;
+
 }
 
 
