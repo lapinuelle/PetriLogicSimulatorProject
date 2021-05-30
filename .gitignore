@@ -280,6 +280,7 @@ sources_git/simulator.h
 sources_git/simulator_threads.cpp
 sources_git/stack.cpp
 sources_git/stack.h
+sources_агслувгз/*
 bin/1_count4.vcd
 bin/2_count4.vcd
 bin/2bit_shift_REG_hier.v
