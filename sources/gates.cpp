@@ -2,11 +2,6 @@
 #include "interpreter.h"
 
 
-float gate::getDelay()
-{
-	return this->delay;
-}
-
 void gate::setDelay(float extDelay) {
   delay = extDelay;
 }
@@ -15,146 +10,31 @@ void gate::setDelay(float extDelay) {
 void gate::t_minus() {
   for (size_t i = 0; i < ins.size(); ++i) {
 
-    if ((ins[i]->getValue() == level_0) && (ins_temp[i] == level_u))
-      ins[i]->getStability() = '\\';
-    if ((ins[i]->getValue() == level_1) && (ins_temp[i] == level_u))
-      ins[i]->getStability() = '/';
+    if ((ins[i]->value == level_0) && (ins_temp[i] == level_u))
+      ins[i]->stability = '\\';
+    if ((ins[i]->value == level_1) && (ins_temp[i] == level_u))
+      ins[i]->stability = '/';
 
-    if (((ins[i]->getValue() == level_0) || (ins[i]->getValue() == level_u)) && (ins_temp[i] == level_1))// && (ins[i]->stability == "_"))
-      ins[i]->getStability() = '\\';
-    if (((ins[i]->getValue() == level_1) || (ins[i]->getValue() == level_u)) && (ins_temp[i] == level_0))// && (ins[i]->stability == "_"))
-      ins[i]->getStability() = '/';
-    ins_temp[i] = ins[i]->getValue();
+    if (((ins[i]->value == level_0) || (ins[i]->value == level_u)) && (ins_temp[i] == level_1))// && (ins[i]->stability == "_"))
+      ins[i]->stability = '\\';
+    if (((ins[i]->value == level_1) || (ins[i]->value == level_u)) && (ins_temp[i] == level_0))// && (ins[i]->stability == "_"))
+      ins[i]->stability = '/';
+    ins_temp[i] = ins[i]->value;
   }
 }
 
 bool gate::t_plus() {
   ++repeat;
   for (size_t i = 0; i < ins.size(); ++i)
-    ins[i]->getStability() = "_";
+    ins[i]->stability = "_";
   bool changed = false;
     for(size_t i =0 ; i < outs.size(); ++i)
-      if (outs[i]->getValue() != outs_temp[i]) {
-        outs[i]->setValue(outs_temp[i]);
+      if (outs[i]->value != outs_temp[i]) {
+        outs[i]->value = outs_temp[i];
         changed = true;
       }
     return changed;
   }
-
-std::string gate::getToken(int index)
-{
-	return this->tokens[index];
-}
-
-std::vector<std::string> gate::getTokens()
-{
-	return this->tokens;
-}
-
-void gate::addToken(std::string token)
-{
-	this->tokens.push_back(token);
-}
-
-int gate::getTokensCount()
-{
-	return this->tokens.size();
-}
-
-void gate::addJump(std::string jumpName, int index)
-{
-	this->jumps[jumpName] = index;
-}
-
-int gate::getJump(std::string jumpName)
-{
-	return this->jumps[jumpName];
-}
-
-std::map<std::string, int> gate::getJumps()
-{
-	return this->jumps;
-}
-
-void gate::setName(std::string name)
-{
-	this->name = name;
-}
-
-std::string gate::getName()
-{
-	return this->name;
-}
-
-void gate::setRealName(std::string realName)
-{
-	this->realName = realName;
-}
-
-std::string gate::getRealName()
-{
-	return this->realName;
-}
-
-void gate::addInput(net* net)
-{
-	this->ins.push_back(net);
-}
-
-void gate::setInternalInput(int index, LogicLevel value)
-{
-	this->ins_temp[index] = value;
-}
-
-net* gate::getInput(int index)
-{
-	return this->ins[index];
-}
-
-LogicLevel gate::getInternalInput(int index)
-{
-	return this->ins_temp[index];
-}
-
-int gate::getInputsCount()
-{
-	return this->ins.size();
-}
-
-void gate::addOutput(net* net)
-{
-	this->outs.push_back(net);
-}
-
-void gate::setInternalOutput(int index, LogicLevel value)
-{
-	this->outs_temp[index] = value;
-}
-
-net * gate::getOutput(int index)
-{
-	return this->outs[index];
-}
-
-LogicLevel gate::getInternalOutput(int index)
-{
-	return this->outs_temp[index];
-}
-
-int gate::getOutputsCount()
-{
-	return this->outs.size();
-}
-
-int gate::getRepeatCount()
-{
-	return this->repeat;
-}
-
-void gate::setRepeatCount(int repeat)
-{
-	this->repeat = repeat;
-}
 
 
 // BEH Gate

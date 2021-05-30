@@ -30,7 +30,7 @@ public:
   net *addNetMap(const std::string &net_name, gate *gate);
   net* returnNetMap(std::string netName);
   gate* returnMapGate(std::string);
-  std::vector<gate*> returnGate(net* net);
+  std::vector<gate*> &returnGate(net* net);
   /*
     addGate - считали вентиль, добавили в вектор
   */

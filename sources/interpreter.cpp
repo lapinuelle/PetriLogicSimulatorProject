@@ -14,20 +14,20 @@ LogicLevel interpreter::not(LogicLevel value) {
 }
 
 LogicLevel interpreter::not(net* net) {
-  for (size_t i = 0; i < this->modeGate->getInputsCount(); i++) {
-    if (this->modeGate->getInput(i)->getName() == net->getName()) {
-      if (this->modeGate->getInternalInput(i) == level_0)
+  for (size_t i = 0; i < this->modeGate->ins.size(); i++) {
+    if (this->modeGate->ins[i]->name == net->name) {
+      if (this->modeGate->ins_temp[i] == level_0)
         return level_1;
-      if (this->modeGate->getInternalInput(i) == level_1)
+      if (this->modeGate->ins_temp[i] == level_1)
         return level_0;
       return level_u;
     }
   }
-  for (size_t i = 0; i < this->modeGate->getOutputsCount(); i++) {
-    if (this->modeGate->getOutput(i)->getName() == net->getName()) {
-      if (this->modeGate->getInternalOutput(i) == level_0)
+  for (size_t i = 0; i < this->modeGate->outs.size(); i++) {
+    if (this->modeGate->outs[i]->name == net->name) {
+      if (this->modeGate->outs_temp[i] == level_0)
         return level_1;
-      if (this->modeGate->getInternalOutput(i) == level_1)
+      if (this->modeGate->outs_temp[i] == level_1)
         return level_0;
       return level_u;
     }
@@ -38,15 +38,15 @@ void interpreter::cmp(net* net, LogicLevel value) {
   flags["ZF"] = 0;
   flags["GF"] = 0;
   flags["LF"] = 0;
-  for (size_t i = 0; i < this->modeGate->getInputsCount(); i++) {
-    if (this->modeGate->getInput(i)->getName() == net->getName()) {
-      if (this->modeGate->getInternalInput(i) == value)
+  for (size_t i = 0; i < this->modeGate->ins.size(); i++) {
+    if (this->modeGate->ins[i]->name == net->name) {
+      if (this->modeGate->ins_temp[i] == value)
         flags["ZF"] = 1;
-      if (this->modeGate->getInternalInput(i) > value) {
+      if (this->modeGate->ins_temp[i] > value) {
         flags["ZF"] = 0;
         flags["GF"] = 1;
       }
-      if (this->modeGate->getInternalInput(i) < value) {
+      if (this->modeGate->ins_temp[i] < value) {
         flags["ZF"] = 0;
         flags["LF"] = 1;
       }
@@ -56,17 +56,17 @@ void interpreter::cmp(net* net, LogicLevel value) {
 }
 
 void interpreter::cmp(net* net, std::string value) {
-  if (net->getStability() == value)
+  if (net->stability == value)
     flags["ZF"] = 1;
   if (value == "*")
-    if (net->getStability() != "_")
+    if (net->stability != "_")
       flags["ZF"] = 1;
 }
 
 void interpreter::mov(LogicLevel value, net* net) {
-  for (size_t i = 0; i < this->modeGate->getOutputsCount(); i++) {
-    if (this->modeGate->getOutput(i)->getName() == net->getName()) {
-      this->modeGate->setInternalOutput(i, value);
+  for (size_t i = 0; i < this->modeGate->outs.size(); i++) {
+    if (this->modeGate->outs[i]->name == net->name) {
+      this->modeGate->outs_temp[i] = value;
     }
   }
 }
@@ -107,8 +107,8 @@ interpreter::interpreter() {
 
 void interpreter::operate(gate* currentGate, netlist* netl) {
   this->modeGate = currentGate;
-  std::vector<std::string> commands = this->modeGate->getTokens();
-  std::map<std::string, int> jumps = this->modeGate->getJumps();
+  std::vector<std::string> commands = this->modeGate->tokens;
+  std::map<std::string, int> jumps = this->modeGate->jumps;
   int commandsSize = commands.size();
   int i = 0;
   while (i < commandsSize) {
@@ -154,7 +154,7 @@ void interpreter::operate(gate* currentGate, netlist* netl) {
       }
       else {
         if (netl->returnNetMap(commands[i + 2])) {
-          mov(netl->returnNetMap(commands[i + 2])->getValue(), (netl->returnNetMap(commands[i + 1])));
+          mov(netl->returnNetMap(commands[i + 2])->value, (netl->returnNetMap(commands[i + 1])));
         }
         else {
           mov(atol(commands[i + 2]), (netl->returnNetMap(commands[i + 1])));

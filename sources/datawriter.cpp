@@ -19,7 +19,7 @@ datawriter::datawriter(const std::string fileName) : fileNameVCD(fileName), time
 void datawriter::AddDumpVar(net *net) {
   size_t i = 0;
   for(i = 0; i < nets.size(); ++i)
-    if(nets[i]->getName() == net->getName())
+    if(nets[i]->name == net->name)
       return;
   nets.push_back(net);
 }
@@ -47,7 +47,7 @@ void datawriter::PrintHeader() {
   for (size_t i = 0; i < nets.size(); ++i) {
     if ((i % 93) == 92)
       add1++;
-    fprintf(p_file, "$var wire 1 %c%c %s $end\n", (char)(i % 93) + 33, (char)(add1 > 33 ? add1 : 32), nets[i]->getRealName().c_str());
+    fprintf(p_file, "$var wire 1 %c%c %s $end\n", (char)(i % 93) + 33, (char)(add1 > 33 ? add1 : 32), nets[i]->realName.c_str());
   }
   
   fprintf(p_file,  "$upscope $end\n");
@@ -59,7 +59,7 @@ void datawriter::PrintHeader() {
     
     if ((i % 93) == 92)
       add++;
-    switch (nets[i]->getValue()) {
+    switch (nets[i]->value) {
     case level_0: fprintf(p_file, "0%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
       break;
     case level_1: fprintf(p_file, "1%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
@@ -82,7 +82,7 @@ void datawriter::DumpVars(int time) {
   for (size_t i = 0; i < nets.size(); ++i) {
     if ((i % 93) == 92)
       add++;
-    switch (nets[i]->getValue()) {
+    switch (nets[i]->value) {
     case level_0: fprintf(p_file, "0%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));
       break;
     case level_1: fprintf(p_file, "1%c%c\n", (char)(i % 93) + 33, (char)(add > 33 ? add : 32));

@@ -7,59 +7,23 @@
 #include "nets.h"
 
 class gate {
-protected:
-	std::vector <net*> ins;               ///< Входы вентиля
-	std::vector<LogicLevel> ins_temp;     ///< Временные (внутренние) входы для переноса меток
-	std::vector <net*> outs;              ///< Выходы вентиля
-	std::vector<LogicLevel> outs_temp;    ///< Временные (внутренние) выходы для переноса меток
-	std::string realName;                     ///< Имя вентиля
-	std::string name;                     ///< Имя вентиля
-	int repeat;                          ///< Количество повторений моделирования вентиля в конкретный момент времени
-	float delay;                            ///< Задержка вентиля
-	std::vector<std::string> tokens;
-	std::map<std::string, int> jumps;
-
 public:
+  std::vector <net*> ins;               ///< Входы вентиля
+  std::vector<LogicLevel> ins_temp;     ///< Временные (внутренние) входы для переноса меток
+  std::vector <net*> outs;              ///< Выходы вентиля
+  std::vector<LogicLevel> outs_temp;    ///< Временные (внутренние) выходы для переноса меток
+  std::string realName;                     ///< Имя вентиля
+  std::string name;                     ///< Имя вентиля
+  int repeat;                          ///< Количество повторений моделирования вентиля в конкретный момент времени
+  float delay;                            ///< Задержка вентиля
+  // methods
   void t_minus();                       ///< Момент сети Петри t_minus
+  void setDelay(float delay);             ///< Функция, задающая задержку вентиля
   virtual void operate()=0;             ///< Момент сети Петри t_0
   bool t_plus();                        
   virtual bool postprocess() = 0;
-  
-  
-
-  std::string getToken(int);
-  std::vector<std::string> getTokens();
-  void addToken(std::string);
-  int getTokensCount();
-
-  void addJump(std::string, int);
-  int getJump(std::string);
-  std::map<std::string, int> getJumps();
-
-  void setName(std::string);
-  std::string getName();
-
-  void setRealName(std::string);
-  std::string getRealName();
-
-  void addInput(net*);
-  void setInternalInput(int,LogicLevel);
-  net* getInput(int);
-  LogicLevel getInternalInput(int);
-  int getInputsCount();
-
-  void addOutput(net*);
-  void setInternalOutput(int, LogicLevel);
-  net* getOutput(int);
-  LogicLevel getInternalOutput(int);
-  int getOutputsCount();
-
-  int getRepeatCount();
-  void setRepeatCount(int);
-
-  float getDelay();
-  void setDelay(float);
-
+  std::vector<std::string> tokens;
+  std::map<std::string, int> jumps;
 public:
   virtual ~gate() {};
 };

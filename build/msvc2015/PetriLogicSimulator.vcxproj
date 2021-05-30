@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,7 +19,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -91,7 +91,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\sources\datawriter.cpp" />
     <ClCompile Include="..\..\sources\event.cpp" />
-    <ClCompile Include="..\..\sources\gate.cpp" />
     <ClCompile Include="..\..\sources\gates.cpp" />
     <ClCompile Include="..\..\sources\interpreter.cpp" />
     <ClCompile Include="..\..\sources\logiclevel.cpp" />
@@ -108,17 +107,13 @@
   <ItemGroup>
     <ClInclude Include="..\..\sources\datawriter.h" />
     <ClInclude Include="..\..\sources\event.h" />
-    <ClInclude Include="..\..\sources\gate.h" />
     <ClInclude Include="..\..\sources\gates.h" />
-    <ClInclude Include="..\..\sources\internal\IGate.h" />
-    <ClInclude Include="..\..\sources\internal\INet.h" />
     <ClInclude Include="..\..\sources\interpreter.h" />
     <ClInclude Include="..\..\sources\logiclevel.h" />
     <ClInclude Include="..\..\sources\netlist.h" />
     <ClInclude Include="..\..\sources\netlistreader.h" />
     <ClInclude Include="..\..\sources\nets.h" />
     <ClInclude Include="..\..\sources\numcores.h" />
-    <ClInclude Include="..\..\sources\sdf.h" />
     <ClInclude Include="..\..\sources\simulation_data.h" />
     <ClInclude Include="..\..\sources\simulator.h" />
     <ClInclude Include="..\..\sources\stack.h" />

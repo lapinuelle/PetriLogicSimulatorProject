@@ -3,7 +3,6 @@
 #include "netlist.h"
 #include "simulation_data.h"
 #include "datawriter.h"
-#include "GateDumper.h"
 #include "sdf.h"
 #include <string>
 #include <vector>
@@ -13,7 +12,6 @@
 
 class simulator {
   datawriter *p_wr;
-  GateDumper *gdumper;
 public:
   simulator();
   void simulation_thread(netlist* netl, sim_data* simul_data, int stackSize);
