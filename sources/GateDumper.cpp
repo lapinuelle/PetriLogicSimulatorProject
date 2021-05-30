@@ -11,7 +11,7 @@ void GateDumper::init(std::string name)
   this->fileName = name + ".gat";
   if (!(this->dumpFile = fopen(fileName.c_str(), "w+")))
     printf("Can't open file!");
-  fclose(dumpFile);
+  fclose(this->dumpFile);
     
 }
 
@@ -35,7 +35,7 @@ void GateDumper::dumpGateName(std::string gateName)
 
 void GateDumper::finish()
 {
-  fclose(dumpFile);
+  //fclose(this->dumpFile);
   dumpFile = nullptr;
 
 }
