@@ -1,3 +1,4 @@
+#include "nlohmann/json.hpp"
 #include "simulator.h"
 #include "netlist.h"
 #include "simulation_data.h"
@@ -5,6 +6,8 @@
 #include "stack.h"
 #include <cstring>
 #include <thread>
+#include <vector>
+#include <string>
 
 //#define DEBUG_PRINT_THREAD
 //#define DEBUG_PRINT_GATES
@@ -16,9 +19,10 @@ simulator::simulator() : p_wr(NULL) {
 void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF *sdf) {
 
   printf("          Single thread will be used.\n");
-                                                                                                      // размер стека
+  std::vector<std::string> netsDump;
+  std::vector<std::string> gatesDump;// размер стека
   int temp_free = 0;
-
+  nlohmann::json dump;
   valueChanged = false;                                                                               // флаг изменения состояния на выходе вентиля
   //int time = 0;
   datawriter wr(simData->getVCDname().c_str());                                                                    // контейнер выходных данных
@@ -45,7 +49,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
     */
 
   wr.PrintHeader();                                                                                   // пишем в выходной файл шапку
-
+  
   //for (size_t time = 0; time < simData->eventChain.size(); ++time) {
   //for (float time = 0; time < simData->endTime; time++) {
   for(std::map<float, Event*>::iterator itt = simData->newEventChain.begin(); itt != simData->newEventChain.end(); itt++ ) {
@@ -60,8 +64,10 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
       //memset(netl->repeats, 0, sizeof(int)*netl->gatesMap.size());
 
       // присваиваем новые входные воздействия из тестбенча портам
-      
+      //printf("\t");
       for (size_t i = 0; i < simData->newEventChain[time]->netsChain.size(); ++i) {
+        //printf("%s ", simData->newEventChain[time]->netsChain[i]->name.c_str());
+        netsDump.push_back(simData->newEventChain[time]->netsChain[i]->name);
         if (simData->newEventChain[time]->delayed[i]) {
           bool stateChanged = false;
           Event* eventCh = simData->newEventChain.find(time)->second;
@@ -91,6 +97,9 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
 
         }
       }
+      //printf("\n\t\t");
+      dump[std::to_string(time)]["_nets"] = netsDump;
+      netsDump.clear();
 
       stackSim->reset();
 
@@ -123,6 +132,9 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
             gate *p_gate = stackSim->gatesChain[index % stackSize];
             if (p_gate->tokens.empty()) {
               p_gate->operate();
+              //printf("%s ", p_gate->name.c_str());
+              gatesDump.push_back(p_gate->name);
+              
             } else {
               interpreter *interp = new interpreter();
               interp->operate(stackSim->gatesChain[index % stackSize], netl);
@@ -164,7 +176,9 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
           }
         }
       }
-
+      //printf("\n");
+      dump[std::to_string(time)]["gates"] = gatesDump;
+      gatesDump.clear();
   #if defined DEBUG_PRINT_CYCLE_TIME
       clock_t time_end = clock();
       clock_t dump_start = clock();
@@ -176,6 +190,8 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
   #endif
     }
   }
+  std::ofstream o(simData->getVCDname().replace(simData->getVCDname().find(".vcd"), 4, ".json"));
+  o << dump << std::endl;
 }
 
 
