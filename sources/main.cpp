@@ -8,6 +8,7 @@
 #include "simulator.h"
 #include "simulation_data.h"
 #include "sdf.h"
+#include "nlohmann/json.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -55,6 +56,8 @@ int main(int argc, char *argv[]) {
   std::string signal, edge;
 
   SDF *sdf = NULL;
+  nlohmann::json dump1;
+  nlohmann::json dump2;
 																												                  // Чтение аргументов командной строки
   if (argc > 2) {
     for (size_t i = 0; i < (size_t)argc; i++) {
@@ -151,8 +154,8 @@ int main(int argc, char *argv[]) {
     sim2->begin_multistep_mode(netl2, simul_data2, stackSize, sdf);
 
     while (!simul_data1->newEventChain.empty() ) {
-      float t1 = sim1->make_one_step(netl1, simul_data1, stackSize, NULL, signal, edge);
-      float t2 = sim2->make_one_step(netl2, simul_data2, stackSize, sdf, signal, edge);
+      float t1 = sim1->make_one_step(netl1, simul_data1, stackSize, NULL, signal, edge, &dump1);
+      float t2 = sim2->make_one_step(netl2, simul_data2, stackSize, sdf, signal, edge, &dump2);
 
       for (auto i = netl1->netsMap.begin(); i != netl1->netsMap.end(); ++i) {
         
@@ -171,7 +174,10 @@ int main(int argc, char *argv[]) {
       }
 
     }
-
+    std::ofstream o1(simul_data1->getVCDname().replace(simul_data1->getVCDname().find(".vcd"), 4, ".json"));
+    o1 << dump1 << std::endl;
+    std::ofstream o2(simul_data2->getVCDname().replace(simul_data2->getVCDname().find(".vcd"), 4, "_sdf.json"));
+    o2 << dump2 << std::endl;
     delete sim1;                                                             // удаляем объект
     delete sim2;                                                             // удаляем объект
   }

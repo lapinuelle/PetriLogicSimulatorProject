@@ -133,12 +133,13 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
             if (p_gate->tokens.empty()) {
               p_gate->operate();
               //printf("%s ", p_gate->name.c_str());
-              gatesDump.push_back(p_gate->name);
+              
               
             } else {
               interpreter *interp = new interpreter();
               interp->operate(stackSim->gatesChain[index % stackSize], netl);
             }
+            gatesDump.push_back(p_gate->name);
           } else {
             printf("T0 > 500\n");
           }
@@ -219,6 +220,7 @@ void simulator::simulation(netlist* netl, sim_data* simData, int stackSize, SDF 
 void simulator::begin_multistep_mode(netlist* netl, sim_data* simData, int stackSize, SDF *sdf) {
 
   printf("          Single thread will be used.\n");
+
   // размер стека
 
   if(!sdf)
@@ -249,11 +251,13 @@ void simulator::begin_multistep_mode(netlist* netl, sim_data* simData, int stack
   p_wr->PrintHeader();                                                                                   // пишем в выходной файл шапку
 }
 
-float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, SDF *sdf, std::string signal, std::string edge) {
+float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, SDF *sdf, std::string signal, std::string edge, nlohmann::json* dump) {
   int temp_free = 0;
+  nlohmann::json ddump = *dump;
   valueChanged = false;                                                                               // флаг изменения состояния на выходе вентиля
   stack *stackSim = new stack(stackSize);                                                             // стек моделирования
-                                                                                                     //int time = 0;
+  std::vector<std::string> netsDump;
+  std::vector<std::string> gatesDump;                                                                                                    //int time = 0;
 
   bool flagStopSim = false;
   float stopTime = 0.0f;
@@ -284,6 +288,7 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
 
       // присваиваем новые входные воздействия из тестбенча портам
       for (size_t i = 0; i < simData->newEventChain[time]->netsChain.size(); ++i) {
+        netsDump.push_back(simData->newEventChain[time]->netsChain[i]->name);
         if (simData->newEventChain[time]->delayed[i]) {
           bool stateChanged = false;
           Event* eventCh = simData->newEventChain.find(time)->second;
@@ -323,6 +328,8 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
             }
         }
       }
+      ddump[std::to_string(time)]["_nets"] = netsDump;
+      netsDump.clear();
 
       stackSim->reset();
 
@@ -359,6 +366,7 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
               interpreter *interp = new interpreter();
               interp->operate(stackSim->gatesChain[index % stackSize], netl);
             }
+            gatesDump.push_back(p_gate->name);
           } else {
             printf("T0 > 500\n");
           }
@@ -396,6 +404,8 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
           }
         }
       }
+      ddump[std::to_string(time)]["gates"] = gatesDump;
+      gatesDump.clear();
 
 #if defined DEBUG_PRINT_CYCLE_TIME
       clock_t time_end = clock();
@@ -413,7 +423,7 @@ float simulator::make_one_step(netlist* netl, sim_data* simData, int stackSize, 
     simData->newEventChain.erase(simData->newEventChain.begin());
   else
     simData->newEventChain.erase(simData->newEventChain.begin(), itt);
-
+  dump = &ddump;
   return time;
 }
 

@@ -9,6 +9,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include "nlohmann/json.hpp"
+
 
 class simulator {
   datawriter *p_wr;
@@ -19,7 +21,7 @@ public:
 	bool valueChanged;
 public:
   void begin_multistep_mode(netlist* netl, sim_data* simul_data, int stackSize, SDF *sdf);
-  float make_one_step(netlist* netl, sim_data* simul_data, int stackSize, SDF *sdf, std::string signal, std::string edge);
+  float make_one_step(netlist* netl, sim_data* simul_data, int stackSize, SDF *sdf, std::string signal, std::string edge, nlohmann::json* dump);
   void end_multistep_mode();
   
 };
