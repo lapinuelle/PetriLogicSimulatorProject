@@ -58,6 +58,7 @@ int main(int argc, char *argv[]) {
   SDF *sdf = NULL;
   nlohmann::json dump1;
   nlohmann::json dump2;
+  nlohmann::json differenceDump;
 																												                  // Чтение аргументов командной строки
   if (argc > 2) {
     for (size_t i = 0; i < (size_t)argc; i++) {
@@ -170,6 +171,9 @@ int main(int argc, char *argv[]) {
         if ((*i).second->value != netl2->netsMap[(*i).second->name]->value) {
           printf("__inf__ : [1:%f] [2:%f] : Pin values are not equal for pin '%s'\n", t1, t2, (*i).first.c_str());
           printf("          [1] :  %d, [2] : %d\n", (*i).second->value, netl2->netsMap[(*i).second->name]->value);
+          differenceDump[(*i).first][std::to_string(t1)]["time_with_sdf"] = t2;
+          differenceDump[(*i).first][std::to_string(t1)]["reference_value"] = (*i).second->value;
+          differenceDump[(*i).first][std::to_string(t1)]["with_sdf_value"] = netl2->netsMap[(*i).second->name]->value;
         }
       }
 
@@ -178,6 +182,8 @@ int main(int argc, char *argv[]) {
     o1 << dump1 << std::endl;
     std::ofstream o2(simul_data2->getVCDname().replace(simul_data2->getVCDname().find(".vcd"), 4, "_sdf.json"));
     o2 << dump2 << std::endl;
+    std::ofstream o3(simul_data1->getVCDname().replace(simul_data1->getVCDname().find(".vcd"), 4, "_diff.json"));
+    o3 << differenceDump << std::endl;
     delete sim1;                                                             // удаляем объект
     delete sim2;                                                             // удаляем объект
   }
